@@ -1,17 +1,17 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import "./index.css";
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import './index.css';
 
-import { GlobalProvider } from "./context/GlobalContext.jsx";
-import { BrowserRouter, Route, Routes } from "react-router";
-import ErrorPage from "./components/ErrorPage.jsx";
-import Layout from "./components/Layout.jsx";
-import HomePage from "./pages/HomePage.jsx";
-import ProfilePage from "./pages/ProfilePage.jsx";
-import MembersPage from "./pages/MembersPage.jsx";
-import ItemsPage from "./pages/ItemsPage.jsx";
+import { GlobalProvider } from './context/GlobalProvider.jsx';
+import { BrowserRouter, Route, Routes } from 'react-router';
+import ErrorPage from './components/ErrorPage.jsx';
+import Layout from './components/Layout.jsx';
+import HomePage from './pages/HomePage.jsx';
+import ProfilePage from './pages/ProfilePage.jsx';
+import MembersPage from './pages/MembersPage.jsx';
+import ItemsPage from './pages/ItemsPage.jsx';
 
-createRoot(document.getElementById("root")).render(
+createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <GlobalProvider>
