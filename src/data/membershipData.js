@@ -1,10 +1,4 @@
-export const membershipData = [
-  new Membership(1, 1, 1, "admin"),
-  new Membership(1, 2, 1, "member"),
-  new Membership(1, 3, 2, "admin"),
-];
-
-class Membership {
+export class Membership {
   constructor(id, userId, communityId, role) {
     this.id = id;
     this.userId = userId;
@@ -12,3 +6,9 @@ class Membership {
     this.role = role;
   }
 }
+
+export const membershipData = [
+  new Membership(1, 1, 1, 'admin'),
+  new Membership(1, 2, 1, 'member'),
+  new Membership(1, 3, 2, 'admin'),
+];
