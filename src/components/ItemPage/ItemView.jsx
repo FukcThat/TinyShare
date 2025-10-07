@@ -1,7 +1,7 @@
 import { userData } from "../../data/userData";
 import Button from "../ui/Button";
 
-export default function ItemView({ item }) {
+export default function ItemView({ item, withEdit, onEdit }) {
   const owner = userData.find((user) => user.id === item.owner);
   return (
     <div
@@ -19,6 +19,7 @@ export default function ItemView({ item }) {
         text="Request"
         onClick={() => console.log(item.name, " requested")}
       />
+      {withEdit && <Button text="✏️" onClick={() => onEdit(item)} />}
     </div>
   );
 }

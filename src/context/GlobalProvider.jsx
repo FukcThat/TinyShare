@@ -9,6 +9,19 @@ export function GlobalProvider({ children }) {
   const [items, setItems] = useState(itemData);
   const [activeCommunity, setActiveCommunity] = useState(communityData[0]);
 
+  const UpdateItem = (id, newData) => {
+    setItems((oldItems) =>
+      oldItems.map((item) => {
+        if (item.id === id) return { ...item, name: newData.name };
+        return item;
+      })
+    );
+  };
+
+  const DeleteItem = (id) => {
+    setItems((oldItems) => oldItems.filter((item) => item.id !== id));
+  };
+
   return (
     <GlobalContext.Provider
       value={{
@@ -18,6 +31,8 @@ export function GlobalProvider({ children }) {
         setActiveCommunity,
         items,
         setItems,
+        UpdateItem,
+        DeleteItem,
       }}
     >
       {children}
