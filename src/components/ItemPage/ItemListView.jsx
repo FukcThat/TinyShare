@@ -5,6 +5,7 @@ export default function ItemListView({
   headerLabel,
   withEdit = false,
   onEdit = () => {},
+  isBorrowedList = false,
 }) {
   return (
     <div className="flex flex-col gap-10">
@@ -17,6 +18,7 @@ export default function ItemListView({
               item={item}
               withEdit={withEdit}
               onEdit={onEdit}
+              isBorrowedItem={isBorrowedList}
             />
           );
         })}

@@ -4,14 +4,18 @@ import { Item } from "../../data/itemData";
 import { v4 as uuidv4 } from "uuid";
 import { useGlobal } from "../../context/useGlobal";
 import Input from "../ui/Input";
+import Checkbox from "../ui/Checkbox";
 
 export default function ItemForm({
   itemToEdit = null,
   setItemToEdit = () => {},
+  ToggleForm = () => {},
 }) {
   const { user, setItems, UpdateItem, DeleteItem } = useGlobal();
+
   const [formData, setFormData] = useState({
     name: itemToEdit ? itemToEdit.name : "",
+    isAvailable: itemToEdit ? itemToEdit.isAvailable : true,
   });
 
   useEffect(() => {
@@ -24,9 +28,15 @@ export default function ItemForm({
     if (formData.name == "") return;
 
     if (itemToEdit === null) {
-      const newItem = new Item(uuidv4(), formData.name, "available", user.id);
+      const newItem = new Item(
+        uuidv4(),
+        formData.name,
+        formData.isAvailable,
+        user.id
+      );
       setItems((oldItems) => [...oldItems, newItem]);
       setFormData({ ...formData, name: "" });
+      ToggleForm();
       return;
     }
 
@@ -46,6 +56,14 @@ export default function ItemForm({
         withLabel
         labelText="Name:"
         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+      />
+      <Checkbox
+        id="isAvailableCheckbox"
+        labelText="Available"
+        onChange={(e) =>
+          setFormData({ ...formData, isAvailable: !formData.isAvailable })
+        }
+        value={formData.isAvailable}
       />
       <Button text={itemToEdit === null ? "Submit" : "Update"} type="submit" />
       {itemToEdit && (

@@ -12,7 +12,12 @@ export function GlobalProvider({ children }) {
   const UpdateItem = (id, newData) => {
     setItems((oldItems) =>
       oldItems.map((item) => {
-        if (item.id === id) return { ...item, name: newData.name };
+        if (item.id === id)
+          return {
+            ...item,
+            name: newData.name,
+            isAvailable: newData.isAvailable,
+          };
         return item;
       })
     );

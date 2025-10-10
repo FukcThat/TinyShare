@@ -4,6 +4,7 @@ import ItemListView from "../components/ItemPage/ItemListView";
 import Button from "../components/ui/Button";
 import { useGlobal } from "../context/useGlobal";
 import EditItemView from "../components/ItemPage/EditItemView";
+import { reservationData } from "../data/reservationData";
 
 export default function ItemsPage() {
   const { user, items } = useGlobal();
@@ -11,7 +12,22 @@ export default function ItemsPage() {
   const [itemToEdit, setItemToEdit] = useState(null);
 
   const availableItems = useMemo(
-    () => items.filter((item) => item.status === "available"),
+    () =>
+      items.filter(
+        (item) =>
+          item.isAvailable &&
+          !reservationData.some((res) => res.itemId === item.id)
+      ),
+    [items]
+  );
+
+  const borrowedItems = useMemo(
+    () =>
+      items.filter(
+        (item) =>
+          item.isAvailable &&
+          reservationData.some((res) => res.itemId === item.id)
+      ),
     [items]
   );
 
@@ -24,7 +40,7 @@ export default function ItemsPage() {
 
   return (
     <div className="flex flex-col gap-10">
-      {isOpen && <ItemForm />}
+      {isOpen && <ItemForm ToggleForm={ToggleItemForm} />}
       <Button text="Add Item" onClick={ToggleItemForm} />
       <ItemListView
         items={yourItems}
@@ -37,6 +53,11 @@ export default function ItemsPage() {
         }
       />
       <ItemListView items={availableItems} headerLabel={"Available Items"} />
+      <ItemListView
+        items={borrowedItems}
+        headerLabel={"Borrowed Items"}
+        isBorrowedList
+      />
       {itemToEdit && (
         <EditItemView itemToEdit={itemToEdit} setItemToEdit={setItemToEdit} />
       )}
