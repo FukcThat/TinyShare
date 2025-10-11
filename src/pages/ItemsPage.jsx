@@ -5,29 +5,16 @@ import Button from "../components/ui/Button";
 import { useGlobal } from "../context/useGlobal";
 import EditItemView from "../components/ItemPage/EditItemView";
 import { reservationData } from "../data/reservationData";
+import ItemDetailModal from "../components/ItemPage/ItemDetailModal";
 
 export default function ItemsPage() {
   const { user, items } = useGlobal();
   const [isOpen, setIsOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState(null);
+  const [itemToRequest, setItemToRequest] = useState(null);
 
   const availableItems = useMemo(
-    () =>
-      items.filter(
-        (item) =>
-          item.isAvailable &&
-          !reservationData.some((res) => res.itemId === item.id)
-      ),
-    [items]
-  );
-
-  const borrowedItems = useMemo(
-    () =>
-      items.filter(
-        (item) =>
-          item.isAvailable &&
-          reservationData.some((res) => res.itemId === item.id)
-      ),
+    () => items.filter((item) => item.isAvailable && item.owner != user.id),
     [items]
   );
 
@@ -39,7 +26,7 @@ export default function ItemsPage() {
   const ToggleItemForm = () => setIsOpen(!isOpen);
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-10 relative">
       {isOpen && <ItemForm ToggleForm={ToggleItemForm} />}
       <Button text="Add Item" onClick={ToggleItemForm} />
       <ItemListView
@@ -52,12 +39,22 @@ export default function ItemsPage() {
           )
         }
       />
-      <ItemListView items={availableItems} headerLabel={"Available Items"} />
+
       <ItemListView
-        items={borrowedItems}
-        headerLabel={"Borrowed Items"}
-        isBorrowedList
+        items={availableItems}
+        headerLabel={"Available Items"}
+        onRequest={(item) => {
+          setItemToRequest(item);
+        }}
       />
+
+      {itemToRequest && (
+        <ItemDetailModal
+          item={itemToRequest}
+          onClose={() => setItemToRequest(null)}
+        />
+      )}
+
       {itemToEdit && (
         <EditItemView itemToEdit={itemToEdit} setItemToEdit={setItemToEdit} />
       )}

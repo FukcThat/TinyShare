@@ -2,9 +2,17 @@ import { useMemo } from "react";
 import { userData } from "../../data/userData";
 import Button from "../ui/Button";
 import { reservationData } from "../../data/reservationData";
+import { useGlobal } from "../../context/useGlobal";
 
-export default function ItemView({ item, withEdit, onEdit, isBorrowedItem }) {
+export default function ItemView({
+  item,
+  withEdit,
+  onEdit,
+  onRequest,
+  isBorrowedItem,
+}) {
   const owner = userData.find((user) => user.id === item.owner);
+  const { user } = useGlobal();
 
   const reservation = useMemo(
     () => reservationData.find((res) => res.itemId === item.id),
@@ -33,12 +41,10 @@ export default function ItemView({ item, withEdit, onEdit, isBorrowedItem }) {
     >
       <div>{item.name}</div>
       <div>Owner: {owner.name} </div>
-      {!isBorrowedItem ? (
-        <Button
-          text="Request"
-          onClick={() => console.log(item.name, " requested")}
-        />
-      ) : (
+      {!isBorrowedItem && owner.id !== user.id && (
+        <Button text="Request" onClick={() => onRequest(item)} />
+      )}{" "}
+      {isBorrowedItem && (
         <div>
           <div>{reservation.startDate}</div>
           <div>-</div>
@@ -46,7 +52,6 @@ export default function ItemView({ item, withEdit, onEdit, isBorrowedItem }) {
           <div>Reserved by: {reservedBy.name}</div>
         </div>
       )}
-
       {withEdit && <Button text="✏️" onClick={() => onEdit(item)} />}
     </div>
   );

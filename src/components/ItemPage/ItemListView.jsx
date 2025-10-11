@@ -5,6 +5,7 @@ export default function ItemListView({
   headerLabel,
   withEdit = false,
   onEdit = () => {},
+  onRequest = () => {},
   isBorrowedList = false,
 }) {
   return (
@@ -18,6 +19,7 @@ export default function ItemListView({
               item={item}
               withEdit={withEdit}
               onEdit={onEdit}
+              onRequest={onRequest}
               isBorrowedItem={isBorrowedList}
             />
           );
