@@ -3,10 +3,12 @@ import { userData } from "../data/userData";
 import { GlobalContext } from "./GlobalContext";
 import { communityData } from "../data/communityData";
 import { itemData } from "../data/itemData";
+import { reservationData } from "../data/reservationData";
 
 export function GlobalProvider({ children }) {
   const [user, setUser] = useState(userData[1]);
   const [items, setItems] = useState(itemData);
+  const [reservations, setReservations] = useState(reservationData);
   const [activeCommunity, setActiveCommunity] = useState(communityData[0]);
 
   const UpdateItem = (id, newData) => {
@@ -38,6 +40,8 @@ export function GlobalProvider({ children }) {
         setItems,
         UpdateItem,
         DeleteItem,
+        reservations,
+        setReservations,
       }}
     >
       {children}
