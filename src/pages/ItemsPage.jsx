@@ -4,8 +4,7 @@ import ItemListView from "../components/ItemPage/ItemListView";
 import Button from "../components/ui/Button";
 import { useGlobal } from "../context/useGlobal";
 import EditItemView from "../components/ItemPage/EditItemView";
-import { reservationData } from "../data/reservationData";
-import ItemDetailModal from "../components/ItemPage/ItemDetailModal";
+import ItemReservationModal from "../components/ItemPage/ItemReservationModal";
 
 export default function ItemsPage() {
   const { user, items } = useGlobal();
@@ -49,7 +48,7 @@ export default function ItemsPage() {
       />
 
       {itemToRequest && (
-        <ItemDetailModal
+        <ItemReservationModal
           item={itemToRequest}
           onClose={() => setItemToRequest(null)}
         />

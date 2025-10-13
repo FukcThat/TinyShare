@@ -6,11 +6,14 @@ import interactionPlugin from "@fullcalendar/interaction"; // for selectable
 import { useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useGlobal } from "../../context/useGlobal";
+import { FormatDateStringAddHalfHour } from "../../lib/FormatDateStringAddHalfHour";
+import { HasReservationConflict } from "../../lib/HasReservationConflict";
 
-export default function ItemDetailModal({ item, onClose }) {
+export default function ItemReservationModal({ item, onClose }) {
   const { user, reservations, setReservations } = useGlobal();
 
   const [startTime, setStartTime] = useState("");
+  const [startDateObj, setStartDateObj] = useState(new Date());
   const [endTime, setEndTime] = useState("");
   const [reservationEvent, setReservationEvent] = useState(null);
 
@@ -44,6 +47,7 @@ export default function ItemDetailModal({ item, onClose }) {
       setReservationEvent(null);
     }
   }, [startTime, endTime]);
+
   const itemReservations = useMemo(() => {
     return reservations
       .filter((res) => res.itemId === item.id)
@@ -61,10 +65,19 @@ export default function ItemDetailModal({ item, onClose }) {
   }, [reservations]);
 
   const SetTime = (time) => {
-    if (startTime == "") {
+    if (startTime == "" || endTime != "") {
       setStartTime(time);
+      setEndTime("");
     } else {
-      setEndTime(time);
+      const startDate = new Date(startTime);
+      let endDate = new Date(time);
+      if (endDate <= startDate) {
+        time = FormatDateStringAddHalfHour(startDate);
+        endDate = new Date(time);
+      }
+      if (!HasReservationConflict(itemReservations, startDate, endDate))
+        setEndTime(time);
+      else window.alert("Conflict Exists!");
     }
   };
 
@@ -73,6 +86,11 @@ export default function ItemDetailModal({ item, onClose }) {
       <div>{item.name}</div>
       <Button text="x" onClick={onClose} />
       <form onSubmit={OnSubmitReservation}>
+        <input
+          type="datetime-local"
+          value={startDateObj}
+          onChange={(e) => setStartDateObj(e.target.value)}
+        />
         <div>Start time: {startTime}</div>
         <div>End time: {endTime}</div>
         <Button text="Submit" type="submit" />

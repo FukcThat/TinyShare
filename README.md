@@ -2,7 +2,12 @@
 
 ### Reservation and Booking System
 
-[] Request a new booking by clicking start and end on the calander, making sure no reservations lie between those dates
+[] Request a new booking by clicking start and end on the calander
+-- [x] check that no reservations lie between those dates
+-- [x] intuitively set start & end time by clicking the calendar
+-- [] && by setting start & end time by input
+-- [] Datetime picker library integration
+-- [] creating reservation
 [] Accept or deny or update requested booking from owners view
 [] Cancel Booking from owner and from requester view
 [] Search/Filter Items by status and other things to find free items in your needed timeline
