@@ -1,6 +1,6 @@
 import Button from "../ui/Button";
 import FullCalendar from "@fullcalendar/react";
-import { Reservation, reservationData } from "../../data/reservationData";
+import { Reservation } from "../../data/reservationData";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction"; // for selectable
 import { useEffect, useMemo, useState } from "react";
@@ -10,7 +10,14 @@ import { FormatDateStringAddHalfHour } from "../../lib/FormatDateStringAddHalfHo
 import { HasReservationConflict } from "../../lib/HasReservationConflict";
 
 export default function ItemReservationModal({ item, onClose }) {
-  const { user, reservations, setReservations } = useGlobal();
+  const {
+    user,
+    reservations,
+    setReservations,
+    ApproveReservation,
+    DenyReservation,
+    CancelReservationRequest,
+  } = useGlobal();
 
   const [startTime, setStartTime] = useState("");
   const [startDateObj, setStartDateObj] = useState(new Date());
@@ -56,6 +63,9 @@ export default function ItemReservationModal({ item, onClose }) {
           title: "user: " + res.userId,
           start: res.startDate,
           end: res.endDate,
+          resId: res.id,
+          status: res.status,
+          userId: res.userId,
           backgroundColor:
             res.status === "booking"
               ? "hsla(357, 100%, 64%, 1)"
@@ -81,6 +91,45 @@ export default function ItemReservationModal({ item, onClose }) {
     }
   };
 
+  function EventContent(arg) {
+    const displayTime =
+      arg.event.timeText || arg.view.calendar.formatIso(arg.event.start);
+    return (
+      <div className="flex flex-col ">
+        <div> {arg.event.title}</div>
+        <div>{displayTime}</div>
+        {item.owner === user.id &&
+          arg.timeText &&
+          arg.event._def.extendedProps.status !== "booking" && (
+            <div className="flex">
+              <Button
+                text="✔️"
+                onClick={() =>
+                  ApproveReservation(arg.event._def.extendedProps.resId)
+                }
+              />
+              <Button
+                text="❌"
+                onClick={() =>
+                  DenyReservation(arg.event._def.extendedProps.resId)
+                }
+              />
+            </div>
+          )}
+        {arg.event._def.extendedProps.userId == user.id && arg.timeText && (
+          <div>
+            <Button
+              text="Cancel"
+              onClick={() => {
+                CancelReservationRequest(arg.event._def.extendedProps.resId);
+              }}
+            />
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="fixed bg-blue-950/95 backdrop-blur-md w-[calc(100%-50px)] left-[25px] h-[80%] flex flex-col gap-4">
       <div>{item.name}</div>
@@ -98,6 +147,7 @@ export default function ItemReservationModal({ item, onClose }) {
       <FullCalendar
         plugins={[interactionPlugin, timeGridPlugin]}
         initialView="timeGridWeek"
+        eventContent={EventContent}
         events={
           reservationEvent
             ? [...itemReservations, reservationEvent]

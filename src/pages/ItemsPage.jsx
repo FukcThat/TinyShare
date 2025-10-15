@@ -32,6 +32,9 @@ export default function ItemsPage() {
         items={yourItems}
         headerLabel={"Your Items"}
         withEdit
+        onRequest={(item) => {
+          setItemToRequest(item);
+        }}
         onEdit={(newItem) =>
           setItemToEdit((old) =>
             old === null || old.id != newItem.id ? newItem : null

@@ -52,7 +52,12 @@ export default function ItemView({
           <div>Reserved by: {reservedBy.name}</div>
         </div>
       )}
-      {withEdit && <Button text="✏️" onClick={() => onEdit(item)} />}
+      {withEdit && (
+        <div>
+          <Button text="✏️" onClick={() => onEdit(item)} />{" "}
+          <Button text="🗓️" onClick={() => onRequest(item)} />{" "}
+        </div>
+      )}
     </div>
   );
 }

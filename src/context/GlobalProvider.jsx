@@ -29,6 +29,26 @@ export function GlobalProvider({ children }) {
     setItems((oldItems) => oldItems.filter((item) => item.id !== id));
   };
 
+  const ApproveReservation = (resId) => {
+    setReservations((oldReservations) =>
+      oldReservations.map((res) =>
+        res.id != resId ? res : { ...res, status: "booking" }
+      )
+    );
+  };
+
+  const DenyReservation = (resId) => {
+    setReservations((oldReservations) =>
+      oldReservations.filter((res) => res.id != resId)
+    );
+  };
+
+  const CancelReservationRequest = (resId) => {
+    setReservations((oldReservations) =>
+      oldReservations.filter((res) => res.id != resId)
+    );
+  };
+
   return (
     <GlobalContext.Provider
       value={{
@@ -42,6 +62,9 @@ export function GlobalProvider({ children }) {
         DeleteItem,
         reservations,
         setReservations,
+        ApproveReservation,
+        DenyReservation,
+        CancelReservationRequest,
       }}
     >
       {children}

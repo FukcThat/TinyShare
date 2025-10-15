@@ -5,13 +5,15 @@
 [] Request a new booking by clicking start and end on the calander
 -- [x] check that no reservations lie between those dates
 -- [x] intuitively set start & end time by clicking the calendar
--- [] && by setting start & end time by input
--- [] Datetime picker library integration
--- [] creating reservation
-[] Accept or deny or update requested booking from owners view
-[] Cancel Booking from owner and from requester view
+-- [later] && by setting start & end time by input
+-- [later] Datetime picker library integration
+-- [later] creating reservation
+-- [x] Cancel Booking from requester view
+[] Owners side of booking
+-- [x] Accept/Deny Booking
+-- [later] Update booking time
 [] Search/Filter Items by status and other things to find free items in your needed timeline
-[] availablitiy functionality (when is not available, new bookings cannot be made but standing bookings are upheld)
+[x] availablitiy functionality (when is not available, new bookings cannot be made but standing bookings are upheld)
 
 ### Admin System
 
