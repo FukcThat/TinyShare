@@ -20,11 +20,10 @@ export default function ItemReservationModal({ item, onClose }) {
   } = useGlobal();
 
   const [startTime, setStartTime] = useState("");
-  const [startDateObj, setStartDateObj] = useState(new Date());
   const [endTime, setEndTime] = useState("");
   const [reservationEvent, setReservationEvent] = useState(null);
 
-  const OnSubmitReservation = (e) => {
+  const OnSubmitReservation = (e, selfBooking = false) => {
     e.preventDefault();
 
     if (startTime === "" || endTime === "") return;
@@ -34,7 +33,8 @@ export default function ItemReservationModal({ item, onClose }) {
       user.id,
       item.id,
       startTime,
-      endTime
+      endTime,
+      selfBooking ? "booking" : "request"
     );
 
     setReservations((oldReservations) => [...oldReservations, newReservation]);
@@ -49,6 +49,7 @@ export default function ItemReservationModal({ item, onClose }) {
         start: startTime,
         end: endTime,
         backgroundColor: "green",
+        status: "preview",
       });
     } else {
       setReservationEvent(null);
@@ -104,15 +105,24 @@ export default function ItemReservationModal({ item, onClose }) {
             <div className="flex">
               <Button
                 text="✔️"
-                onClick={() =>
-                  ApproveReservation(arg.event._def.extendedProps.resId)
-                }
+                onClick={(e) => {
+                  if (arg.event._def.extendedProps.status == "preview") {
+                    OnSubmitReservation(e, true);
+                  } else {
+                    ApproveReservation(arg.event._def.extendedProps.resId);
+                  }
+                }}
               />
               <Button
                 text="❌"
-                onClick={() =>
-                  DenyReservation(arg.event._def.extendedProps.resId)
-                }
+                onClick={() => {
+                  if (arg.event._def.extendedProps.status == "preview") {
+                    setStartTime("");
+                    setEndTime("");
+                  } else {
+                    DenyReservation(arg.event._def.extendedProps.resId);
+                  }
+                }}
               />
             </div>
           )}
@@ -134,16 +144,13 @@ export default function ItemReservationModal({ item, onClose }) {
     <div className="fixed bg-blue-950/95 backdrop-blur-md w-[calc(100%-50px)] left-[25px] h-[80%] flex flex-col gap-4">
       <div>{item.name}</div>
       <Button text="x" onClick={onClose} />
-      <form onSubmit={OnSubmitReservation}>
-        <input
-          type="datetime-local"
-          value={startDateObj}
-          onChange={(e) => setStartDateObj(e.target.value)}
-        />
-        <div>Start time: {startTime}</div>
-        <div>End time: {endTime}</div>
-        <Button text="Submit" type="submit" />
-      </form>
+      {item.owner !== user.id && (
+        <form onSubmit={OnSubmitReservation}>
+          <div>Start time: {startTime}</div>
+          <div>End time: {endTime}</div>
+          <Button text="Submit" type="submit" />
+        </form>
+      )}
       <FullCalendar
         plugins={[interactionPlugin, timeGridPlugin]}
         initialView="timeGridWeek"

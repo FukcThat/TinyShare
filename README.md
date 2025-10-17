@@ -12,8 +12,8 @@
 [] Owners side of booking
 -- [x] Accept/Deny Booking
 -- [later] Update booking time
-[] Search/Filter Items by status and other things to find free items in your needed timeline
-[x] availablitiy functionality (when is not available, new bookings cannot be made but standing bookings are upheld)
+[x] Search/Filter Items by status and other things to find free items in your needed timeline
+[x] Availablitiy functionality (when is not available, new bookings cannot be made but standing bookings are upheld)
 
 ### Admin System
 

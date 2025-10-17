@@ -5,16 +5,43 @@ import Button from "../components/ui/Button";
 import { useGlobal } from "../context/useGlobal";
 import EditItemView from "../components/ItemPage/EditItemView";
 import ItemReservationModal from "../components/ItemPage/ItemReservationModal";
+import AvailabilityCheck from "../components/ItemPage/AvailabilityCheck";
+import { HasReservationConflict } from "../lib/HasReservationConflict";
+
+const HasAvailibilityConflict = (itemId, reservations, startTime, endTime) => {
+  const reservationsOfItem = reservations.filter(
+    (res) => res.itemId === itemId
+  );
+
+  return HasReservationConflict(reservationsOfItem, startTime, endTime);
+};
 
 export default function ItemsPage() {
-  const { user, items } = useGlobal();
+  const { user, items, reservations } = useGlobal();
   const [isOpen, setIsOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState(null);
   const [itemToRequest, setItemToRequest] = useState(null);
+  const [availabilityFilterDates, setAvailabilityFilterDates] = useState(null);
 
   const availableItems = useMemo(
-    () => items.filter((item) => item.isAvailable && item.owner != user.id),
-    [items]
+    () =>
+      items.filter((item) => {
+        if (!availabilityFilterDates)
+          return item.isAvailable && item.owner != user.id;
+        else {
+          return (
+            item.isAvailable &&
+            item.owner != user.id &&
+            !HasAvailibilityConflict(
+              item.id,
+              reservations,
+              availabilityFilterDates.start,
+              availabilityFilterDates.end
+            )
+          ); // get all the reservations of this item and see if any of those have overlap
+        }
+      }),
+    [items, availabilityFilterDates]
   );
 
   const yourItems = useMemo(
@@ -28,6 +55,10 @@ export default function ItemsPage() {
     <div className="flex flex-col gap-10 relative">
       {isOpen && <ItemForm ToggleForm={ToggleItemForm} />}
       <Button text="Add Item" onClick={ToggleItemForm} />
+
+      <AvailabilityCheck
+        setAvailabilityFilterDates={setAvailabilityFilterDates}
+      />
       <ItemListView
         items={yourItems}
         headerLabel={"Your Items"}
