@@ -6,7 +6,7 @@ import { itemData } from "../data/itemData";
 import { reservationData } from "../data/reservationData";
 
 export function GlobalProvider({ children }) {
-  const [user, setUser] = useState(userData[1]);
+  const [user, setUser] = useState(userData[0]);
   const [items, setItems] = useState(itemData);
   const [reservations, setReservations] = useState(reservationData);
   const [activeCommunity, setActiveCommunity] = useState(communityData[0]);
@@ -44,6 +44,7 @@ export function GlobalProvider({ children }) {
   };
 
   const CancelReservationRequest = (resId) => {
+    // here we should check if the owner cancelled or the reservee cancelled
     setReservations((oldReservations) =>
       oldReservations.filter((res) => res.id != resId)
     );

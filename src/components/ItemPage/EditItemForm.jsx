@@ -1,35 +1,28 @@
 import { useEffect, useState } from "react";
 import Button from "../ui/Button";
-import { Item } from "../../data/itemData";
-import { v4 as uuidv4 } from "uuid";
 import { useGlobal } from "../../context/useGlobal";
 import Input from "../ui/Input";
 import Checkbox from "../ui/Checkbox";
 import { useItemContext } from "../../context/item_context/useItemContext";
 
-export default function ItemForm() {
-  const { user, setItems } = useGlobal();
-  const { itemToEdit, ToggleItemForm } = useItemContext();
+export default function EditItemForm() {
+  const { UpdateItem, DeleteItem } = useGlobal();
+  const { itemToEdit, setItemToEdit } = useItemContext();
 
   const [formData, setFormData] = useState({
-    name: "",
-    isAvailable: true,
+    name: itemToEdit.name,
+    isAvailable: itemToEdit.isAvailable,
   });
+
+  useEffect(() => {
+    setFormData({ ...formData, name: itemToEdit.name });
+  }, [itemToEdit]);
 
   const CreateItem = (e) => {
     e.preventDefault();
     if (formData.name == "") return;
-
-    const newItem = new Item(
-      uuidv4(),
-      formData.name,
-      formData.isAvailable,
-      user.id
-    );
-    setItems((oldItems) => [...oldItems, newItem]);
-    setFormData({ ...formData, name: "" });
-    ToggleItemForm();
-    return;
+    UpdateItem(itemToEdit.id, formData);
+    setItemToEdit(null);
   };
 
   return (
@@ -54,6 +47,17 @@ export default function ItemForm() {
         value={formData.isAvailable}
       />
       <Button text={itemToEdit === null ? "Submit" : "Update"} type="submit" />
+      <div className="flex flex-col gap-4">
+        <Button text="Cancel" onClick={() => setItemToEdit(null)} />
+        <Button
+          text="Delete"
+          styles=" bg-red-500"
+          onClick={() => {
+            DeleteItem(itemToEdit.id);
+            setItemToEdit(null);
+          }}
+        />
+      </div>
     </form>
   );
 }

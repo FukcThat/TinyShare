@@ -7,6 +7,7 @@ import ItemReservationModal from "../components/ItemPage/ItemReservationModal";
 import AvailabilityCheck from "../components/ItemPage/AvailabilityCheck";
 import { HasReservationConflict } from "../lib/HasReservationConflict";
 import { useItemContext } from "../context/item_context/useItemContext";
+import EditItemForm from "../components/ItemPage/EditItemForm";
 
 const HasAvailibilityConflict = (itemId, reservations, startTime, endTime) => {
   const reservationsOfItem = reservations.filter(
@@ -64,7 +65,7 @@ export default function ItemsPage() {
 
       {itemToEdit && (
         <div className="h-screen w-[30%] absolute right-0 bg-slate-800">
-          <ItemForm />
+          <EditItemForm />
         </div>
       )}
     </div>

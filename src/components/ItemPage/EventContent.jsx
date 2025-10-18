@@ -43,13 +43,16 @@ export default function EventContent({
   // Component Helpers
   const IsOwnerAndNotBooked = () =>
     itemToRequest.owner === user.id &&
-    arg.timeText &&
     arg.event._def.extendedProps.status !== "booking";
+  const IsOwnerAndIsBooked = () =>
+    itemToRequest.owner === user.id &&
+    arg.event._def.extendedProps.status === "booking";
+
   const IsOurBooking = () =>
     arg.event._def.extendedProps.userId == user.id && arg.timeText;
 
   return (
-    <div className="flex flex-col ">
+    <div className="flex flex-col opacity-0 hover:opacity-100 h-full  ">
       <div> {arg.event.title}</div>
       <div>{displayTime}</div>
       {IsOwnerAndNotBooked() && (
@@ -58,7 +61,7 @@ export default function EventContent({
           <Button text="❌" onClick={HandleDenyBtnClick} />
         </div>
       )}
-      {IsOurBooking() && (
+      {(IsOurBooking() || IsOwnerAndIsBooked()) && (
         <div>
           <Button text="Cancel" onClick={HandleCancelBtnClick} />
         </div>
