@@ -1,12 +1,12 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import ItemForm from "../components/ItemPage/ItemForm";
 import ItemListView from "../components/ItemPage/ItemListView";
 import Button from "../components/ui/Button";
 import { useGlobal } from "../context/useGlobal";
-import EditItemView from "../components/ItemPage/EditItemView";
 import ItemReservationModal from "../components/ItemPage/ItemReservationModal";
 import AvailabilityCheck from "../components/ItemPage/AvailabilityCheck";
 import { HasReservationConflict } from "../lib/HasReservationConflict";
+import { useItemContext } from "../context/item_context/useItemContext";
 
 const HasAvailibilityConflict = (itemId, reservations, startTime, endTime) => {
   const reservationsOfItem = reservations.filter(
@@ -18,10 +18,13 @@ const HasAvailibilityConflict = (itemId, reservations, startTime, endTime) => {
 
 export default function ItemsPage() {
   const { user, items, reservations } = useGlobal();
-  const [isOpen, setIsOpen] = useState(false);
-  const [itemToEdit, setItemToEdit] = useState(null);
-  const [itemToRequest, setItemToRequest] = useState(null);
-  const [availabilityFilterDates, setAvailabilityFilterDates] = useState(null);
+  const {
+    availabilityFilterDates,
+    isOpen,
+    ToggleItemForm,
+    itemToRequest,
+    itemToEdit,
+  } = useItemContext();
 
   const availableItems = useMemo(
     () =>
@@ -49,47 +52,20 @@ export default function ItemsPage() {
     [items]
   );
 
-  const ToggleItemForm = () => setIsOpen(!isOpen);
-
   return (
     <div className="flex flex-col gap-10 relative">
-      {isOpen && <ItemForm ToggleForm={ToggleItemForm} />}
+      {isOpen && <ItemForm />}
       <Button text="Add Item" onClick={ToggleItemForm} />
+      <AvailabilityCheck />
+      <ItemListView items={yourItems} headerLabel={"Your Items"} />
+      <ItemListView items={availableItems} headerLabel={"Available Items"} />
 
-      <AvailabilityCheck
-        setAvailabilityFilterDates={setAvailabilityFilterDates}
-      />
-      <ItemListView
-        items={yourItems}
-        headerLabel={"Your Items"}
-        withEdit
-        onRequest={(item) => {
-          setItemToRequest(item);
-        }}
-        onEdit={(newItem) =>
-          setItemToEdit((old) =>
-            old === null || old.id != newItem.id ? newItem : null
-          )
-        }
-      />
-
-      <ItemListView
-        items={availableItems}
-        headerLabel={"Available Items"}
-        onRequest={(item) => {
-          setItemToRequest(item);
-        }}
-      />
-
-      {itemToRequest && (
-        <ItemReservationModal
-          item={itemToRequest}
-          onClose={() => setItemToRequest(null)}
-        />
-      )}
+      {itemToRequest && <ItemReservationModal />}
 
       {itemToEdit && (
-        <EditItemView itemToEdit={itemToEdit} setItemToEdit={setItemToEdit} />
+        <div className="h-screen w-[30%] absolute right-0 bg-slate-800">
+          <ItemForm />
+        </div>
       )}
     </div>
   );

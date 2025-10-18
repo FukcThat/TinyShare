@@ -8,16 +8,12 @@ import { v4 as uuidv4 } from "uuid";
 import { useGlobal } from "../../context/useGlobal";
 import { FormatDateStringAddHalfHour } from "../../lib/FormatDateStringAddHalfHour";
 import { HasReservationConflict } from "../../lib/HasReservationConflict";
+import { useItemContext } from "../../context/item_context/useItemContext";
+import EventContent from "./EventContent";
 
-export default function ItemReservationModal({ item, onClose }) {
-  const {
-    user,
-    reservations,
-    setReservations,
-    ApproveReservation,
-    DenyReservation,
-    CancelReservationRequest,
-  } = useGlobal();
+export default function ItemReservationModal() {
+  const { user, reservations, setReservations } = useGlobal();
+  const { itemToRequest, setItemToRequest } = useItemContext();
 
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
@@ -31,7 +27,7 @@ export default function ItemReservationModal({ item, onClose }) {
     const newReservation = new Reservation(
       uuidv4(),
       user.id,
-      item.id,
+      itemToRequest.id,
       startTime,
       endTime,
       selfBooking ? "booking" : "request"
@@ -58,7 +54,7 @@ export default function ItemReservationModal({ item, onClose }) {
 
   const itemReservations = useMemo(() => {
     return reservations
-      .filter((res) => res.itemId === item.id)
+      .filter((res) => res.itemId === itemToRequest.id)
       .map((res) => {
         return {
           title: "user: " + res.userId,
@@ -92,59 +88,22 @@ export default function ItemReservationModal({ item, onClose }) {
     }
   };
 
-  function EventContent(arg) {
-    const displayTime =
-      arg.event.timeText || arg.view.calendar.formatIso(arg.event.start);
+  const renderEventContent = (arg) => {
     return (
-      <div className="flex flex-col ">
-        <div> {arg.event.title}</div>
-        <div>{displayTime}</div>
-        {item.owner === user.id &&
-          arg.timeText &&
-          arg.event._def.extendedProps.status !== "booking" && (
-            <div className="flex">
-              <Button
-                text="✔️"
-                onClick={(e) => {
-                  if (arg.event._def.extendedProps.status == "preview") {
-                    OnSubmitReservation(e, true);
-                  } else {
-                    ApproveReservation(arg.event._def.extendedProps.resId);
-                  }
-                }}
-              />
-              <Button
-                text="❌"
-                onClick={() => {
-                  if (arg.event._def.extendedProps.status == "preview") {
-                    setStartTime("");
-                    setEndTime("");
-                  } else {
-                    DenyReservation(arg.event._def.extendedProps.resId);
-                  }
-                }}
-              />
-            </div>
-          )}
-        {arg.event._def.extendedProps.userId == user.id && arg.timeText && (
-          <div>
-            <Button
-              text="Cancel"
-              onClick={() => {
-                CancelReservationRequest(arg.event._def.extendedProps.resId);
-              }}
-            />
-          </div>
-        )}
-      </div>
+      <EventContent
+        arg={arg}
+        OnSubmitReservation={OnSubmitReservation}
+        setStartTime={setStartTime}
+        setEndTime={setEndTime}
+      />
     );
-  }
+  };
 
   return (
     <div className="fixed bg-blue-950/95 backdrop-blur-md w-[calc(100%-50px)] left-[25px] h-[80%] flex flex-col gap-4">
-      <div>{item.name}</div>
-      <Button text="x" onClick={onClose} />
-      {item.owner !== user.id && (
+      <div>{itemToRequest.name}</div>
+      <Button text="x" onClick={() => setItemToRequest(null)} />
+      {itemToRequest.owner !== user.id && (
         <form onSubmit={OnSubmitReservation}>
           <div>Start time: {startTime}</div>
           <div>End time: {endTime}</div>
@@ -154,7 +113,7 @@ export default function ItemReservationModal({ item, onClose }) {
       <FullCalendar
         plugins={[interactionPlugin, timeGridPlugin]}
         initialView="timeGridWeek"
-        eventContent={EventContent}
+        eventContent={renderEventContent}
         events={
           reservationEvent
             ? [...itemReservations, reservationEvent]

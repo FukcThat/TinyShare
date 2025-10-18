@@ -5,13 +5,11 @@ import { v4 as uuidv4 } from "uuid";
 import { useGlobal } from "../../context/useGlobal";
 import Input from "../ui/Input";
 import Checkbox from "../ui/Checkbox";
+import { useItemContext } from "../../context/item_context/useItemContext";
 
-export default function ItemForm({
-  itemToEdit = null,
-  setItemToEdit = () => {},
-  ToggleForm = () => {},
-}) {
+export default function ItemForm() {
   const { user, setItems, UpdateItem, DeleteItem } = useGlobal();
+  const { itemToEdit, setItemToEdit, ToggleItemForm } = useItemContext();
 
   const [formData, setFormData] = useState({
     name: itemToEdit ? itemToEdit.name : "",

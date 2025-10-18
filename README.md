@@ -14,6 +14,9 @@
 -- [later] Update booking time
 [x] Search/Filter Items by status and other things to find free items in your needed timeline
 [x] Availablitiy functionality (when is not available, new bookings cannot be made but standing bookings are upheld)
+[ ] Letting owner of item cancel existing booking
+[ ] timeText passed on both first and last day of booking, fix it to only be one or the other
+[ ] edit item and new item form share state leading to weird behavior, fix this
 
 ### Admin System
 
