@@ -8,7 +8,9 @@ export class Membership {
 }
 
 export const membershipData = [
-  new Membership(1, 1, 1, 'admin'),
-  new Membership(1, 2, 1, 'member'),
-  new Membership(1, 3, 2, 'admin'),
+  new Membership(1, 1, 1, "admin"),
+  new Membership(1, 1, 2, "member"),
+
+  new Membership(1, 2, 1, "member"),
+  new Membership(1, 3, 2, "admin"),
 ];

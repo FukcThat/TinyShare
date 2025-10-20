@@ -25,6 +25,10 @@
 
 #### Community CRUD
 
+[] Community Selection Dropdown
+-- [] On community change, show only items of that community
+-- [] Handle no community, Navbar | Dropdown
+-- [] Local Storage user-preset active community
 [] Create new Community
 [] Update community Data
 [] Delete Community

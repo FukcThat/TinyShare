@@ -1,15 +1,30 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { userData } from "../data/userData";
 import { GlobalContext } from "./GlobalContext";
 import { communityData } from "../data/communityData";
 import { itemData } from "../data/itemData";
 import { reservationData } from "../data/reservationData";
+import { membershipData } from "../data/membershipData";
 
 export function GlobalProvider({ children }) {
   const [user, setUser] = useState(userData[0]);
   const [items, setItems] = useState(itemData);
   const [reservations, setReservations] = useState(reservationData);
-  const [activeCommunity, setActiveCommunity] = useState(communityData[0]);
+  const [memberships, setMemberships] = useState(membershipData);
+  const [communities, setCommunities] = useState(communityData);
+  const [activeCommunity, setActiveCommunity] = useState(null);
+
+  const userCommunities = useMemo(() => {
+    const communityIds = new Set();
+    memberships.forEach(
+      (memb) => memb.userId === user.id && communityIds.add(memb.communityId)
+    );
+    return communities.filter((comm) => communityIds.has(comm.id));
+  }, [memberships, communities]);
+
+  useEffect(() => {
+    setActiveCommunity(userCommunities[1]);
+  }, [userCommunities]);
 
   const UpdateItem = (id, newData) => {
     setItems((oldItems) =>
@@ -66,6 +81,8 @@ export function GlobalProvider({ children }) {
         ApproveReservation,
         DenyReservation,
         CancelReservationRequest,
+        userCommunities,
+        setCommunities,
       }}
     >
       {children}
