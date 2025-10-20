@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import ItemForm from "../components/ItemPage/ItemForm";
 import ItemListView from "../components/ItemPage/ItemListView";
 import Button from "../components/ui/Button";
@@ -8,6 +8,7 @@ import AvailabilityCheck from "../components/ItemPage/AvailabilityCheck";
 import { HasReservationConflict } from "../lib/HasReservationConflict";
 import { useItemContext } from "../context/item_context/useItemContext";
 import EditItemForm from "../components/ItemPage/EditItemForm";
+import { useNavigate } from "react-router";
 
 const HasAvailibilityConflict = (itemId, reservations, startTime, endTime) => {
   const reservationsOfItem = reservations.filter(
@@ -18,7 +19,8 @@ const HasAvailibilityConflict = (itemId, reservations, startTime, endTime) => {
 };
 
 export default function ItemsPage() {
-  const { user, items, reservations } = useGlobal();
+  const { user, items, reservations, activeCommunity } = useGlobal();
+
   const {
     availabilityFilterDates,
     isOpen,
@@ -26,6 +28,12 @@ export default function ItemsPage() {
     itemToRequest,
     itemToEdit,
   } = useItemContext();
+  const nav = useNavigate();
+
+  useEffect(() => {
+    if (!activeCommunity) return;
+    if (activeCommunity.id === 0) nav("/");
+  }, [activeCommunity]);
 
   const availableItems = useMemo(
     () =>
@@ -53,6 +61,7 @@ export default function ItemsPage() {
     [items]
   );
 
+  if (!activeCommunity || activeCommunity.id === 0) return null;
   return (
     <div className="flex flex-col gap-10 relative">
       {isOpen && <ItemForm />}

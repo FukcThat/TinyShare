@@ -1,32 +1,24 @@
 import { useGlobal } from "../context/useGlobal";
+import Dropdown from "./ui/Dropdown";
 
 export default function CommunityDropdown() {
   const { userCommunities, activeCommunity, setActiveCommunity } = useGlobal();
 
+  const HandleSelectActiveCommunity = (e) => {
+    // when we change the data here, we want to update local storage
+    setActiveCommunity(
+      userCommunities.find((community) => {
+        return community.id == e.target.value;
+      })
+    );
+  };
+
   return activeCommunity ? (
-    <select
-      className="bg-slate-900"
+    <Dropdown
+      options={userCommunities}
       value={activeCommunity.id}
-      onChange={(e) =>
-        setActiveCommunity(
-          userCommunities.find((community) => {
-            return community.id == e.target.value;
-          })
-        )
-      }
-    >
-      {userCommunities.map((community) => {
-        return (
-          <option
-            className="bg-slate-800"
-            key={community.id}
-            value={community.id}
-          >
-            {community.name}
-          </option>
-        );
-      })}
-    </select>
+      onChange={HandleSelectActiveCommunity}
+    />
   ) : (
     <div>Loading...</div>
   );

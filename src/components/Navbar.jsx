@@ -3,15 +3,15 @@ import { useGlobal } from "../context/useGlobal";
 import CommunityDropdown from "./CommunityDropdown";
 
 const NavElements = [
-  { path: "/", name: "Home" },
-  { path: "/items", name: "Items" },
-  { path: "/members", name: "Members" },
-  { path: "/profile", name: "Profile" },
+  { path: "/", name: "Home", needCommunity: false },
+  { path: "/items", name: "Items", needCommunity: true },
+  { path: "/members", name: "Members", needCommunity: true },
+  { path: "/profile", name: "Profile", needCommunity: false },
 ];
 
 export default function Navbar() {
   const location = useLocation();
-  const { user } = useGlobal();
+  const { user, activeCommunity } = useGlobal();
 
   return (
     <div className="flex my-6 px-10 w-full justify-between items-center flex-col md:flex-row">
@@ -27,17 +27,21 @@ export default function Navbar() {
 
       <div className="flex gap-4">
         {NavElements.map((element) => {
-          return (
-            <Link
-              key={element.path}
-              to={element.path}
-              className={`hover:scale-110 transition-all text-2xl duration-50 ease-in ${
-                location.pathname === element.path && " text-blue-400"
-              }`}
-            >
-              {element.name}
-            </Link>
-          );
+          if (
+            !element.needCommunity ||
+            (activeCommunity && activeCommunity.id !== 0)
+          )
+            return (
+              <Link
+                key={element.path}
+                to={element.path}
+                className={`hover:scale-110 transition-all text-2xl duration-50 ease-in ${
+                  location.pathname === element.path && " text-blue-400"
+                }`}
+              >
+                {element.name}
+              </Link>
+            );
         })}
       </div>
     </div>

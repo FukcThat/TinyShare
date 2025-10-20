@@ -1,30 +1,45 @@
 import { useEffect, useMemo, useState } from "react";
 import { userData } from "../data/userData";
 import { GlobalContext } from "./GlobalContext";
-import { communityData } from "../data/communityData";
+import { communityData, NoCommunity } from "../data/communityData";
 import { itemData } from "../data/itemData";
 import { reservationData } from "../data/reservationData";
 import { membershipData } from "../data/membershipData";
 
 export function GlobalProvider({ children }) {
-  const [user, setUser] = useState(userData[0]);
-  const [items, setItems] = useState(itemData);
+  const [user, setUser] = useState(userData[2]);
+  const [items, setItems] = useState([]);
   const [reservations, setReservations] = useState(reservationData);
   const [memberships, setMemberships] = useState(membershipData);
   const [communities, setCommunities] = useState(communityData);
   const [activeCommunity, setActiveCommunity] = useState(null);
-
   const userCommunities = useMemo(() => {
-    const communityIds = new Set();
-    memberships.forEach(
-      (memb) => memb.userId === user.id && communityIds.add(memb.communityId)
+    const res = communities.filter((community) =>
+      memberships.some(
+        (membership) =>
+          membership.userId === user.id &&
+          membership.communityId === community.id
+      )
     );
-    return communities.filter((comm) => communityIds.has(comm.id));
+    return res.length === 0 ? [NoCommunity] : res;
   }, [memberships, communities]);
 
+  useEffect(() => setActiveCommunity(userCommunities[0]), [userCommunities]);
+
   useEffect(() => {
-    setActiveCommunity(userCommunities[1]);
-  }, [userCommunities]);
+    if (!activeCommunity) {
+      setItems([]);
+      return;
+    }
+
+    setItems(
+      itemData.filter((item) =>
+        memberships.some(
+          (m) => m.userId === item.owner && m.communityId === activeCommunity.id
+        )
+      )
+    );
+  }, [activeCommunity]);
 
   const UpdateItem = (id, newData) => {
     setItems((oldItems) =>

@@ -26,9 +26,10 @@
 #### Community CRUD
 
 [] Community Selection Dropdown
--- [] On community change, show only items of that community
--- [] Handle no community, Navbar | Dropdown
--- [] Local Storage user-preset active community
+-- [x] On community change, show only items of members belonging to that community
+-- [X] Handle no community, Navbar | Dropdown (Navbar spawns in dummy obj, if dummy obj is true hide navbar routes and redirect on manual page access)
+-- [later] Local Storage user-preset active community
+-- [x] Make dropdown universal component
 [] Create new Community
 [] Update community Data
 [] Delete Community

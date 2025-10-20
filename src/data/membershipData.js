@@ -8,9 +8,9 @@ export class Membership {
 }
 
 export const membershipData = [
-  new Membership(1, 1, 1, "admin"),
-  new Membership(1, 1, 2, "member"),
+  new Membership(0, 1, 1, "admin"), // John is admin of Hills
+  new Membership(1, 1, 2, "member"), // John is member of Valley
 
-  new Membership(1, 2, 1, "member"),
-  new Membership(1, 3, 2, "admin"),
+  new Membership(2, 2, 1, "member"), // Maya is member of Hills
+  new Membership(3, 3, 2, "admin"), // Bob is admin of Valley
 ];
