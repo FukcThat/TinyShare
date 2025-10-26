@@ -12,5 +12,5 @@ export const membershipData = [
   new Membership(1, 1, 2, "member"), // John is member of Valley
 
   new Membership(2, 2, 1, "member"), // Maya is member of Hills
-  new Membership(3, 3, 2, "admin"), // Bob is admin of Valley
+  new Membership(3, 3, 1, "admin"), // Bob is admin of Valley
 ];

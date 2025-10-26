@@ -4,7 +4,7 @@ import "./index.css";
 
 import { GlobalProvider } from "./context/GlobalProvider.jsx";
 import { BrowserRouter, Route, Routes } from "react-router";
-import Layout from "./components/Layout.jsx";
+import Layout from "./components/global/Layout.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import MembersPage from "./pages/MembersPage.jsx";

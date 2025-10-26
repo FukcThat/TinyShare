@@ -30,9 +30,12 @@
 -- [X] Handle no community, Navbar | Dropdown (Navbar spawns in dummy obj, if dummy obj is true hide navbar routes and redirect on manual page access)
 -- [later] Local Storage user-preset active community
 -- [x] Make dropdown universal component
-[] Create new Community
+[x] Create new Community
 [] Update community Data
-[] Delete Community
+-- [x] Create Community Sidebar
+-- [x] Move active Selection to Sidebar
+-- [] Implement edit functionality in Sidebar if admin
+-- [] Delete Community
 
 #### Membership System
 

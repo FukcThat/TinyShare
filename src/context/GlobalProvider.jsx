@@ -7,12 +7,34 @@ import { reservationData } from "../data/reservationData";
 import { membershipData } from "../data/membershipData";
 
 export function GlobalProvider({ children }) {
-  const [user, setUser] = useState(userData[2]);
+  const [user, setUser] = useState(userData[0]);
+  const [allUsers, setAllUsers] = useState(userData);
   const [items, setItems] = useState([]);
   const [reservations, setReservations] = useState(reservationData);
   const [memberships, setMemberships] = useState(membershipData);
   const [communities, setCommunities] = useState(communityData);
   const [activeCommunity, setActiveCommunity] = useState(null);
+
+  const communityMembers = useMemo(() => {
+    if (!activeCommunity) return [];
+
+    return allUsers
+      .filter((thisUser) => {
+        return memberships.some((membership) => {
+          return (
+            membership.userId == thisUser.id &&
+            membership.communityId == activeCommunity.id
+          );
+        });
+      })
+      .map((user) => {
+        return {
+          ...user,
+          role: memberships.find((mem) => mem.userId === user.id).role,
+        };
+      });
+  }, [activeCommunity, memberships]);
+
   const userCommunities = useMemo(() => {
     const res = communities.filter((community) =>
       memberships.some(
@@ -23,6 +45,17 @@ export function GlobalProvider({ children }) {
     );
     return res.length === 0 ? [NoCommunity] : res;
   }, [memberships, communities]);
+
+  const activeMembership = useMemo(() => {
+    if (!activeCommunity) return undefined;
+
+    return memberships.find((membership) => {
+      return (
+        membership.userId == user.id &&
+        membership.communityId == activeCommunity.id
+      );
+    });
+  }, [memberships, activeCommunity, user]);
 
   useEffect(() => setActiveCommunity(userCommunities[0]), [userCommunities]);
 
@@ -41,6 +74,7 @@ export function GlobalProvider({ children }) {
     );
   }, [activeCommunity]);
 
+  // Item Functions
   const UpdateItem = (id, newData) => {
     setItems((oldItems) =>
       oldItems.map((item) => {
@@ -80,6 +114,37 @@ export function GlobalProvider({ children }) {
     );
   };
 
+  // Membership Functions
+  const ToggleRole = (userId) => {
+    setMemberships((oldMemberships) =>
+      oldMemberships.map((membership) => {
+        if (
+          membership.userId == userId &&
+          membership.communityId == activeCommunity.id
+        ) {
+          return {
+            ...membership,
+            role: membership.role == "admin" ? "member" : "admin",
+          };
+        } else {
+          return membership;
+        }
+      })
+    );
+  };
+
+  const KickMember = (userId) => {
+    setMemberships((oldMemberships) => {
+      return oldMemberships.filter(
+        (membership) =>
+          !(
+            membership.userId == userId &&
+            membership.communityId == activeCommunity.id
+          )
+      );
+    });
+  };
+
   return (
     <GlobalContext.Provider
       value={{
@@ -98,6 +163,12 @@ export function GlobalProvider({ children }) {
         CancelReservationRequest,
         userCommunities,
         setCommunities,
+        setMemberships,
+        memberships,
+        activeMembership,
+        communityMembers,
+        ToggleRole,
+        KickMember,
       }}
     >
       {children}

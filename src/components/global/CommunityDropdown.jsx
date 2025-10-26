@@ -1,5 +1,5 @@
-import { useGlobal } from "../context/useGlobal";
-import Dropdown from "./ui/Dropdown";
+import { useGlobal } from "../../context/useGlobal";
+import Dropdown from "../ui/Dropdown";
 
 export default function CommunityDropdown() {
   const { userCommunities, activeCommunity, setActiveCommunity } = useGlobal();
@@ -18,6 +18,7 @@ export default function CommunityDropdown() {
       options={userCommunities}
       value={activeCommunity.id}
       onChange={HandleSelectActiveCommunity}
+      styles="flex-grow"
     />
   ) : (
     <div>Loading...</div>

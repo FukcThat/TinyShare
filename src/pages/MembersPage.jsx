@@ -1,3 +1,9 @@
+import MembershipPanel from "../components/membership/MembershipPanel";
+
 export default function MembersPage() {
-  return <div>MembersPage</div>;
+  return (
+    <div>
+      <MembershipPanel />
+    </div>
+  );
 }

@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router";
-import { useGlobal } from "../context/useGlobal";
-import CommunityDropdown from "./CommunityDropdown";
+import { useGlobal } from "../../context/useGlobal";
+import Button from "../ui/Button";
 
 const NavElements = [
   { path: "/", name: "Home", needCommunity: false },
@@ -9,7 +9,7 @@ const NavElements = [
   { path: "/profile", name: "Profile", needCommunity: false },
 ];
 
-export default function Navbar() {
+export default function Navbar({ ToggleSidebar }) {
   const location = useLocation();
   const { user, activeCommunity } = useGlobal();
 
@@ -17,7 +17,10 @@ export default function Navbar() {
     <div className="flex my-6 px-10 w-full justify-between items-center flex-col md:flex-row">
       <div className="flex gap-4 items-center">
         {/* <div className="text-lg">{activeCommunity.name} Community</div> */}
-        <CommunityDropdown />
+        <Button
+          text={activeCommunity ? activeCommunity.name : "Loading..."}
+          onClick={ToggleSidebar}
+        />
         <div>-</div>
         <div>
           <div>{user.name}</div>
