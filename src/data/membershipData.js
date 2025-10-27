@@ -8,7 +8,7 @@ export class Membership {
 }
 
 export const membershipData = [
-  new Membership(0, 1, 1, "admin"), // John is admin of Hills
+  // new Membership(0, 1, 1, "admin"), // John is admin of Hills
   new Membership(1, 1, 2, "member"), // John is member of Valley
 
   new Membership(2, 2, 1, "member"), // Maya is member of Hills

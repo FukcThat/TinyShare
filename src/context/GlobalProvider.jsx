@@ -4,7 +4,9 @@ import { GlobalContext } from "./GlobalContext";
 import { communityData, NoCommunity } from "../data/communityData";
 import { itemData } from "../data/itemData";
 import { reservationData } from "../data/reservationData";
-import { membershipData } from "../data/membershipData";
+import { Membership, membershipData } from "../data/membershipData";
+import { dummyInvitations } from "../data/invitationData";
+import { v4 as uuidv4 } from "uuid";
 
 export function GlobalProvider({ children }) {
   const [user, setUser] = useState(userData[0]);
@@ -14,6 +16,7 @@ export function GlobalProvider({ children }) {
   const [memberships, setMemberships] = useState(membershipData);
   const [communities, setCommunities] = useState(communityData);
   const [activeCommunity, setActiveCommunity] = useState(null);
+  const [invitations, setInvitations] = useState(dummyInvitations);
 
   const communityMembers = useMemo(() => {
     if (!activeCommunity) return [];
@@ -56,6 +59,11 @@ export function GlobalProvider({ children }) {
       );
     });
   }, [memberships, activeCommunity, user]);
+
+  const userInvites = useMemo(() => {
+    if (!user) return [];
+    return invitations.filter((invite) => invite.inviteeId == user.id);
+  }, [invitations, user]);
 
   useEffect(() => setActiveCommunity(userCommunities[0]), [userCommunities]);
 
@@ -145,6 +153,24 @@ export function GlobalProvider({ children }) {
     });
   };
 
+  const AcceptCommunityInvitation = (communityId, role, inviteId) => {
+    // new membership
+    const newMemberhsip = new Membership(uuidv4(), user.id, communityId, role);
+
+    setMemberships((oldMemberships) => [...oldMemberships, newMemberhsip]);
+    // delete invitation
+
+    DeleteCommunityInvitation(inviteId);
+  };
+
+  const DeleteCommunityInvitation = (inviteId) => {
+    setInvitations((oldInvitations) =>
+      oldInvitations.filter((invite) => invite.id !== inviteId)
+    );
+  };
+
+  const CancelCommunityInvitation = () => {};
+
   return (
     <GlobalContext.Provider
       value={{
@@ -169,6 +195,9 @@ export function GlobalProvider({ children }) {
         communityMembers,
         ToggleRole,
         KickMember,
+        userInvites,
+        AcceptCommunityInvitation,
+        DeleteCommunityInvitation,
       }}
     >
       {children}

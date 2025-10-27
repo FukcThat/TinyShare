@@ -39,11 +39,16 @@
 
 #### Membership System
 
-[] Invite to community
-[] accept invite
-[] leave community
-[] kick from community
-[] update user role (member/admin)
+[x] Kick from community
+[x] Update user role (member/admin)
+[x] Accept / Decline invite\
+[x] Leave community
+[later] Invite to community
+
+### Mock-API
+
+[] Create Basic Mock-API-Object
+[] Basically figure out what data we need & how
 
 ### Deletion
 
