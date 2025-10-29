@@ -5,18 +5,17 @@ import CommunityDropdown from "./CommunityDropdown";
 import { Community } from "../../data/communityData";
 import { Membership } from "../../data/membershipData";
 import Input from "../ui/Input";
+import { useSession } from "../../context/session_context/useSession";
 
 export default function Sidebar() {
-  const { user, activeCommunity, setCommunities, memberships, setMemberships } =
-    useGlobal();
-
-  const activeMembership = useMemo(() => {
-    if (!memberships) return;
-
-    return memberships.find(
-      (mem) => mem.userId == user.id && mem.communityId == activeCommunity.id
-    );
-  }, [user, activeCommunity, memberships]);
+  const { user } = useSession();
+  const {
+    activeCommunity,
+    setCommunities,
+    memberships,
+    setMemberships,
+    userRole,
+  } = useGlobal();
 
   const [isShowingCommunityForm, setIsShowingCommunityForm] = useState(false);
   const [nameInput, setNameInput] = useState("");
@@ -51,9 +50,7 @@ export default function Sidebar() {
     <div className="absolute top-55 w-52 h-40 z-100 bg-blue-950">
       <div className="flex w-full justify-between">
         <CommunityDropdown />
-        {activeMembership && activeMembership.role == "admin" && (
-          <Button text="✏️" />
-        )}
+        {userRole == "admin" && <Button text="✏️" />}
       </div>
       <div>
         <Button text="New Community" onClick={ToggleNewCommunityForm} />

@@ -47,8 +47,13 @@
 
 ### Mock-API
 
-[] Create Basic Mock-API-Object
-[] Basically figure out what data we need & how
+[x] Create Basic Mock-API-Objects
+[x] Move item page functionality to api
+[x] move reservation logic to api
+[] fix conflict detection
+[] move community crud to api
+[] move membership crud to api
+[x] loading state component
 
 ### Deletion
 

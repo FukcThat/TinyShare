@@ -9,6 +9,7 @@ import { HasReservationConflict } from "../lib/HasReservationConflict";
 import { useItemContext } from "../context/item_context/useItemContext";
 import EditItemForm from "../components/ItemPage/EditItemForm";
 import { useNavigate } from "react-router";
+import { useSession } from "../context/session_context/useSession";
 
 const HasAvailibilityConflict = (itemId, reservations, startTime, endTime) => {
   const reservationsOfItem = reservations.filter(
@@ -19,7 +20,8 @@ const HasAvailibilityConflict = (itemId, reservations, startTime, endTime) => {
 };
 
 export default function ItemsPage() {
-  const { user, items, reservations, activeCommunity } = useGlobal();
+  const { user } = useSession();
+  const { items, reservations, activeCommunity } = useGlobal();
 
   const {
     availabilityFilterDates,
@@ -32,36 +34,38 @@ export default function ItemsPage() {
 
   useEffect(() => {
     if (!activeCommunity) return;
-    if (activeCommunity.id === 0) nav("/");
+    if (activeCommunity.id === -1) nav("/");
   }, [activeCommunity]);
 
   const availableItems = useMemo(
     () =>
-      items.filter((item) => {
-        if (!availabilityFilterDates)
-          return item.isAvailable && item.owner != user.id;
-        else {
-          return (
-            item.isAvailable &&
-            item.owner != user.id &&
-            !HasAvailibilityConflict(
-              item.id,
-              reservations,
-              availabilityFilterDates.start,
-              availabilityFilterDates.end
-            )
-          ); // get all the reservations of this item and see if any of those have overlap
-        }
-      }),
+      items
+        ? items.filter((item) => {
+            if (!availabilityFilterDates)
+              return item.isAvailable && item.owner != user.id;
+            else {
+              return (
+                item.isAvailable &&
+                item.owner != user.id &&
+                !HasAvailibilityConflict(
+                  item.id,
+                  reservations,
+                  availabilityFilterDates.start,
+                  availabilityFilterDates.end
+                )
+              ); // get all the reservations of this item and see if any of those have overlap
+            }
+          })
+        : null,
     [items, availabilityFilterDates]
   );
 
   const yourItems = useMemo(
-    () => items.filter((item) => item.owner === user.id),
+    () => (items ? items.filter((item) => item.owner === user.id) : null),
     [items]
   );
 
-  if (!activeCommunity || activeCommunity.id === 0) return null;
+  if (!activeCommunity || activeCommunity.id === -1) return null;
   return (
     <div className="flex flex-col gap-10 relative">
       {isOpen && <ItemForm />}

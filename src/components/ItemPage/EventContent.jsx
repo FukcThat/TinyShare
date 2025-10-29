@@ -1,4 +1,6 @@
+import { reservationsApi } from "../../../mocks";
 import { useItemContext } from "../../context/item_context/useItemContext";
+import { useSession } from "../../context/session_context/useSession";
 import { useGlobal } from "../../context/useGlobal";
 import Button from "../ui/Button";
 
@@ -8,33 +10,60 @@ export default function EventContent({
   setStartTime,
   setEndTime,
 }) {
-  const {
-    user,
-    ApproveReservation,
-    DenyReservation,
-    CancelReservationRequest,
-  } = useGlobal();
+  const { user } = useSession();
+  const { setReservations } = useGlobal();
   const { itemToRequest } = useItemContext();
 
-  const HandleApproveBtnClick = (e) => {
+  const HandleApproveBtnClick = async (e) => {
     if (arg.event._def.extendedProps.status == "preview") {
       OnSubmitReservation(e, true);
     } else {
-      ApproveReservation(arg.event._def.extendedProps.resId);
+      try {
+        const res = await reservationsApi.approveReservation(
+          arg.event._def.extendedProps.resId
+        );
+        if (!res.ok) throw new Error("Approve Reservation failed: ", res);
+
+        setReservations((oldReservations) =>
+          oldReservations.map((reservation) =>
+            res.updatedReservation.id != reservation.id
+              ? reservation
+              : res.updatedReservation
+          )
+        );
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
-  const HandleDenyBtnClick = () => {
+  const HandleDenyBtnClick = async () => {
     if (arg.event._def.extendedProps.status == "preview") {
       setStartTime("");
       setEndTime("");
     } else {
-      DenyReservation(arg.event._def.extendedProps.resId);
+      HandleCancelBtnClick();
     }
   };
 
-  const HandleCancelBtnClick = () =>
-    CancelReservationRequest(arg.event._def.extendedProps.resId);
+  const HandleCancelBtnClick = async () => {
+    try {
+      const res = await reservationsApi.cancelReservation(
+        arg.event._def.extendedProps.resId
+      );
+
+      console.log(res);
+      if (!res.ok) throw new Error("Deny reservation error: ", res);
+
+      setReservations((oldReservations) =>
+        oldReservations.filter(
+          (reservation) => reservation.id != arg.event._def.extendedProps.resId
+        )
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // Sets Display Time even on days where its not passed in
   const displayTime =

@@ -1,12 +1,12 @@
 import { Activity } from "react";
 import { useGlobal } from "../../context/useGlobal";
 import Button from "../ui/Button";
+import Loading from "../global/Loading";
 
 export default function MembershipPanel() {
-  const { communityMembers, activeMembership, ToggleRole, KickMember } =
-    useGlobal();
+  const { communityMembers, userRole, ToggleRole, KickMember } = useGlobal();
 
-  if (!activeMembership) return <div>Loading...</div>;
+  if (!userRole) return <Loading />;
 
   return (
     <div>
@@ -17,9 +17,7 @@ export default function MembershipPanel() {
           return (
             <div key={member.id}>
               <div>{member.name}</div>
-              <Activity
-                mode={activeMembership.role == "admin" ? "visible" : "hidden"}
-              >
+              <Activity mode={userRole == "admin" ? "visible" : "hidden"}>
                 <Button
                   text={member.role == "admin" ? "admin" : "member"}
                   onClick={() => {

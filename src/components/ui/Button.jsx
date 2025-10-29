@@ -5,12 +5,14 @@ export default function Button({
   onClick = () => {},
   type = "button",
   styles = "",
+  disabled = false,
 }) {
   return (
     <button
+      disabled={disabled}
       onClick={onClick}
       className={twMerge([
-        ` bg-slate-600 px-4 py-2 rounded-md hover:bg-slate-500 cursor-pointer`,
+        ` bg-slate-600 px-4 py-2 rounded-md hover:bg-slate-500 cursor-pointer disabled:opacity-20 disabled:hover:bg-slate-600`,
         styles,
       ])}
       type={type}

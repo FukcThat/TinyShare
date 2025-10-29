@@ -1,6 +1,5 @@
 import Button from "../ui/Button";
 import FullCalendar from "@fullcalendar/react";
-import { Reservation } from "../../data/reservationData";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction"; // for selectable
 import { useEffect, useMemo, useState } from "react";
@@ -10,32 +9,49 @@ import { FormatDateStringAddHalfHour } from "../../lib/FormatDateStringAddHalfHo
 import { HasReservationConflict } from "../../lib/HasReservationConflict";
 import { useItemContext } from "../../context/item_context/useItemContext";
 import EventContent from "./EventContent";
+import { useSession } from "../../context/session_context/useSession";
+import { reservationsApi } from "../../../mocks";
 
 export default function ItemReservationModal() {
-  const { user, reservations, setReservations } = useGlobal();
+  const { user } = useSession();
+  const { reservations, setReservations } = useGlobal();
   const { itemToRequest, setItemToRequest } = useItemContext();
 
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [reservationEvent, setReservationEvent] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const OnSubmitReservation = (e, selfBooking = false) => {
+  const OnSubmitReservation = async (e, selfBooking = false) => {
     e.preventDefault();
 
     if (startTime === "" || endTime === "") return;
+    setIsLoading(true);
+    try {
+      const res = await reservationsApi.createReservation({
+        userId: user.id,
+        itemId: itemToRequest.id,
+        startDate: startTime,
+        endDate: endTime,
+        status: selfBooking ? "booking" : "request",
+      });
 
-    const newReservation = new Reservation(
-      uuidv4(),
-      user.id,
-      itemToRequest.id,
-      startTime,
-      endTime,
-      selfBooking ? "booking" : "request"
-    );
+      console.log(res);
 
-    setReservations((oldReservations) => [...oldReservations, newReservation]);
-    setStartTime("");
-    setEndTime("");
+      if (!res.ok) throw new Error("Creating reservation failed: ", res);
+
+      setReservations((oldReservations) => [
+        ...oldReservations,
+        res.newReservation,
+      ]);
+
+      setStartTime("");
+      setEndTime("");
+      setIsLoading(false);
+    } catch (error) {
+      console.error(error);
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -107,7 +123,7 @@ export default function ItemReservationModal() {
         <form onSubmit={OnSubmitReservation}>
           <div>Start time: {startTime}</div>
           <div>End time: {endTime}</div>
-          <Button text="Submit" type="submit" />
+          <Button text="Submit" type="submit" disabled={isLoading} />
         </form>
       )}
       <FullCalendar

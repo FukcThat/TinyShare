@@ -11,6 +11,7 @@ export default function Input({
   outerStyles = "",
   labelStyles = "",
   inputStyles = "",
+  disabled = false,
 }) {
   return (
     <div
@@ -25,6 +26,7 @@ export default function Input({
         </label>
       )}
       <input
+        disabled={disabled}
         id={id}
         type={type}
         placeholder={placeholder}

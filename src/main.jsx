@@ -11,28 +11,31 @@ import MembersPage from "./pages/MembersPage.jsx";
 import ItemsPage from "./pages/ItemsPage.jsx";
 import ItemContextProvider from "./context/item_context/ItemContextProvider.jsx";
 import ErrorPage from "./pages/ErrorPage.jsx";
+import SessionProvider from "./context/session_context/SessionContextProvider.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-      <GlobalProvider>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<HomePage />}></Route>
-            <Route path="/profile" element={<ProfilePage />}></Route>
-            <Route path="/members" element={<MembersPage />}></Route>
-            <Route
-              path="/items"
-              element={
-                <ItemContextProvider>
-                  <ItemsPage />
-                </ItemContextProvider>
-              }
-            ></Route>
-            <Route path="*" element={<ErrorPage />}></Route>
-          </Route>
-        </Routes>
-      </GlobalProvider>
+      <SessionProvider>
+        <GlobalProvider>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<HomePage />}></Route>
+              <Route path="/profile" element={<ProfilePage />}></Route>
+              <Route path="/members" element={<MembersPage />}></Route>
+              <Route
+                path="/items"
+                element={
+                  <ItemContextProvider>
+                    <ItemsPage />
+                  </ItemContextProvider>
+                }
+              ></Route>
+              <Route path="*" element={<ErrorPage />}></Route>
+            </Route>
+          </Routes>
+        </GlobalProvider>
+      </SessionProvider>
     </BrowserRouter>
   </StrictMode>
 );

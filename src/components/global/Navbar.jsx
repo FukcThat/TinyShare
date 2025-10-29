@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router";
 import { useGlobal } from "../../context/useGlobal";
 import Button from "../ui/Button";
+import { useSession } from "../../context/session_context/useSession";
 
 const NavElements = [
   { path: "/", name: "Home", needCommunity: false },
@@ -11,7 +12,8 @@ const NavElements = [
 
 export default function Navbar({ ToggleSidebar }) {
   const location = useLocation();
-  const { user, activeCommunity } = useGlobal();
+  const { user } = useSession();
+  const { activeCommunity } = useGlobal();
 
   return (
     <div className="flex my-6 px-10 w-full justify-between items-center flex-col md:flex-row">
@@ -32,7 +34,7 @@ export default function Navbar({ ToggleSidebar }) {
         {NavElements.map((element) => {
           if (
             !element.needCommunity ||
-            (activeCommunity && activeCommunity.id !== 0)
+            (activeCommunity && activeCommunity.id !== -1)
           )
             return (
               <Link

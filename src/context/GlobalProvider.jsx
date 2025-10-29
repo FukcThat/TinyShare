@@ -1,119 +1,52 @@
 import { useEffect, useMemo, useState } from "react";
-import { userData } from "../data/userData";
 import { GlobalContext } from "./GlobalContext";
-import { communityData, NoCommunity } from "../data/communityData";
-import { itemData } from "../data/itemData";
-import { reservationData } from "../data/reservationData";
-import { Membership, membershipData } from "../data/membershipData";
-import { dummyInvitations } from "../data/invitationData";
+import { Membership } from "../data/membershipData";
 import { v4 as uuidv4 } from "uuid";
+import { useSession } from "./session_context/useSession";
+import { mockApi } from "../../mocks";
 
 export function GlobalProvider({ children }) {
-  const [user, setUser] = useState(userData[0]);
-  const [allUsers, setAllUsers] = useState(userData);
-  const [items, setItems] = useState([]);
-  const [reservations, setReservations] = useState(reservationData);
-  const [memberships, setMemberships] = useState(membershipData);
-  const [communities, setCommunities] = useState(communityData);
+  const { user, userCommunities } = useSession();
   const [activeCommunity, setActiveCommunity] = useState(null);
-  const [invitations, setInvitations] = useState(dummyInvitations);
-
-  const communityMembers = useMemo(() => {
-    if (!activeCommunity) return [];
-
-    return allUsers
-      .filter((thisUser) => {
-        return memberships.some((membership) => {
-          return (
-            membership.userId == thisUser.id &&
-            membership.communityId == activeCommunity.id
-          );
-        });
-      })
-      .map((user) => {
-        return {
-          ...user,
-          role: memberships.find((mem) => mem.userId === user.id).role,
-        };
-      });
-  }, [activeCommunity, memberships]);
-
-  const userCommunities = useMemo(() => {
-    const res = communities.filter((community) =>
-      memberships.some(
-        (membership) =>
-          membership.userId === user.id &&
-          membership.communityId === community.id
-      )
-    );
-    return res.length === 0 ? [NoCommunity] : res;
-  }, [memberships, communities]);
-
-  const activeMembership = useMemo(() => {
-    if (!activeCommunity) return undefined;
-
-    return memberships.find((membership) => {
-      return (
-        membership.userId == user.id &&
-        membership.communityId == activeCommunity.id
-      );
-    });
-  }, [memberships, activeCommunity, user]);
-
-  const userInvites = useMemo(() => {
-    if (!user) return [];
-    return invitations.filter((invite) => invite.inviteeId == user.id);
-  }, [invitations, user]);
-
-  useEffect(() => setActiveCommunity(userCommunities[0]), [userCommunities]);
+  const [communityMembers, setCommunityMembers] = useState(null);
+  const [items, setItems] = useState(null);
+  const [reservations, setReservations] = useState(null);
+  const [invitations, setInvitations] = useState(null);
 
   useEffect(() => {
-    if (!activeCommunity) {
-      setItems([]);
-      return;
-    }
-
-    setItems(
-      itemData.filter((item) =>
-        memberships.some(
-          (m) => m.userId === item.owner && m.communityId === activeCommunity.id
-        )
-      )
-    );
-  }, [activeCommunity]);
-
-  // Item Functions
-  const UpdateItem = (id, newData) => {
-    setItems((oldItems) =>
-      oldItems.map((item) => {
-        if (item.id === id)
-          return {
-            ...item,
-            name: newData.name,
-            isAvailable: newData.isAvailable,
-          };
-        return item;
+    if (!activeCommunity) return;
+    mockApi
+      .getCommunityData(activeCommunity.id)
+      .then((data) => {
+        setItems(data.items);
+        setCommunityMembers(data.members);
+        setReservations(data.reservations);
+        setInvitations(data.invitations);
       })
-    );
-  };
+      .catch((err) => console.error(err))
+      .finally(() => {});
+  }, [activeCommunity]); // active community changes, fetch data
 
-  const DeleteItem = (id) => {
-    setItems((oldItems) => oldItems.filter((item) => item.id !== id));
-  };
+  const userRole = useMemo(() => {
+    if (!activeCommunity || !communityMembers) return null;
+    return communityMembers.find((member) => member.id === user.id).role;
+  }, [activeCommunity, user, communityMembers]);
 
-  const ApproveReservation = (resId) => {
-    setReservations((oldReservations) =>
-      oldReservations.map((res) =>
-        res.id != resId ? res : { ...res, status: "booking" }
-      )
-    );
-  };
+  const userInvites = useMemo(
+    () =>
+      !user
+        ? null
+        : !invitations
+        ? null
+        : invitations.filter((invite) => invite.inviteeId == user.id),
+    [invitations, user]
+  );
 
-  const DenyReservation = (resId) => {
-    setReservations((oldReservations) =>
-      oldReservations.filter((res) => res.id != resId)
-    );
-  };
+  useEffect(
+    () =>
+      setActiveCommunity(userCommunities.length ? userCommunities[0] : null),
+    [userCommunities]
+  ); // Fix how this works later -T
 
   const CancelReservationRequest = (resId) => {
     // here we should check if the owner cancelled or the reservee cancelled
@@ -169,35 +102,20 @@ export function GlobalProvider({ children }) {
     );
   };
 
-  const CancelCommunityInvitation = () => {};
-
   return (
     <GlobalContext.Provider
       value={{
-        user,
-        setUser,
         activeCommunity,
         setActiveCommunity,
         items,
         setItems,
-        UpdateItem,
-        DeleteItem,
         reservations,
         setReservations,
-        ApproveReservation,
-        DenyReservation,
-        CancelReservationRequest,
-        userCommunities,
-        setCommunities,
-        setMemberships,
-        memberships,
-        activeMembership,
+        userRole,
         communityMembers,
         ToggleRole,
         KickMember,
         userInvites,
-        AcceptCommunityInvitation,
-        DeleteCommunityInvitation,
       }}
     >
       {children}

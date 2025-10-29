@@ -1,35 +1,37 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "../ui/Button";
-import { Item } from "../../data/itemData";
-import { v4 as uuidv4 } from "uuid";
 import { useGlobal } from "../../context/useGlobal";
 import Input from "../ui/Input";
 import Checkbox from "../ui/Checkbox";
 import { useItemContext } from "../../context/item_context/useItemContext";
+import { useSession } from "../../context/session_context/useSession";
+import { itemsApi } from "../../../mocks";
 
 export default function ItemForm() {
-  const { user, setItems } = useGlobal();
-  const { itemToEdit, ToggleItemForm } = useItemContext();
-
+  const { user } = useSession();
+  const { setItems } = useGlobal();
+  const { itemToEdit } = useItemContext();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     isAvailable: true,
+    userId: user.id,
   });
 
-  const CreateItem = (e) => {
+  const CreateItem = async (e) => {
     e.preventDefault();
     if (formData.name == "") return;
-
-    const newItem = new Item(
-      uuidv4(),
-      formData.name,
-      formData.isAvailable,
-      user.id
-    );
-    setItems((oldItems) => [...oldItems, newItem]);
-    setFormData({ ...formData, name: "" });
-    ToggleItemForm();
-    return;
+    setIsLoading(true);
+    try {
+      const res = await itemsApi.createItem(formData);
+      if (!res.ok) throw new Error(res);
+      setItems((oldItems) => [...oldItems, res.newItem]);
+      setFormData({ ...formData, name: "" });
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Create Item Error: ", error);
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -38,6 +40,7 @@ export default function ItemForm() {
       className="flex flex-col w-full items-center gap-4 bg-slate-800 py-6"
     >
       <Input
+        disabled={isLoading}
         id="name"
         placeholder="Item..."
         value={formData.name}
@@ -46,6 +49,7 @@ export default function ItemForm() {
         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
       />
       <Checkbox
+        disabled={isLoading}
         id="isAvailableCheckbox"
         labelText="Available"
         onChange={(e) =>
@@ -53,7 +57,11 @@ export default function ItemForm() {
         }
         value={formData.isAvailable}
       />
-      <Button text={itemToEdit === null ? "Submit" : "Update"} type="submit" />
+      <Button
+        disabled={isLoading}
+        text={itemToEdit === null ? "Submit" : "Update"}
+        type="submit"
+      />
     </form>
   );
 }

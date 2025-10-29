@@ -1,8 +1,11 @@
+import { useSession } from "../../context/session_context/useSession";
 import { useGlobal } from "../../context/useGlobal";
 import Dropdown from "../ui/Dropdown";
+import Loading from "./Loading";
 
 export default function CommunityDropdown() {
-  const { userCommunities, activeCommunity, setActiveCommunity } = useGlobal();
+  const { activeCommunity, setActiveCommunity } = useGlobal();
+  const { userCommunities } = useSession();
 
   const HandleSelectActiveCommunity = (e) => {
     // when we change the data here, we want to update local storage
@@ -21,6 +24,6 @@ export default function CommunityDropdown() {
       styles="flex-grow"
     />
   ) : (
-    <div>Loading...</div>
+    <Loading />
   );
 }

@@ -7,11 +7,18 @@ export default function Checkbox({
   value = false,
   onChange = () => {},
   styles = "",
+  disabled = false,
 }) {
   return (
     <div className={twMerge([styles, "flex gap-4"])}>
       <label htmlFor={id}>{labelText}</label>
-      <input type="checkbox" checked={value} onChange={onChange} id={id} />
+      <input
+        disabled={disabled}
+        type="checkbox"
+        checked={value}
+        onChange={onChange}
+        id={id}
+      />
     </div>
   );
 }
