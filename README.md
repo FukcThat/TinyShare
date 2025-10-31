@@ -1,5 +1,13 @@
 # TinyShare Roadmap
 
+Current Commit: 👻🎃
+
+- fixed reservation data issue leading to reservation conflicts
+- moved community creation to mock api
+- moved toggle role, kick member, accept/decline invites to mock api
+- small fixes here and there
+- HAPPY HALLOWEEN!
+
 ### Reservation and Booking System
 
 [66%] Request a new booking by clicking start and end on the calander
@@ -50,9 +58,9 @@
 [x] Create Basic Mock-API-Objects
 [x] Move item page functionality to api
 [x] move reservation logic to api
-[] fix conflict detection
-[] move community crud to api
-[] move membership crud to api
+[x] fix conflict detection - issue with reservation data NOT conflict detection
+[x] move community crud to api
+[x] move membership crud to api - toggle, kick, leave, accept invite, decline invite
 [x] loading state component
 
 ### Deletion

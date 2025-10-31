@@ -40,11 +40,9 @@ export const reservationsApi = {
   },
   async cancelReservation(reservationId) {
     let idx = null;
-    console.log(reservationId, reservations);
     for (let i = 0; i < reservations.length; i++) {
       if (reservations[i].id === reservationId) idx = i;
     }
-    console.log(idx);
     if (idx === null)
       return { ok: false, message: "Deny Reservation failed on server" };
     reservations.splice(idx, 1);

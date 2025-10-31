@@ -52,7 +52,6 @@ export default function EventContent({
         arg.event._def.extendedProps.resId
       );
 
-      console.log(res);
       if (!res.ok) throw new Error("Deny reservation error: ", res);
 
       setReservations((oldReservations) =>

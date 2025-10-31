@@ -12,7 +12,7 @@ export const reservations = [
     userId: 2,
     itemId: 0,
     startDate: "2025-10-15T14:45:00",
-    endDate: "2025-10-17:30:00",
+    endDate: "2025-10-17T15:30:00",
     status: "booking",
   },
 ];

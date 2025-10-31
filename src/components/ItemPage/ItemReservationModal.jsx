@@ -3,7 +3,6 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction"; // for selectable
 import { useEffect, useMemo, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { useGlobal } from "../../context/useGlobal";
 import { FormatDateStringAddHalfHour } from "../../lib/FormatDateStringAddHalfHour";
 import { HasReservationConflict } from "../../lib/HasReservationConflict";
@@ -35,8 +34,6 @@ export default function ItemReservationModal() {
         endDate: endTime,
         status: selfBooking ? "booking" : "request",
       });
-
-      console.log(res);
 
       if (!res.ok) throw new Error("Creating reservation failed: ", res);
 

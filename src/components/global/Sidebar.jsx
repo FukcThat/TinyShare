@@ -2,45 +2,46 @@ import { Activity, useMemo, useState } from "react";
 import { useGlobal } from "../../context/useGlobal";
 import Button from "../ui/Button";
 import CommunityDropdown from "./CommunityDropdown";
-import { Community } from "../../data/communityData";
-import { Membership } from "../../data/membershipData";
 import Input from "../ui/Input";
 import { useSession } from "../../context/session_context/useSession";
+import { communitiesApi } from "../../../mocks";
 
 export default function Sidebar() {
-  const { user } = useSession();
-  const {
-    activeCommunity,
-    setCommunities,
-    memberships,
-    setMemberships,
-    userRole,
-  } = useGlobal();
+  const { user, setUserCommunities } = useSession();
+  const { userRole, activeCommunity } = useGlobal();
 
   const [isShowingCommunityForm, setIsShowingCommunityForm] = useState(false);
   const [nameInput, setNameInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const createNewCommunity = (e) => {
+  const createNewCommunity = async (e) => {
     e.preventDefault();
 
     if (!nameInput) {
       window.alert("Please provide a name for the community :) ");
       return;
     }
+    setIsLoading(true);
+    try {
+      const res = await communitiesApi.createCommunity({
+        userId: user.id,
+        communityName: nameInput,
+      });
 
-    const newCommunity = new Community(uuidv4(), nameInput);
-    setCommunities((oldCommunities) => [...oldCommunities, newCommunity]);
+      if (!res.ok) throw new Error("Issue creating new community: ", res);
 
-    const newMembership = new Membership(
-      uuidv4(),
-      user.id,
-      newCommunity.id,
-      "admin"
-    );
-    setMemberships((oldMemberships) => [...oldMemberships, newMembership]);
-
-    setNameInput("");
-    setIsShowingCommunityForm(false);
+      setUserCommunities((oldCommunities) =>
+        activeCommunity.id === -1
+          ? [res.newCommunity]
+          : [...oldCommunities, res.newCommunity]
+      );
+      setIsLoading(false);
+      setNameInput("");
+      setIsShowingCommunityForm(false);
+    } catch (error) {
+      console.error(error);
+      setIsLoading(false);
+    }
   };
 
   const ToggleNewCommunityForm = () =>
@@ -65,7 +66,7 @@ export default function Sidebar() {
                 setNameInput(e.target.value);
               }}
             />
-            <Button type="submit" text="Done!" />
+            <Button disabled={isLoading} type="submit" text="Done!" />
           </form>
         </Activity>
       </div>

@@ -13,8 +13,9 @@ export * from "./api/usersApi";
 export * from "./api/reservationsApi";
 
 export const mockApi = {
-  async getCommunityData(communityId) {
+  async getCommunityData(communityId, userId) {
     await delay();
+    let userRole = null;
     // first lets get the items that belong to this community
     const communityItems = items.filter((item) => {
       return memberships.some(
@@ -26,6 +27,11 @@ export const mockApi = {
     const communityMembers = users
       .filter((user) => {
         return memberships.some((membership) => {
+          if (
+            membership.userId === userId &&
+            membership.communityId === communityId
+          )
+            userRole = membership.role;
           return (
             membership.userId == user.id &&
             membership.communityId == communityId
@@ -54,11 +60,12 @@ export const mockApi = {
       members: communityMembers,
       reservations: communityReservations,
       invitations: communityInvitations,
+      userRole: userRole,
     };
   },
 
   async login() {
     await delay(5);
-    return users[2];
+    return users[0];
   },
 };
