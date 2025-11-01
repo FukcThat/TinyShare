@@ -1,5 +1,5 @@
 import { items } from "../db/items";
-import { delay } from "../utils";
+import { delay, lsKeys } from "../utils";
 import { v4 as uuidv4 } from "uuid";
 
 export const itemsApi = {
@@ -20,6 +20,8 @@ export const itemsApi = {
 
     items.push(newItem);
 
+    localStorage.setItem(lsKeys.items, JSON.stringify(items));
+
     return { ok: true, newItem };
   },
 
@@ -36,6 +38,9 @@ export const itemsApi = {
         items[i] = updatedItem;
       }
     }
+
+    localStorage.setItem(lsKeys.items, JSON.stringify(items));
+
     return { ok: true, updatedItem };
   },
 
@@ -46,6 +51,9 @@ export const itemsApi = {
       if (items[i].id === itemId) idx = i;
     }
     items.splice(idx, 1);
+
+    localStorage.setItem(lsKeys.items, JSON.stringify(items));
+
     return { ok: true };
   },
 };

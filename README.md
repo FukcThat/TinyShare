@@ -2,11 +2,8 @@
 
 Current Commit: 👻🎃
 
-- fixed reservation data issue leading to reservation conflicts
-- moved community creation to mock api
-- moved toggle role, kick member, accept/decline invites to mock api
-- small fixes here and there
-- HAPPY HALLOWEEN!
+- Implemented LocalStorage with mockAPI data
+- Deleted redundant data structures
 
 ### Reservation and Booking System
 

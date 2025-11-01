@@ -44,9 +44,9 @@ export default function ItemReservationModal() {
 
       setStartTime("");
       setEndTime("");
-      setIsLoading(false);
     } catch (error) {
       console.error(error);
+    } finally {
       setIsLoading(false);
     }
   };

@@ -34,10 +34,10 @@ export default function EditItemForm() {
           )
         );
       }
-      setIsLoading(false);
       setItemToEdit(res.updatedItem);
     } catch (error) {
       console.error(error);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -50,10 +50,10 @@ export default function EditItemForm() {
       setItems((oldItems) =>
         oldItems.filter((item) => item.id !== itemToEdit.id)
       );
-      setIsLoading(false);
       setItemToEdit(null);
     } catch (error) {
       console.error("Delete Item Error: ", error);
+    } finally {
       setIsLoading(false);
     }
   };

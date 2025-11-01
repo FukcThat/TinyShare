@@ -1,5 +1,5 @@
 import { reservations } from "../db/reservations";
-import { delay } from "../utils";
+import { delay, lsKeys } from "../utils";
 import { v4 as uuidv4 } from "uuid";
 
 export const reservationsApi = {
@@ -22,6 +22,8 @@ export const reservationsApi = {
 
     reservations.push(newReservation);
 
+    localStorage.setItem(lsKeys.reservations, JSON.stringify(reservations));
+
     return { ok: true, newReservation };
   },
 
@@ -36,8 +38,12 @@ export const reservationsApi = {
     }
     if (!updatedReservation)
       return { ok: false, message: "Updating Reservation failed on server" };
+
+    localStorage.setItem(lsKeys.reservations, JSON.stringify(reservations));
+
     return { ok: true, updatedReservation };
   },
+
   async cancelReservation(reservationId) {
     let idx = null;
     for (let i = 0; i < reservations.length; i++) {
@@ -46,6 +52,9 @@ export const reservationsApi = {
     if (idx === null)
       return { ok: false, message: "Deny Reservation failed on server" };
     reservations.splice(idx, 1);
+
+    localStorage.setItem(lsKeys.reservations, JSON.stringify(reservations));
+
     return { ok: true };
   },
 };

@@ -1,5 +1,5 @@
 import { memberships } from "../db/memberships";
-import { delay } from "../utils";
+import { delay, lsKeys } from "../utils";
 
 export const membershipsApi = {
   async getAll() {
@@ -16,6 +16,8 @@ export const membershipsApi = {
         member.role = member.role === "admin" ? "member" : "admin";
       }
     }
+
+    localStorage.setItem(lsKeys.memberships, JSON.stringify(memberships));
 
     return { ok: true }; // toggle that users role locally
   },
@@ -36,6 +38,8 @@ export const membershipsApi = {
       return { ok: false, message: "Could not find membership" };
 
     memberships.splice(idx, 1);
+
+    localStorage.setItem(lsKeys.memberships, JSON.stringify(memberships));
 
     return { ok: true };
   },

@@ -1,7 +1,9 @@
 import { communities } from "../db/communities";
 import { memberships } from "../db/memberships";
-import { delay } from "../utils";
+import { delay, lsKeys } from "../utils";
 import { v4 as uuidv4 } from "uuid";
+
+const NoCommunity = { id: -1, name: "No Community Yet...  " };
 
 export const communitiesApi = {
   async getAll() {
@@ -33,8 +35,9 @@ export const communitiesApi = {
     };
     memberships.push(newMembership);
 
+    localStorage.setItem(lsKeys.communities, JSON.stringify(communities));
+    localStorage.setItem(lsKeys.memberships, JSON.stringify(memberships));
+
     return { ok: true, newCommunity };
   },
 };
-
-const NoCommunity = { id: -1, name: "No Community Yet...  " };

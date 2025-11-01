@@ -35,11 +35,11 @@ export default function Sidebar() {
           ? [res.newCommunity]
           : [...oldCommunities, res.newCommunity]
       );
-      setIsLoading(false);
       setNameInput("");
       setIsShowingCommunityForm(false);
     } catch (error) {
       console.error(error);
+    } finally {
       setIsLoading(false);
     }
   };

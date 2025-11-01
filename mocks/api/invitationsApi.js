@@ -1,6 +1,6 @@
 import { invitations } from "../db/invitations";
 import { memberships } from "../db/memberships";
-import { delay } from "../utils";
+import { delay, lsKeys } from "../utils";
 import { v4 as uuidv4 } from "uuid";
 
 export const invitationsApi = {
@@ -36,6 +36,10 @@ export const invitationsApi = {
 
     memberships.push(newMembership);
     invitations.splice(idx, 1);
+
+    localStorage.setItem(lsKeys.memberships, JSON.stringify(memberships));
+    localStorage.setItem(lsKeys.invitations, JSON.stringify(invitations));
+
     return { ok: true };
   },
 
@@ -52,6 +56,9 @@ export const invitationsApi = {
       return { ok: false, message: "Could not find invitation" };
 
     invitations.splice(idx, 1);
+
+    localStorage.setItem(lsKeys.invitations, JSON.stringify(invitations));
+
     return { ok: true };
   },
 };

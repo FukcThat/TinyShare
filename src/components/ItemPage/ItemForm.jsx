@@ -27,9 +27,9 @@ export default function ItemForm() {
       if (!res.ok) throw new Error(res);
       setItems((oldItems) => [...oldItems, res.newItem]);
       setFormData({ ...formData, name: "" });
-      setIsLoading(false);
     } catch (error) {
       console.error("Create Item Error: ", error);
+    } finally {
       setIsLoading(false);
     }
   };

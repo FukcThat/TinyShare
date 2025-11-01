@@ -1,4 +1,6 @@
-export const reservations = [
+import { InitLs, lsKeys } from "../utils";
+
+const dummyReservations = [
   {
     id: 0,
     userId: 1,
@@ -16,3 +18,8 @@ export const reservations = [
     status: "booking",
   },
 ];
+
+export const reservations = await InitLs(
+  lsKeys.reservations,
+  dummyReservations
+);

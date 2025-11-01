@@ -13,12 +13,14 @@ export default function EventContent({
   const { user } = useSession();
   const { setReservations } = useGlobal();
   const { itemToRequest } = useItemContext();
+  const [isLoading, setIsLoading] = useState(false);
 
   const HandleApproveBtnClick = async (e) => {
     if (arg.event._def.extendedProps.status == "preview") {
       OnSubmitReservation(e, true);
     } else {
       try {
+        setIsLoading(true);
         const res = await reservationsApi.approveReservation(
           arg.event._def.extendedProps.resId
         );
@@ -33,6 +35,8 @@ export default function EventContent({
         );
       } catch (error) {
         console.error(error);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -48,6 +52,7 @@ export default function EventContent({
 
   const HandleCancelBtnClick = async () => {
     try {
+      setIsLoading(true);
       const res = await reservationsApi.cancelReservation(
         arg.event._def.extendedProps.resId
       );
@@ -61,6 +66,8 @@ export default function EventContent({
       );
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -85,13 +92,21 @@ export default function EventContent({
       <div>{displayTime}</div>
       {IsOwnerAndNotBooked() && (
         <div className="flex">
-          <Button text="✔️" onClick={HandleApproveBtnClick} />
-          <Button text="❌" onClick={HandleDenyBtnClick} />
+          <Button
+            disabled={isLoading}
+            text="✔️"
+            onClick={HandleApproveBtnClick}
+          />
+          <Button disabled={isLoading} text="❌" onClick={HandleDenyBtnClick} />
         </div>
       )}
       {(IsOurBooking() || IsOwnerAndIsBooked()) && (
         <div>
-          <Button text="Cancel" onClick={HandleCancelBtnClick} />
+          <Button
+            disabled={isLoading}
+            text="Cancel"
+            onClick={HandleCancelBtnClick}
+          />
         </div>
       )}
     </div>

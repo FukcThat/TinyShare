@@ -1,4 +1,6 @@
-export const invitations = [
+import { InitLs, lsKeys } from "../utils";
+
+const dummyInvitations = [
   {
     id: 0,
     inviterId: 1,
@@ -7,3 +9,5 @@ export const invitations = [
     role: "admin",
   },
 ];
+
+export const invitations = await InitLs(lsKeys.invitations, dummyInvitations);

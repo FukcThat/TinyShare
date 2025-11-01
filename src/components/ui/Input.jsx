@@ -14,9 +14,7 @@ export default function Input({
   disabled = false,
 }) {
   return (
-    <div
-      className={twMerge(["flex  gap-2 items-center text-lg ", outerStyles])}
-    >
+    <div className={twMerge(["flex gap-2 items-center text-lg ", outerStyles])}>
       {withLabel && (
         <label
           htmlFor={id}
