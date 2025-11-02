@@ -55,7 +55,7 @@ export default function Sidebar() {
       </div>
       <div>
         <Button text="New Community" onClick={ToggleNewCommunityForm} />
-        <Activity mode={isShowingCommunityForm ? "visible" : "hidden"}>
+        {isShowingCommunityForm && (
           <form onSubmit={createNewCommunity}>
             <Input
               withLabel
@@ -68,7 +68,7 @@ export default function Sidebar() {
             />
             <Button disabled={isLoading} type="submit" text="Done!" />
           </form>
-        </Activity>
+        )}
       </div>
     </div>
   );

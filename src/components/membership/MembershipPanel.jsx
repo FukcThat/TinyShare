@@ -53,36 +53,33 @@ export default function MembershipPanel({
           return (
             <div key={member.id}>
               <div>{member.name}</div>
-              <Activity
-                mode={
-                  userRole == "admin" && user.id !== member.id
-                    ? "visible"
-                    : "hidden"
-                }
-              >
-                <Button
-                  disabled={isLoading}
-                  text={member.role == "admin" ? "admin" : "member"}
-                  onClick={() => {
-                    HandleRoleToggleBtnClick(member.id);
-                  }}
-                />
+              {userRole == "admin" && user.id !== member.id && (
+                <>
+                  <Button
+                    disabled={isLoading}
+                    text={member.role == "admin" ? "admin" : "member"}
+                    onClick={() => {
+                      HandleRoleToggleBtnClick(member.id);
+                    }}
+                  />
 
-                <Button
-                  disabled={isKickLoading}
-                  text="Kick Member out"
-                  onClick={() => {
-                    HandleKickMemberBtnClick(member.id);
-                  }}
-                />
-                {/* 
+                  <Button
+                    disabled={isKickLoading}
+                    text="Kick Member out"
+                    onClick={() => {
+                      HandleKickMemberBtnClick(member.id);
+                    }}
+                  />
+                </>
+              )}
+
+              {/* 
                 Make role toggle button 
                 Implement role toggle onClick 
                 -- > Change role of member with this id & is in this (active) community
 
                 Make DeleteMemberschip button 
                 --> Remove membership from membershipArray with this id & in this community */}
-              </Activity>
             </div>
           );
         })}

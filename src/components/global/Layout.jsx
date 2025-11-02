@@ -1,7 +1,7 @@
 import { Outlet } from "react-router";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
-import { Activity, useState } from "react";
+import { useState } from "react";
 
 export default function Layout() {
   const [isShowingSidebar, setIsShowingSidebar] = useState(false);
@@ -11,12 +11,13 @@ export default function Layout() {
   return (
     <div>
       <Navbar ToggleSidebar={ToggleSidebar} />
-      <Activity mode={isShowingSidebar ? "visible" : "hidden"}>
+      {isShowingSidebar ? (
         <Sidebar />
-      </Activity>
-      <div>
-        <Outlet />
-      </div>
+      ) : (
+        <div>
+          <Outlet />
+        </div>
+      )}
     </div>
   );
 }
