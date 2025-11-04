@@ -7,7 +7,7 @@ import { useSession } from "../context/session_context/useSession";
 import { communitiesApi, membershipsApi } from "../../mocks";
 
 export default function MembersPage() {
-  const { user, setUserCommunities } = useSession();
+  const { session, setUserCommunities } = useSession();
   const { activeCommunity, setCommunityMembers } = useGlobal();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -52,7 +52,9 @@ export default function MembersPage() {
       <div>
         <Button
           text="🚶‍♀️‍➡️"
-          onClick={() => HandleKickMemberBtnClick(user.id, activeCommunity.id)}
+          onClick={() =>
+            HandleKickMemberBtnClick(session.user.id, activeCommunity.id)
+          }
         />
       </div>
     </div>

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { reservationsApi } from "../../../mocks";
 import { useItemContext } from "../../context/item_context/useItemContext";
 import { useSession } from "../../context/session_context/useSession";
@@ -10,7 +11,7 @@ export default function EventContent({
   setStartTime,
   setEndTime,
 }) {
-  const { user } = useSession();
+  const { session } = useSession();
   const { setReservations } = useGlobal();
   const { itemToRequest } = useItemContext();
   const [isLoading, setIsLoading] = useState(false);
@@ -77,14 +78,14 @@ export default function EventContent({
 
   // Component Helpers
   const IsOwnerAndNotBooked = () =>
-    itemToRequest.owner === user.id &&
+    itemToRequest.owner === session.user.id &&
     arg.event._def.extendedProps.status !== "booking";
   const IsOwnerAndIsBooked = () =>
-    itemToRequest.owner === user.id &&
+    itemToRequest.owner === session.user.id &&
     arg.event._def.extendedProps.status === "booking";
 
   const IsOurBooking = () =>
-    arg.event._def.extendedProps.userId == user.id && arg.timeText;
+    arg.event._def.extendedProps.userId == session.user.id && arg.timeText;
 
   return (
     <div className="flex flex-col opacity-0 hover:opacity-100 h-full  ">

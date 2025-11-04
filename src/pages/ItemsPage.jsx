@@ -11,17 +11,9 @@ import EditItemForm from "../components/ItemPage/EditItemForm";
 import { useNavigate } from "react-router";
 import { useSession } from "../context/session_context/useSession";
 
-const HasAvailibilityConflict = (itemId, reservations, startTime, endTime) => {
-  const reservationsOfItem = reservations.filter(
-    (res) => res.itemId === itemId
-  );
-
-  return HasReservationConflict(reservationsOfItem, startTime, endTime);
-};
-
 export default function ItemsPage() {
-  const { user } = useSession();
-  const { items, reservations, activeCommunity } = useGlobal();
+  const { session } = useSession();
+  const { items, activeCommunity } = useGlobal();
 
   const {
     availabilityFilterDates,
@@ -42,14 +34,13 @@ export default function ItemsPage() {
       items
         ? items.filter((item) => {
             if (!availabilityFilterDates)
-              return item.isAvailable && item.owner != user.id;
+              return item.is_available && item.owner != session.user.id;
             else {
               return (
-                item.isAvailable &&
-                item.owner != user.id &&
-                !HasAvailibilityConflict(
-                  item.id,
-                  reservations,
+                item.is_available &&
+                item.owner != session.user.id &&
+                !HasReservationConflict(
+                  item.item_reservations,
                   availabilityFilterDates.start,
                   availabilityFilterDates.end
                 )
@@ -61,7 +52,8 @@ export default function ItemsPage() {
   );
 
   const yourItems = useMemo(
-    () => (items ? items.filter((item) => item.owner === user.id) : null),
+    () =>
+      items ? items.filter((item) => item.owner === session.user.id) : null,
     [items]
   );
 

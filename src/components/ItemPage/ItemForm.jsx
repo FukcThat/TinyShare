@@ -5,17 +5,16 @@ import Input from "../ui/Input";
 import Checkbox from "../ui/Checkbox";
 import { useItemContext } from "../../context/item_context/useItemContext";
 import { useSession } from "../../context/session_context/useSession";
-import { itemsApi } from "../../../mocks";
+import { supabase } from "../../lib/supabaseClient";
 
 export default function ItemForm() {
-  const { user } = useSession();
-  const { setItems } = useGlobal();
+  const { session } = useSession();
+  const { setItems, items } = useGlobal();
   const { itemToEdit } = useItemContext();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     isAvailable: true,
-    userId: user.id,
   });
 
   const CreateItem = async (e) => {
@@ -23,9 +22,19 @@ export default function ItemForm() {
     if (formData.name == "") return;
     setIsLoading(true);
     try {
-      const res = await itemsApi.createItem(formData);
-      if (!res.ok) throw new Error(res);
-      setItems((oldItems) => [...oldItems, res.newItem]);
+      const { data, error } = await supabase
+        .from("items")
+        .insert([
+          {
+            owner: session.user.id,
+            name: formData.name,
+            is_available: formData.isAvailable,
+          },
+        ])
+        .select("id, owner, name, is_available, item_reservations(*)");
+
+      if (error) throw new Error(error.message);
+      setItems((old) => [...old, ...data]);
       setFormData({ ...formData, name: "" });
     } catch (error) {
       console.error("Create Item Error: ", error);

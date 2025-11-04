@@ -12,8 +12,7 @@ import { useSession } from "../../context/session_context/useSession";
 import { reservationsApi } from "../../../mocks";
 
 export default function ItemReservationModal() {
-  const { user } = useSession();
-  const { reservations, setReservations } = useGlobal();
+  const { session } = useSession();
   const { itemToRequest, setItemToRequest } = useItemContext();
 
   const [startTime, setStartTime] = useState("");
@@ -28,7 +27,7 @@ export default function ItemReservationModal() {
     setIsLoading(true);
     try {
       const res = await reservationsApi.createReservation({
-        userId: user.id,
+        userId: session.user.id,
         itemId: itemToRequest.id,
         startDate: startTime,
         endDate: endTime,
@@ -66,23 +65,23 @@ export default function ItemReservationModal() {
   }, [startTime, endTime]);
 
   const itemReservations = useMemo(() => {
-    return reservations
-      .filter((res) => res.itemId === itemToRequest.id)
-      .map((res) => {
-        return {
-          title: "user: " + res.userId,
-          start: res.startDate,
-          end: res.endDate,
-          resId: res.id,
-          status: res.status,
-          userId: res.userId,
-          backgroundColor:
-            res.status === "booking"
-              ? "hsla(357, 100%, 64%, 1)"
-              : "hsla(54, 100%, 82%, 1)",
-        };
-      });
-  }, [reservations]);
+    if (!itemToRequest) return [];
+
+    return itemToRequest.item_reservations.map((res) => {
+      return {
+        title: "user: " + res.userId,
+        start: res.start,
+        end: res.end,
+        resId: res.id,
+        status: res.status,
+        userId: res.userId,
+        backgroundColor:
+          res.status === "booking"
+            ? "hsla(357, 100%, 64%, 1)"
+            : "hsla(54, 100%, 82%, 1)",
+      };
+    });
+  }, [itemToRequest]);
 
   const SetTime = (time) => {
     if (startTime == "" || endTime != "") {
@@ -116,7 +115,7 @@ export default function ItemReservationModal() {
     <div className="fixed bg-blue-950/95 backdrop-blur-md w-[calc(100%-50px)] left-[25px] h-[80%] flex flex-col gap-4">
       <div>{itemToRequest.name}</div>
       <Button text="x" onClick={() => setItemToRequest(null)} />
-      {itemToRequest.owner !== user.id && (
+      {itemToRequest.owner !== session.user.id && (
         <form onSubmit={OnSubmitReservation}>
           <div>Start time: {startTime}</div>
           <div>End time: {endTime}</div>

@@ -6,7 +6,7 @@ import { useMemo } from "react";
 
 export default function ItemView({ item }) {
   const { setItemToRequest, setItemToEdit } = useItemContext();
-  const { user } = useSession();
+  const { session } = useSession();
   const { communityMembers } = useGlobal();
 
   const owner = useMemo(
@@ -19,9 +19,9 @@ export default function ItemView({ item }) {
       className={`flex flex-col gap-4 bg-gray-700 items-center justify-center w-[250px] h-[250px] border-4 rounded-md hover:border-slate-50/40 `}
     >
       <div>{item.name}</div>
-      <div>Owner: {owner.id === user.id ? "You" : owner.name} </div>
+      <div>Owner: {owner.id === session.user.id ? "You" : owner.name} </div>
 
-      {owner.id !== user.id ? (
+      {owner.id !== session.user.id ? (
         <Button text="Request" onClick={() => setItemToRequest(item)} />
       ) : (
         <div>

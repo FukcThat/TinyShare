@@ -2,13 +2,16 @@ import { useState } from "react";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
 import { GetDateObjFromDateTimeString } from "../../lib/GetDateObjectFromDateTimeString";
+import { useItemContext } from "../../context/item_context/useItemContext";
 
-export default function AvailabilityCheck({ setAvailabilityFilterDates }) {
+export default function AvailabilityCheck() {
   const [startDate, setStartDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endDate, setEndDate] = useState("");
   const [endTime, setEndTime] = useState("");
   const [showForm, setShowForm] = useState(false);
+
+  const { setAvailabilityFilterDates } = useItemContext();
 
   // Submit Form handler
   const onSubmit = (e) => {

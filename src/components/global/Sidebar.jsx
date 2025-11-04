@@ -8,7 +8,7 @@ import { communitiesApi } from "../../../mocks";
 
 export default function Sidebar() {
   const { user, setUserCommunities } = useSession();
-  const { userRole, activeCommunity } = useGlobal();
+  const { activeCommunity } = useGlobal();
 
   const [isShowingCommunityForm, setIsShowingCommunityForm] = useState(false);
   const [nameInput, setNameInput] = useState("");
@@ -51,7 +51,7 @@ export default function Sidebar() {
     <div className="absolute top-55 w-52 h-40 z-100 bg-blue-950">
       <div className="flex w-full justify-between">
         <CommunityDropdown />
-        {userRole == "admin" && <Button text="✏️" />}
+        {activeCommunity.role == "admin" && <Button text="✏️" />}
       </div>
       <div>
         <Button text="New Community" onClick={ToggleNewCommunityForm} />

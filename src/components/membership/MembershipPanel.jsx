@@ -1,4 +1,4 @@
-import { Activity, useState } from "react";
+import { useState } from "react";
 import { useGlobal } from "../../context/useGlobal";
 import Button from "../ui/Button";
 import Loading from "../global/Loading";
@@ -9,9 +9,9 @@ export default function MembershipPanel({
   HandleKickMemberBtnClick,
   isKickLoading,
 }) {
-  const { communityMembers, setCommunityMembers, userRole, activeCommunity } =
+  const { communityMembers, setCommunityMembers, activeCommunity } =
     useGlobal();
-  const { user } = useSession();
+  const { session, userCommunities } = useSession();
   const [isLoading, setIsLoading] = useState(false);
 
   const HandleRoleToggleBtnClick = async (userToToggleId) => {
@@ -42,7 +42,7 @@ export default function MembershipPanel({
     }
   };
 
-  if (!userRole || !user) return <Loading />;
+  if (!session || !userCommunities || !communityMembers) return <Loading />;
 
   return (
     <div>
@@ -51,27 +51,31 @@ export default function MembershipPanel({
       <div>
         {communityMembers.map((member) => {
           return (
-            <div key={member.id}>
-              <div>{member.name}</div>
-              {userRole == "admin" && user.id !== member.id && (
-                <>
-                  <Button
-                    disabled={isLoading}
-                    text={member.role == "admin" ? "admin" : "member"}
-                    onClick={() => {
-                      HandleRoleToggleBtnClick(member.id);
-                    }}
-                  />
+            <div
+              key={member.id}
+              className="flex gap-4 items-center m-10 bg-white/10 p-2 rounded-md justify-around"
+            >
+              <div>{member.email}</div>
+              {activeCommunity.role == "admin" &&
+                session.user.id !== member.id && (
+                  <>
+                    <Button
+                      disabled={isLoading}
+                      text={member.role == "admin" ? "admin" : "member"}
+                      onClick={() => {
+                        HandleRoleToggleBtnClick(member.id);
+                      }}
+                    />
 
-                  <Button
-                    disabled={isKickLoading}
-                    text="Kick Member out"
-                    onClick={() => {
-                      HandleKickMemberBtnClick(member.id);
-                    }}
-                  />
-                </>
-              )}
+                    <Button
+                      disabled={isKickLoading}
+                      text="Kick Member out"
+                      onClick={() => {
+                        HandleKickMemberBtnClick(member.id);
+                      }}
+                    />
+                  </>
+                )}
 
               {/* 
                 Make role toggle button 

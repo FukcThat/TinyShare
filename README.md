@@ -68,3 +68,27 @@ Current Commit: 👻🎃
 -- [] deleting communities
 -- [] deleting reservation
 -- [] deleting membership
+
+### Supabase Integration
+
+[] Reservation CRUD
+----[] Submit Reservation
+----[] Accept Reservation
+----[] Cancel/Deny Reservation
+[] Invitation CRUD
+----[] Accept Invite
+----[] Decline Invite
+----[] Rescind Invite
+----[] Invite User
+[] Membership CRUD
+----[] Kick
+----[] Toggle Role
+[x] User CRUD
+----[x] Log Out Btn
+----[x] Profile Info
+----[x] Change Display Name
+[] Realtime Integration
+----[] on item CREATE/UPDATE/DELETE
+----[] on user joining community
+----[] on reservation CREATE/UPDATE/DELETE
+----[] on invitation CREATE/UPDATE/DELETE

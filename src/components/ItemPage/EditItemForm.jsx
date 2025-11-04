@@ -4,7 +4,7 @@ import { useGlobal } from "../../context/useGlobal";
 import Input from "../ui/Input";
 import Checkbox from "../ui/Checkbox";
 import { useItemContext } from "../../context/item_context/useItemContext";
-import { itemsApi } from "../../../mocks";
+import { supabase } from "../../lib/supabaseClient";
 
 export default function EditItemForm() {
   const { itemToEdit, setItemToEdit } = useItemContext();
@@ -13,7 +13,7 @@ export default function EditItemForm() {
 
   const [formData, setFormData] = useState({
     name: itemToEdit.name,
-    isAvailable: itemToEdit.isAvailable,
+    isAvailable: itemToEdit.is_available,
   });
 
   useEffect(
@@ -24,17 +24,20 @@ export default function EditItemForm() {
   const UpdateItem = async (e) => {
     e.preventDefault();
     if (formData.name == "") return;
-    setIsLoading(true);
     try {
-      let res = await itemsApi.updateItem(itemToEdit.id, formData);
-      if (res.ok) {
-        setItems((oldItems) =>
-          oldItems.map((item) =>
-            item.id === itemToEdit.id ? res.updatedItem : item
-          )
-        );
-      }
-      setItemToEdit(res.updatedItem);
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from("items")
+        .update({ name: formData.name, is_available: formData.isAvailable })
+        .eq("id", itemToEdit.id)
+        .select("id, owner, name, is_available, item_reservations(*)");
+
+      if (error) throw new Error(error.message);
+
+      setItems((old) =>
+        old.map((item) => (item.id === itemToEdit.id ? data : item)).flat()
+      );
+      setItemToEdit(data[0]);
     } catch (error) {
       console.error(error);
     } finally {
@@ -45,8 +48,12 @@ export default function EditItemForm() {
   const DeleteItem = async (e) => {
     setIsLoading(true);
     try {
-      let res = await itemsApi.deleteItem();
-      if (!res.ok) throw new Error(res);
+      const { error } = await supabase
+        .from("items")
+        .delete()
+        .eq("id", itemToEdit.id);
+
+      if (error) throw new Error(error.message);
       setItems((oldItems) =>
         oldItems.filter((item) => item.id !== itemToEdit.id)
       );
