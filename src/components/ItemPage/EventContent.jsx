@@ -4,6 +4,7 @@ import { useItemContext } from "../../context/item_context/useItemContext";
 import { useSession } from "../../context/session_context/useSession";
 import { useGlobal } from "../../context/useGlobal";
 import Button from "../ui/Button";
+import { supabase } from "../../lib/supabaseClient";
 
 export default function EventContent({
   arg,
@@ -12,8 +13,8 @@ export default function EventContent({
   setEndTime,
 }) {
   const { session } = useSession();
-  const { setReservations } = useGlobal();
-  const { itemToRequest } = useItemContext();
+  const { setItems } = useGlobal();
+  const { itemToRequest, setItemToRequest } = useItemContext();
   const [isLoading, setIsLoading] = useState(false);
 
   const HandleApproveBtnClick = async (e) => {
@@ -22,18 +23,41 @@ export default function EventContent({
     } else {
       try {
         setIsLoading(true);
-        const res = await reservationsApi.approveReservation(
-          arg.event._def.extendedProps.resId
-        );
-        if (!res.ok) throw new Error("Approve Reservation failed: ", res);
 
-        setReservations((oldReservations) =>
-          oldReservations.map((reservation) =>
-            res.updatedReservation.id != reservation.id
-              ? reservation
-              : res.updatedReservation
-          )
-        );
+        // supabase
+
+        const { data, error } = await supabase
+          .from("item_reservations")
+          .update({ status: "booking" })
+          .eq("id", arg.event._def.extendedProps.resId)
+          .select()
+          .single();
+
+        if (error)
+          throw new Error("Approve Reservation failed: ", error.message);
+
+        setItems((oldItems) => {
+          return oldItems.map((item) => {
+            if (item.id === data.item_id) {
+              return {
+                ...item,
+                item_reservations: item.item_reservations.map((itemRes) =>
+                  itemRes.id === data.id ? data : itemRes
+                ),
+              };
+            }
+            return item;
+          });
+        });
+
+        setItemToRequest((oldItem) => {
+          return {
+            ...oldItem,
+            item_reservations: oldItem.item_reservations.map((itemRes) =>
+              itemRes.id === data.id ? data : itemRes
+            ),
+          };
+        });
       } catch (error) {
         console.error(error);
       } finally {
@@ -54,17 +78,35 @@ export default function EventContent({
   const HandleCancelBtnClick = async () => {
     try {
       setIsLoading(true);
-      const res = await reservationsApi.cancelReservation(
-        arg.event._def.extendedProps.resId
-      );
 
-      if (!res.ok) throw new Error("Deny reservation error: ", res);
+      const { error } = await supabase
+        .from("item_reservations")
+        .delete()
+        .eq("id", arg.event._def.extendedProps.resId);
 
-      setReservations((oldReservations) =>
-        oldReservations.filter(
-          (reservation) => reservation.id != arg.event._def.extendedProps.resId
-        )
-      );
+      if (error) throw new Error("Deny reservation error: ", error.message);
+      setItems((oldItems) => {
+        return oldItems.map((item) => {
+          if (item.id === itemToRequest.id) {
+            return {
+              ...item,
+              item_reservations: item.item_reservations.filter(
+                (itemRes) => itemRes.id !== arg.event._def.extendedProps.resId
+              ),
+            };
+          }
+          return item;
+        });
+      });
+
+      setItemToRequest((oldItem) => {
+        return {
+          ...oldItem,
+          item_reservations: oldItem.item_reservations.filter(
+            (itemRes) => itemRes.id !== arg.event._def.extendedProps.resId
+          ),
+        };
+      });
     } catch (error) {
       console.error(error);
     } finally {

@@ -9,11 +9,12 @@ import { HasReservationConflict } from "../../lib/HasReservationConflict";
 import { useItemContext } from "../../context/item_context/useItemContext";
 import EventContent from "./EventContent";
 import { useSession } from "../../context/session_context/useSession";
-import { reservationsApi } from "../../../mocks";
+import { supabase } from "../../lib/supabaseClient";
 
 export default function ItemReservationModal() {
   const { session } = useSession();
   const { itemToRequest, setItemToRequest } = useItemContext();
+  const { setItems } = useGlobal();
 
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
@@ -22,24 +23,47 @@ export default function ItemReservationModal() {
 
   const OnSubmitReservation = async (e, selfBooking = false) => {
     e.preventDefault();
-
     if (startTime === "" || endTime === "") return;
-    setIsLoading(true);
+
     try {
-      const res = await reservationsApi.createReservation({
-        userId: session.user.id,
-        itemId: itemToRequest.id,
-        startDate: startTime,
-        endDate: endTime,
-        status: selfBooking ? "booking" : "request",
+      setIsLoading(true);
+
+      const { data, error } = await supabase
+        .from("item_reservations")
+        .insert([
+          {
+            user_id: session.user.id,
+            item_id: itemToRequest.id,
+            start: startTime,
+            end: endTime,
+            status: selfBooking ? "booking" : "request",
+          },
+        ])
+        .select()
+        .single();
+
+      if (error)
+        throw new Error("Creating reservation failed: ", error.message);
+
+      console.log("item_res data: ", data);
+      setItems((oldItems) => {
+        console.log(oldItems);
+        return oldItems.map((item) => {
+          if (item.id === data.item_id) {
+            return {
+              ...item,
+              item_reservations: [...itemReservations, data],
+            };
+          }
+          return item;
+        });
       });
 
-      if (!res.ok) throw new Error("Creating reservation failed: ", res);
+      setItemToRequest((oldItem) => {
+        return { ...oldItem, item_reservations: [...itemReservations, data] };
+      });
 
-      setReservations((oldReservations) => [
-        ...oldReservations,
-        res.newReservation,
-      ]);
+      // update this items reservations in local state
 
       setStartTime("");
       setEndTime("");
@@ -69,16 +93,17 @@ export default function ItemReservationModal() {
 
     return itemToRequest.item_reservations.map((res) => {
       return {
-        title: "user: " + res.userId,
+        title:
+          "user: " + (res.user_id === session.user.id ? "You" : res.user_id),
         start: res.start,
         end: res.end,
         resId: res.id,
         status: res.status,
-        userId: res.userId,
+        userId: res.user_id,
         backgroundColor:
           res.status === "booking"
             ? "hsla(357, 100%, 64%, 1)"
-            : "hsla(54, 100%, 82%, 1)",
+            : "hsla(40, 100%, 50%, 1)",
       };
     });
   }, [itemToRequest]);

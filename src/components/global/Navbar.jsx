@@ -13,7 +13,7 @@ const NavElements = [
 
 export default function Navbar({ ToggleSidebar }) {
   const location = useLocation();
-  const { session } = useSession();
+  const { session, userProfile } = useSession();
   const { activeCommunity } = useGlobal();
 
   const HandleLogOut = async () => {
@@ -34,7 +34,16 @@ export default function Navbar({ ToggleSidebar }) {
           onClick={ToggleSidebar}
         />
         <div>-</div>
-        <div>{session.user.email}</div>
+        {userProfile && userProfile.name != "" ? (
+          <div className="flex flex-col">
+            <div>{userProfile.name}</div>
+            <div className="text-sm opacity-75 font-light">
+              {session.user.email}
+            </div>
+          </div>
+        ) : (
+          <div>{session.user.email}</div>
+        )}
       </div>
 
       <div className="flex gap-4 items-center justify-center">

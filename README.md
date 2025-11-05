@@ -71,18 +71,18 @@ Current Commit: 👻🎃
 
 ### Supabase Integration
 
-[] Reservation CRUD
-----[] Submit Reservation
-----[] Accept Reservation
-----[] Cancel/Deny Reservation
+[x] Reservation CRUD
+----[x] Submit Reservation // anyone who is a member of overlapping communities can create the reservation
+----[x] Accept Reservation //only item owner or person who reserve can update/delete
+----[x] Cancel/Deny Reservation //only item owner or person who reserve can update/delete
 [] Invitation CRUD
-----[] Accept Invite
-----[] Decline Invite
-----[] Rescind Invite
-----[] Invite User
+----[] Accept Invite // invitee or inviter can update
+----[] Decline Invite // invitee or inviter can delete
+----[] Rescind Invite // inviter or inviter can delete
+----[] Invite User // member of community can create invitation
 [] Membership CRUD
-----[] Kick
-----[] Toggle Role
+----[] Kick // only admins of communities RLS
+----[] Toggle Role // only admins of communities RLS, cannot toggle your own
 [x] User CRUD
 ----[x] Log Out Btn
 ----[x] Profile Info
