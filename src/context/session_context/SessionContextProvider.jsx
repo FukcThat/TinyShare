@@ -42,10 +42,7 @@ export default function SessionProvider({ children }) {
       .catch((error) => console.error(error));
   }, [session]);
 
-  useEffect(() => {
-    // Get User Communities and Invitations
-    if (!session) return;
-
+  const UpdateUserCommunities = () => {
     supabase
       .from("memberships")
       .select("role, communities (*)")
@@ -58,6 +55,12 @@ export default function SessionProvider({ children }) {
         );
       })
       .catch((err) => console.error(err));
+  };
+
+  useEffect(() => {
+    // Get User Communities and Invitations
+    if (!session) return;
+    UpdateUserCommunities();
     // invitationsApi
     //   .getUserInvitations(user.id)
     //   .then((data) => setUserInvitations(data));
@@ -86,6 +89,7 @@ export default function SessionProvider({ children }) {
         session,
         userCommunities,
         setUserCommunities,
+        UpdateUserCommunities,
         userInvitations,
         setUserInvitations,
         userProfile,

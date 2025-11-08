@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useGlobal } from "../../context/useGlobal";
 import Button from "../ui/Button";
 import Loading from "../global/Loading";
-import { membershipsApi } from "../../../mocks";
 import { useSession } from "../../context/session_context/useSession";
+import { supabase } from "../../lib/supabaseClient";
 
 export default function MembershipPanel({
   HandleKickMemberBtnClick,
@@ -14,22 +14,28 @@ export default function MembershipPanel({
   const { session, userCommunities } = useSession();
   const [isLoading, setIsLoading] = useState(false);
 
-  const HandleRoleToggleBtnClick = async (userToToggleId) => {
+  const HandleRoleToggleBtnClick = async (userToToggleId, userToToggleRole) => {
     try {
       setIsLoading(true);
-      const res = await membershipsApi.toggleMemberRole(
-        userToToggleId,
-        activeCommunity.id
-      );
+      // here we have to update the role of the user
+      console.log(userToToggleRole);
+      let newRole = userToToggleRole == "admin" ? "member" : "admin";
+      const { data, error } = await supabase
+        .from("memberships")
+        .update({ role: newRole })
+        .eq("user_id", userToToggleId)
+        .eq("community_id", activeCommunity.id)
+        .select()
+        .single();
 
-      if (!res.ok) throw new Error("Issue with role toggle: ", res);
+      if (error) throw new Error("Issue with role toggle: ", error.message);
 
       setCommunityMembers((oldMembers) =>
         oldMembers.map((member) => {
-          if (member.id === userToToggleId) {
+          if (member.id === data.user_id) {
             return {
               ...member,
-              role: member.role === "admin" ? "member" : "admin",
+              role: data.role,
             };
           }
           return member;
@@ -63,7 +69,7 @@ export default function MembershipPanel({
                       disabled={isLoading}
                       text={member.role == "admin" ? "admin" : "member"}
                       onClick={() => {
-                        HandleRoleToggleBtnClick(member.id);
+                        HandleRoleToggleBtnClick(member.id, member.role);
                       }}
                     />
 

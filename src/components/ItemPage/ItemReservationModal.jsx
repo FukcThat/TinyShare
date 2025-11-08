@@ -45,7 +45,6 @@ export default function ItemReservationModal() {
       if (error)
         throw new Error("Creating reservation failed: ", error.message);
 
-      console.log("item_res data: ", data);
       setItems((oldItems) => {
         console.log(oldItems);
         return oldItems.map((item) => {

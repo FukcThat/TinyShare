@@ -4,10 +4,10 @@ import Button from "../components/ui/Button";
 import { useGlobal } from "../context/useGlobal";
 import { useEffect, useState } from "react";
 import { useSession } from "../context/session_context/useSession";
-import { communitiesApi, membershipsApi } from "../../mocks";
+import { supabase } from "../lib/supabaseClient";
 
 export default function MembersPage() {
-  const { session, setUserCommunities } = useSession();
+  const { session, UpdateUserCommunities } = useSession();
   const { activeCommunity, setCommunityMembers } = useGlobal();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -23,13 +23,18 @@ export default function MembersPage() {
     try {
       setIsLoading(true);
 
-      const res = await membershipsApi.KickMember(memberId, activeCommunity.id);
+      const { data, error } = await supabase
+        .from("memberships")
+        .delete()
+        .eq("user_id", memberId)
+        .eq("community_id", activeCommunity.id)
+        .select();
 
-      if (!res.ok) throw new Error("Issue Kicking Member: ", res);
+      if (error || data.length === 0)
+        throw new Error("Issue Kicking Member: ", error.message);
 
-      if (memberId === user.id) {
-        const communityRes = await communitiesApi.getUserCommunities(user.id);
-        setUserCommunities(communityRes);
+      if (memberId === session.user.id) {
+        UpdateUserCommunities();
         nav("/");
         return;
       }
@@ -52,9 +57,7 @@ export default function MembersPage() {
       <div>
         <Button
           text="🚶‍♀️‍➡️"
-          onClick={() =>
-            HandleKickMemberBtnClick(session.user.id, activeCommunity.id)
-          }
+          onClick={() => HandleKickMemberBtnClick(session.user.id)}
         />
       </div>
     </div>
