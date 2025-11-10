@@ -79,10 +79,12 @@ Current Commit: 👻🎃
 ----[] Accept Invite // invitee or inviter can update
 ----[] Decline Invite // invitee or inviter can delete
 ----[] Rescind Invite // inviter or inviter can delete
-----[] Invite User // member of community can create invitation
-[] Membership CRUD
-----[] Kick // only admins of communities RLS
-----[] Toggle Role // only admins of communities RLS, cannot toggle your own
+----[x] Invite User // member of community can create invitation
+----[] on sign in, if password not set, set password
+----[] reset password component?
+[x] Membership CRUD
+----[x] Kick // only admins of communities RLS
+----[x] Toggle Role // only admins of communities RLS, cannot toggle your own
 [x] User CRUD
 ----[x] Log Out Btn
 ----[x] Profile Info

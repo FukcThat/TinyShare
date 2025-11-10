@@ -12,6 +12,8 @@ export function GlobalProvider({ children }) {
   const [invitations, setInvitations] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => console.log(invitations), [invitations]);
+
   useEffect(() => {
     if (!activeCommunity) return;
     setIsLoading(true);
@@ -22,6 +24,10 @@ export function GlobalProvider({ children }) {
         `
       id,
       name, 
+      invitations (
+      *, 
+      profiles!invitations_invitee_id_fkey(*)
+      ),
       memberships(
         user_id,
         role,
@@ -43,6 +49,7 @@ export function GlobalProvider({ children }) {
       .eq("id", activeCommunity.id)
       .single()
       .then((res) => {
+        console.log(res);
         // set the items, reservations are part of the items
         const members = res.data.memberships.map((member) => {
           return {
@@ -54,8 +61,11 @@ export function GlobalProvider({ children }) {
         const items = res.data.memberships
           .map((member) => member.profiles.items)
           .flat();
+
+        const invitations = res.data.invitations;
         setItems(items);
         setCommunityMembers(members);
+        setInvitations(invitations);
       })
       .catch((err) => console.error(err))
       .finally(() => setIsLoading(false));
@@ -77,6 +87,8 @@ export function GlobalProvider({ children }) {
         setItems,
         communityMembers,
         setCommunityMembers,
+        invitations,
+        setInvitations,
       }}
     >
       {children}

@@ -18,8 +18,9 @@ export default function MembershipPanel({
     try {
       setIsLoading(true);
       // here we have to update the role of the user
-      console.log(userToToggleRole);
+
       let newRole = userToToggleRole == "admin" ? "member" : "admin";
+
       const { data, error } = await supabase
         .from("memberships")
         .update({ role: newRole })
@@ -82,19 +83,10 @@ export default function MembershipPanel({
                     />
                   </>
                 )}
-
-              {/* 
-                Make role toggle button 
-                Implement role toggle onClick 
-                -- > Change role of member with this id & is in this (active) community
-
-                Make DeleteMemberschip button 
-                --> Remove membership from membershipArray with this id & in this community */}
             </div>
           );
         })}
       </div>
-      {/* If admin: Way to change members role, invite & kick */}
     </div>
   );
 }

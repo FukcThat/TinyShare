@@ -57,13 +57,23 @@ export default function SessionProvider({ children }) {
       .catch((err) => console.error(err));
   };
 
+  const UpdateUserInvites = () => {
+    supabase
+      .from("invitations")
+      .select("*, communities (*)")
+      .eq("invitee_id", session.user.id)
+      .then((res) => {
+        console.log(res.data);
+
+        setUserInvitations(res.data);
+      })
+      .catch((err) => console.error(err));
+  };
+
   useEffect(() => {
-    // Get User Communities and Invitations
     if (!session) return;
     UpdateUserCommunities();
-    // invitationsApi
-    //   .getUserInvitations(user.id)
-    //   .then((data) => setUserInvitations(data));
+    UpdateUserInvites();
   }, [session]);
 
   if (loading) return <Loading />;

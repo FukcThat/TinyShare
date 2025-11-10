@@ -12,6 +12,7 @@ export default function Input({
   labelStyles = "",
   inputStyles = "",
   disabled = false,
+  required = false,
 }) {
   return (
     <div className={twMerge(["flex gap-2 items-center text-lg ", outerStyles])}>
@@ -24,6 +25,7 @@ export default function Input({
         </label>
       )}
       <input
+        required={required}
         disabled={disabled}
         id={id}
         type={type}

@@ -5,10 +5,12 @@ import { useGlobal } from "../context/useGlobal";
 import { useEffect, useState } from "react";
 import { useSession } from "../context/session_context/useSession";
 import { supabase } from "../lib/supabaseClient";
+import InviteForm from "../components/membership/InviteForm";
 
 export default function MembersPage() {
   const { session, UpdateUserCommunities } = useSession();
-  const { activeCommunity, setCommunityMembers } = useGlobal();
+  const { activeCommunity, setCommunityMembers, invitations, setInvitations } =
+    useGlobal();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -48,8 +50,48 @@ export default function MembersPage() {
     }
   };
 
+  const HandleDeclineInviteBtnClick = async (inviteId) => {
+    try {
+      setIsLoading(true);
+
+      const { data, error } = await supabase
+        .from("invitations")
+        .delete()
+        .eq("id", inviteId)
+        .select()
+        .single();
+      if (!data || error)
+        throw new Error("Issue Declining the invitation: ", error);
+      setInvitations((old) => old.filter((inv) => inv.id != inviteId));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div>
+      <InviteForm />
+      {activeCommunity && activeCommunity.role == "admin" && invitations && (
+        <div>
+          <div>Community Invitations</div>
+          <div>
+            {invitations.map((invite) => {
+              return (
+                <div key={invite.id}>
+                  <div>{invite.profiles.email}</div>
+                  <button
+                    onClick={() => HandleDeclineInviteBtnClick(invite.id)}
+                  >
+                    🗑️
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
       <MembershipPanel
         HandleKickMemberBtnClick={HandleKickMemberBtnClick}
         isKickLoading={isLoading}
