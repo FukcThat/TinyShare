@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Loading from "../global/Loading";
 import Button from "../ui/Button";
-import { communitiesApi, invitationsApi } from "../../../mocks";
 import { useSession } from "../../context/session_context/useSession";
 import { supabase } from "../../lib/supabaseClient";
 

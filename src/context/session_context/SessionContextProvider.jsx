@@ -1,80 +1,19 @@
-import { useEffect, useState } from "react";
 import { SessionContext } from "./SessionContext";
 import Loading from "../../components/global/Loading";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "../../lib/supabaseClient";
 import { Auth } from "@supabase/auth-ui-react";
+import useUserInvitations from "../../hooks/useUserInvitations";
+import useUserCommunities from "../../hooks/useUserCommunities";
+import useUserProfile from "../../hooks/useUserProfile";
+import useLogin from "../../hooks/useLogin";
 
 export default function SessionProvider({ children }) {
-  const [userCommunities, setUserCommunities] = useState([]);
-  const [userInvitations, setUserInvitations] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState(null);
-  const [userProfile, setUserProfile] = useState(null);
-
-  useEffect(() => {
-    // Login
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setLoading(false);
-    });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_, session) => {
-      setSession(session);
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!session) return;
-
-    supabase
-      .from("profiles")
-      .select("name")
-      .eq("id", session.user.id)
-      .single()
-      .then((res) => setUserProfile(res.data))
-      .catch((error) => console.error(error));
-  }, [session]);
-
-  const UpdateUserCommunities = () => {
-    supabase
-      .from("memberships")
-      .select("role, communities (*)")
-      .eq("user_id", session.user.id)
-      .then((res) => {
-        setUserCommunities(
-          res.data.map((e) => {
-            return { ...e.communities, role: e.role };
-          })
-        );
-      })
-      .catch((err) => console.error(err));
-  };
-
-  const UpdateUserInvites = () => {
-    supabase
-      .from("invitations")
-      .select("*, communities (*)")
-      .eq("invitee_id", session.user.id)
-      .then((res) => {
-        console.log(res.data);
-
-        setUserInvitations(res.data);
-      })
-      .catch((err) => console.error(err));
-  };
-
-  useEffect(() => {
-    if (!session) return;
-    UpdateUserCommunities();
-    UpdateUserInvites();
-  }, [session]);
+  const [session, loading] = useLogin();
+  const [userCommunities, setUserCommunities, UpdateUserCommunities] =
+    useUserCommunities(session);
+  const [userInvitations, setUserInvitations] = useUserInvitations(session);
+  const [userProfile, setUserProfile] = useUserProfile(session);
 
   if (loading) return <Loading />;
 

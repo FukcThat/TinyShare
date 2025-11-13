@@ -76,10 +76,11 @@ Current Commit: 👻🎃
 ----[x] Accept Reservation //only item owner or person who reserve can update/delete
 ----[x] Cancel/Deny Reservation //only item owner or person who reserve can update/delete
 [] Invitation CRUD
-----[] Accept Invite // invitee or inviter can update
-----[] Decline Invite // invitee or inviter can delete
-----[] Rescind Invite // inviter or inviter can delete
+----[x] Accept Invite // invitee or inviter can update
+----[x] Decline Invite // invitee or inviter can delete
+----[x] Rescind Invite // inviter or inviter can delete
 ----[x] Invite User // member of community can create invitation
+----[x] Handle Send Invite Form
 ----[] on sign in, if password not set, set password
 ----[] reset password component?
 [x] Membership CRUD
@@ -89,8 +90,10 @@ Current Commit: 👻🎃
 ----[x] Log Out Btn
 ----[x] Profile Info
 ----[x] Change Display Name
+[] Community CRUD
+----[x] Create New Community
+----[] Edit Community Details
+----[] Delete Community
 [] Realtime Integration
-----[] on item CREATE/UPDATE/DELETE
-----[] on user joining community
-----[] on reservation CREATE/UPDATE/DELETE
-----[] on invitation CREATE/UPDATE/DELETE
+----[] Split up the global session db call into 3 for items, invitations and members
+----[] create custom hook for realtime and db call

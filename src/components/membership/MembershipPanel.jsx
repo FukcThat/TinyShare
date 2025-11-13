@@ -52,17 +52,17 @@ export default function MembershipPanel({
   if (!session || !userCommunities || !communityMembers) return <Loading />;
 
   return (
-    <div>
-      MembershipPanel
+    <div className="flex flex-col items-center justify-center text-3xl">
+      Community Members
       {/* List of Members */}
       <div>
         {communityMembers.map((member) => {
           return (
             <div
               key={member.id}
-              className="flex gap-4 items-center m-10 bg-white/10 p-2 rounded-md justify-around"
+              className="flex gap-4 text-lg items-center m-10 bg-white/10 p-4 rounded-md justify-around"
             >
-              <div>{member.email}</div>
+              <div>Email: {member.email}</div>
               {activeCommunity.role == "admin" &&
                 session.user.id !== member.id && (
                   <>

@@ -2,22 +2,47 @@ import { useEffect, useState } from "react";
 import { GlobalContext } from "./GlobalContext";
 import { useSession } from "./session_context/useSession";
 import Loading from "../components/global/Loading";
-import { supabase } from "../lib/supabaseClient";
+import { listenForMembershipChanges, supabase } from "../lib/supabaseClient";
 
 export function GlobalProvider({ children }) {
-  const { userCommunities } = useSession();
+  const { userCommunities, session } = useSession();
   const [activeCommunity, setActiveCommunity] = useState(null);
   const [communityMembers, setCommunityMembers] = useState(null);
   const [items, setItems] = useState(null);
   const [invitations, setInvitations] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => console.log(invitations), [invitations]);
-
   useEffect(() => {
     if (!activeCommunity) return;
-    setIsLoading(true);
 
+    const channel = listenForMembershipChanges(
+      activeCommunity.id,
+      (payload) => {
+        if (payload.eventType === "INSERT") {
+          console.log("INSERT: ", payload);
+          if (payload.new.community_id !== activeCommunity.id) return;
+          UpdateCommunityData();
+        } else if (payload.eventType === "DELETE") {
+          setCommunityMembers((prevMembers) => {
+            const match = prevMembers.some(
+              (member) => member.membership_id === payload.old.id
+            );
+            if (match) {
+              UpdateCommunityData();
+            }
+            return prevMembers;
+          });
+          console.log("DELETE : ", payload);
+        }
+      }
+    );
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [activeCommunity]);
+
+  const UpdateCommunityData = () => {
     supabase
       .from("communities")
       .select(
@@ -29,6 +54,7 @@ export function GlobalProvider({ children }) {
       profiles!invitations_invitee_id_fkey(*)
       ),
       memberships(
+        id,
         user_id,
         role,
         profiles(
@@ -49,11 +75,10 @@ export function GlobalProvider({ children }) {
       .eq("id", activeCommunity.id)
       .single()
       .then((res) => {
-        console.log(res);
-        // set the items, reservations are part of the items
         const members = res.data.memberships.map((member) => {
           return {
             id: member.profiles.id,
+            membership_id: member.id,
             role: member.role,
             email: member.profiles.email,
           };
@@ -69,7 +94,12 @@ export function GlobalProvider({ children }) {
       })
       .catch((err) => console.error(err))
       .finally(() => setIsLoading(false));
-    // set invitations
+  };
+
+  useEffect(() => {
+    if (!activeCommunity || activeCommunity.id === -1) return;
+    setIsLoading(true);
+    UpdateCommunityData();
   }, [activeCommunity]); // active community changes, fetch data
 
   useEffect(() => {

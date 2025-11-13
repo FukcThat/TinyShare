@@ -33,7 +33,10 @@ export default function MembersPage() {
         .select();
 
       if (error || data.length === 0)
-        throw new Error("Issue Kicking Member: ", error.message);
+        throw new Error(
+          "Issue Kicking Member: ",
+          error ? error.message : "last member"
+        );
 
       if (memberId === session.user.id) {
         UpdateUserCommunities();
@@ -71,34 +74,38 @@ export default function MembersPage() {
   };
 
   return (
-    <div>
+    <div className="flex flex-col justify-center items-center gap-10">
+      <MembershipPanel
+        HandleKickMemberBtnClick={HandleKickMemberBtnClick}
+        isKickLoading={isLoading}
+      />
       <InviteForm />
       {activeCommunity && activeCommunity.role == "admin" && invitations && (
-        <div>
-          <div>Community Invitations</div>
+        <div className="flex flex-col gap-10 justify-center items-center">
+          <div className="text-3xl">Community Invitations</div>
           <div>
             {invitations.map((invite) => {
               return (
-                <div key={invite.id}>
+                <div
+                  key={invite.id}
+                  className="flex gap-4 justify-center items-center"
+                >
                   <div>{invite.profiles.email}</div>
-                  <button
+                  <Button
                     onClick={() => HandleDeclineInviteBtnClick(invite.id)}
-                  >
-                    🗑️
-                  </button>
+                    disabled={isLoading}
+                    text="🗑️"
+                  />
                 </div>
               );
             })}
           </div>
         </div>
       )}
-      <MembershipPanel
-        HandleKickMemberBtnClick={HandleKickMemberBtnClick}
-        isKickLoading={isLoading}
-      />
+
       <div>
         <Button
-          text="🚶‍♀️‍➡️"
+          text="Leave Community🚶‍♀️‍➡️"
           onClick={() => HandleKickMemberBtnClick(session.user.id)}
         />
       </div>

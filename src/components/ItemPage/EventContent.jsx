@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { reservationsApi } from "../../../mocks";
 import { useItemContext } from "../../context/item_context/useItemContext";
 import { useSession } from "../../context/session_context/useSession";
 import { useGlobal } from "../../context/useGlobal";

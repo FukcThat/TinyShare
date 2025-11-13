@@ -7,27 +7,21 @@ import { useGlobal } from "../../context/useGlobal";
 
 export default function InviteForm() {
   const { session } = useSession();
-  const { activeCommunity } = useGlobal();
+  const { activeCommunity, setInvitations } = useGlobal();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [inviteeEmail, setInviteeEmail] = useState("");
+  const [inviteeEmail, setInviteeEmail] = useState("anton.harbers23@gmail.com");
 
   const submitInvitation = async (e) => {
     try {
       e.preventDefault();
       setIsLoading(true);
-
       if (inviteeEmail == "") return;
-      console.log(inviteeEmail);
-
-      // Check if the user is an admin
 
       let { data: profiles, error } = await supabase
         .from("profiles")
         .select()
         .eq("email", inviteeEmail);
-
-      console.log(profiles, error);
 
       if (error) throw new Error("Error looking for profiles,", error.message);
 
@@ -60,7 +54,7 @@ export default function InviteForm() {
             role: "member",
           },
         ])
-        .select()
+        .select("*, profiles!invitations_invitee_id_fkey(*)")
         .single();
 
       if (inviteCreationError)
@@ -69,7 +63,8 @@ export default function InviteForm() {
           inviteCreationError.message
         );
 
-      console.log(invitation);
+      setInvitations((old) => [...old, invitation]);
+      setInviteeEmail("");
     } catch (error) {
       console.error(error);
     } finally {
@@ -79,18 +74,21 @@ export default function InviteForm() {
   };
 
   return (
-    <form onSubmit={submitInvitation}>
+    <form
+      onSubmit={submitInvitation}
+      className="flex w-[80%] justify-center gap-5 mx-auto"
+    >
       <Input
         value={inviteeEmail}
         disabled={isLoading}
         required
         type="email"
-        withLabel
-        labelText="Enter Email"
-        placeholder="someone@somewhere.com"
+        placeholder="Enter new members email..."
         onChange={(e) => setInviteeEmail(e.target.value)}
+        outerStyles="flex-grow"
+        inputStyles="w-full"
       />
-      <Button type="submit" text="submit" />
+      <Button type="submit" text="Invite New Member" />
     </form>
   );
 }
