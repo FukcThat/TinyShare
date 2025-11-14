@@ -3,13 +3,17 @@ import { GlobalContext } from "./GlobalContext";
 import { useSession } from "./session_context/useSession";
 import Loading from "../components/global/Loading";
 import { listenForMembershipChanges, supabase } from "../lib/supabaseClient";
+import useCommunityInvitations from "../hooks/useCommunityInvitations";
+import useCommunityMembers from "../hooks/useCommunityMembers";
 
 export function GlobalProvider({ children }) {
   const { userCommunities, session } = useSession();
   const [activeCommunity, setActiveCommunity] = useState(null);
-  const [communityMembers, setCommunityMembers] = useState(null);
+  const [communityMembers, setCommunityMembers] =
+    useCommunityMembers(activeCommunity);
   const [items, setItems] = useState(null);
-  const [invitations, setInvitations] = useState(null);
+  const [communityInvitations, setCommunityInvitations] =
+    useCommunityInvitations(activeCommunity);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -75,22 +79,11 @@ export function GlobalProvider({ children }) {
       .eq("id", activeCommunity.id)
       .single()
       .then((res) => {
-        const members = res.data.memberships.map((member) => {
-          return {
-            id: member.profiles.id,
-            membership_id: member.id,
-            role: member.role,
-            email: member.profiles.email,
-          };
-        });
         const items = res.data.memberships
           .map((member) => member.profiles.items)
           .flat();
 
-        const invitations = res.data.invitations;
         setItems(items);
-        setCommunityMembers(members);
-        setInvitations(invitations);
       })
       .catch((err) => console.error(err))
       .finally(() => setIsLoading(false));
@@ -117,8 +110,8 @@ export function GlobalProvider({ children }) {
         setItems,
         communityMembers,
         setCommunityMembers,
-        invitations,
-        setInvitations,
+        communityInvitations,
+        setCommunityInvitations,
       }}
     >
       {children}

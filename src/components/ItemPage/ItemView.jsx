@@ -10,7 +10,7 @@ export default function ItemView({ item }) {
   const { communityMembers } = useGlobal();
 
   const owner = useMemo(
-    () => communityMembers.find((user) => user.id === item.owner),
+    () => communityMembers.find((user) => user.profiles.id === item.owner),
     [communityMembers]
   );
 

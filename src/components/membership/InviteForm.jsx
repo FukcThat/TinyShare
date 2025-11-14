@@ -7,7 +7,7 @@ import { useGlobal } from "../../context/useGlobal";
 
 export default function InviteForm() {
   const { session } = useSession();
-  const { activeCommunity, setInvitations } = useGlobal();
+  const { activeCommunity, setCommunityInvitations } = useGlobal();
 
   const [isLoading, setIsLoading] = useState(false);
   const [inviteeEmail, setInviteeEmail] = useState("anton.harbers23@gmail.com");
@@ -63,7 +63,7 @@ export default function InviteForm() {
           inviteCreationError.message
         );
 
-      setInvitations((old) => [...old, invitation]);
+      setCommunityInvitations((old) => [...old, invitation]);
       setInviteeEmail("");
     } catch (error) {
       console.error(error);

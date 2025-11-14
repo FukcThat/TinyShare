@@ -33,7 +33,7 @@ export default function MembershipPanel({
 
       setCommunityMembers((oldMembers) =>
         oldMembers.map((member) => {
-          if (member.id === data.user_id) {
+          if (member.profiles.id === data.user_id) {
             return {
               ...member,
               role: data.role,
@@ -59,18 +59,21 @@ export default function MembershipPanel({
         {communityMembers.map((member) => {
           return (
             <div
-              key={member.id}
+              key={member.profiles.id}
               className="flex gap-4 text-lg items-center m-10 bg-white/10 p-4 rounded-md justify-around"
             >
-              <div>Email: {member.email}</div>
+              <div>Email: {member.profiles.email}</div>
               {activeCommunity.role == "admin" &&
-                session.user.id !== member.id && (
+                session.user.id !== member.profiles.id && (
                   <>
                     <Button
                       disabled={isLoading}
                       text={member.role == "admin" ? "admin" : "member"}
                       onClick={() => {
-                        HandleRoleToggleBtnClick(member.id, member.role);
+                        HandleRoleToggleBtnClick(
+                          member.profiles.id,
+                          member.role
+                        );
                       }}
                     />
 
@@ -78,7 +81,7 @@ export default function MembershipPanel({
                       disabled={isKickLoading}
                       text="Kick Member out"
                       onClick={() => {
-                        HandleKickMemberBtnClick(member.id);
+                        HandleKickMemberBtnClick(member.profiles.id);
                       }}
                     />
                   </>

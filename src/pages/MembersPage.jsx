@@ -9,8 +9,12 @@ import InviteForm from "../components/membership/InviteForm";
 
 export default function MembersPage() {
   const { session, UpdateUserCommunities } = useSession();
-  const { activeCommunity, setCommunityMembers, invitations, setInvitations } =
-    useGlobal();
+  const {
+    activeCommunity,
+    setCommunityMembers,
+    communityInvitations,
+    setCommunityInvitations,
+  } = useGlobal();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -44,7 +48,7 @@ export default function MembersPage() {
         return;
       }
       setCommunityMembers((oldMembers) =>
-        oldMembers.filter((member) => member.id !== memberId)
+        oldMembers.filter((member) => member.profiles.id !== memberId)
       );
     } catch (error) {
       console.error(error);
@@ -65,7 +69,7 @@ export default function MembersPage() {
         .single();
       if (!data || error)
         throw new Error("Issue Declining the invitation: ", error);
-      setInvitations((old) => old.filter((inv) => inv.id != inviteId));
+      setCommunityInvitations((old) => old.filter((inv) => inv.id != inviteId));
     } catch (error) {
       console.error(error);
     } finally {
@@ -80,28 +84,30 @@ export default function MembersPage() {
         isKickLoading={isLoading}
       />
       <InviteForm />
-      {activeCommunity && activeCommunity.role == "admin" && invitations && (
-        <div className="flex flex-col gap-10 justify-center items-center">
-          <div className="text-3xl">Community Invitations</div>
-          <div>
-            {invitations.map((invite) => {
-              return (
-                <div
-                  key={invite.id}
-                  className="flex gap-4 justify-center items-center"
-                >
-                  <div>{invite.profiles.email}</div>
-                  <Button
-                    onClick={() => HandleDeclineInviteBtnClick(invite.id)}
-                    disabled={isLoading}
-                    text="🗑️"
-                  />
-                </div>
-              );
-            })}
+      {activeCommunity &&
+        activeCommunity.role == "admin" &&
+        communityInvitations && (
+          <div className="flex flex-col gap-10 justify-center items-center">
+            <div className="text-3xl">Community Invitations</div>
+            <div>
+              {communityInvitations.map((invite) => {
+                return (
+                  <div
+                    key={invite.id}
+                    className="flex gap-4 justify-center items-center"
+                  >
+                    <div>{invite.profiles.email}</div>
+                    <Button
+                      onClick={() => HandleDeclineInviteBtnClick(invite.id)}
+                      disabled={isLoading}
+                      text="🗑️"
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
       <div>
         <Button
