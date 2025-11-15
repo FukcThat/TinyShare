@@ -94,6 +94,6 @@ Current Commit: 👻🎃
 ----[x] Create New Community
 ----[] Edit Community Details
 ----[] Delete Community
-[] Realtime Integration
-----[] Split up the global session db call into 3 for items, invitations and members
-----[80%] create custom hook for realtime and db call
+[x] Realtime Integration
+----[x] Split up the global session db call into 3 for items, invitations and members
+----[x] create custom hook for realtime and db call

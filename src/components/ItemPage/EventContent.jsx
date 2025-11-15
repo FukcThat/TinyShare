@@ -12,7 +12,7 @@ export default function EventContent({
   setEndTime,
 }) {
   const { session } = useSession();
-  const { setItems } = useGlobal();
+  const { setCommunityItems } = useGlobal();
   const { itemToRequest, setItemToRequest } = useItemContext();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -35,7 +35,7 @@ export default function EventContent({
         if (error)
           throw new Error("Approve Reservation failed: ", error.message);
 
-        setItems((oldItems) => {
+        setCommunityItems((oldItems) => {
           return oldItems.map((item) => {
             if (item.id === data.item_id) {
               return {
@@ -84,7 +84,7 @@ export default function EventContent({
         .eq("id", arg.event._def.extendedProps.resId);
 
       if (error) throw new Error("Deny reservation error: ", error.message);
-      setItems((oldItems) => {
+      setCommunityItems((oldItems) => {
         return oldItems.map((item) => {
           if (item.id === itemToRequest.id) {
             return {
@@ -119,10 +119,10 @@ export default function EventContent({
 
   // Component Helpers
   const IsOwnerAndNotBooked = () =>
-    itemToRequest.owner === session.user.id &&
+    itemToRequest.owner.id === session.user.id &&
     arg.event._def.extendedProps.status !== "booking";
   const IsOwnerAndIsBooked = () =>
-    itemToRequest.owner === session.user.id &&
+    itemToRequest.owner.id === session.user.id &&
     arg.event._def.extendedProps.status === "booking";
 
   const IsOurBooking = () =>

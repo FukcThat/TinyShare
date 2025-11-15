@@ -14,7 +14,7 @@ import { supabase } from "../../lib/supabaseClient";
 export default function ItemReservationModal() {
   const { session } = useSession();
   const { itemToRequest, setItemToRequest } = useItemContext();
-  const { setItems } = useGlobal();
+  const { setCommunityItems } = useGlobal();
 
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
@@ -45,7 +45,7 @@ export default function ItemReservationModal() {
       if (error)
         throw new Error("Creating reservation failed: ", error.message);
 
-      setItems((oldItems) => {
+      setCommunityItems((oldItems) => {
         return oldItems.map((item) => {
           if (item.id === data.item_id) {
             return {

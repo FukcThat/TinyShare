@@ -8,7 +8,7 @@ import { supabase } from "../../lib/supabaseClient";
 
 export default function EditItemForm() {
   const { itemToEdit, setItemToEdit } = useItemContext();
-  const { setItems } = useGlobal();
+  const { setCommunityItems } = useGlobal();
   const [isLoading, setIsLoading] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -34,7 +34,7 @@ export default function EditItemForm() {
 
       if (error) throw new Error(error.message);
 
-      setItems((old) =>
+      setCommunityItems((old) =>
         old.map((item) => (item.id === itemToEdit.id ? data : item)).flat()
       );
       setItemToEdit(data[0]);
@@ -54,7 +54,7 @@ export default function EditItemForm() {
         .eq("id", itemToEdit.id);
 
       if (error) throw new Error(error.message);
-      setItems((oldItems) =>
+      setCommunityItems((oldItems) =>
         oldItems.filter((item) => item.id !== itemToEdit.id)
       );
       setItemToEdit(null);

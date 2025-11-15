@@ -9,7 +9,7 @@ import { supabase } from "../../lib/supabaseClient";
 
 export default function ItemForm() {
   const { session } = useSession();
-  const { setItems, items } = useGlobal();
+  const { setCommunityItems } = useGlobal();
   const { itemToEdit } = useItemContext();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -34,7 +34,7 @@ export default function ItemForm() {
         .select("id, owner, name, is_available, item_reservations(*)");
 
       if (error) throw new Error(error.message);
-      setItems((old) => [...old, ...data]);
+      setCommunityItems((old) => [...old, ...data]);
       setFormData({ ...formData, name: "" });
     } catch (error) {
       console.error("Create Item Error: ", error);

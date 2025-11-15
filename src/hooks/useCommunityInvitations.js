@@ -27,8 +27,6 @@ export default function useCommunityInvitations(activeCommunity) {
     const channel = listenForCommunityInvitationChanges(
       activeCommunity.id,
       (payload) => {
-        console.log(payload);
-
         UpdateCommunityInvitations();
       }
     );

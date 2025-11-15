@@ -13,7 +13,7 @@ import { useSession } from "../context/session_context/useSession";
 
 export default function ItemsPage() {
   const { session } = useSession();
-  const { items, activeCommunity } = useGlobal();
+  const { communityItems, activeCommunity } = useGlobal();
 
   const {
     availabilityFilterDates,
@@ -31,14 +31,14 @@ export default function ItemsPage() {
 
   const availableItems = useMemo(
     () =>
-      items
-        ? items.filter((item) => {
+      communityItems
+        ? communityItems.filter((item) => {
             if (!availabilityFilterDates)
-              return item.is_available && item.owner != session.user.id;
+              return item.is_available && item.owner.id != session.user.id;
             else {
               return (
                 item.is_available &&
-                item.owner != session.user.id &&
+                item.owner.id != session.user.id &&
                 !HasReservationConflict(
                   item.item_reservations,
                   availabilityFilterDates.start,
@@ -48,13 +48,15 @@ export default function ItemsPage() {
             }
           })
         : null,
-    [items, availabilityFilterDates]
+    [communityItems, availabilityFilterDates]
   );
 
   const yourItems = useMemo(
     () =>
-      items ? items.filter((item) => item.owner === session.user.id) : null,
-    [items]
+      communityItems
+        ? communityItems.filter((item) => item.owner.id === session.user.id)
+        : null,
+    [communityItems]
   );
 
   if (!activeCommunity || activeCommunity.id === -1) return null;
