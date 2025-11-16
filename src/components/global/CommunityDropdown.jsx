@@ -14,6 +14,7 @@ export default function CommunityDropdown() {
         return community.id == e.target.value;
       })
     );
+    localStorage.setItem("tiny-share-active-community-id", e.target.value);
   };
 
   return activeCommunity ? (

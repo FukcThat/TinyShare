@@ -20,7 +20,22 @@ export function GlobalProvider({ children }) {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    setActiveCommunity(userCommunities.length ? userCommunities[0] : null);
+    if (!userCommunities) return;
+
+    let lsCommunity = localStorage.getItem("tiny-share-active-community-id");
+
+    if (
+      lsCommunity != null &&
+      userCommunities.find((com) => com.id === lsCommunity)
+    ) {
+      setActiveCommunity(userCommunities.find((com) => com.id == lsCommunity));
+    } else {
+      setActiveCommunity(userCommunities[0]);
+      localStorage.setItem(
+        "tiny-share-active-community-id",
+        userCommunities[0].id
+      );
+    }
   }, [userCommunities]); // Fix how this works later -T
 
   return isLoading ? (

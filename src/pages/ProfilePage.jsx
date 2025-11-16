@@ -4,6 +4,7 @@ import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
 import Loading from "../components/global/Loading";
 import { supabase } from "../lib/supabaseClient";
+import InvitationPanel from "../components/membership/InvitationPanel";
 
 export default function ProfilePage() {
   const { userProfile, setUserProfile, session } = useSession();
@@ -44,20 +45,38 @@ export default function ProfilePage() {
   if (!userProfile) return <Loading />;
 
   return (
-    <div>
-      <div>{userProfile.name}</div>
-      <Button onClick={() => setShowForm(!showForm)} text="Edit" />
+    <div className="flex flex-col justify-center items-center gap-4">
+      <div className="flex items-center justify-between w-[90%]">
+        <div className="text-4xl">{userProfile.name}'s Profile</div>
+        <Button
+          onClick={() => {
+            setShowForm(!showForm);
+            setNameInput(userProfile.name);
+          }}
+          text={showForm ? "Cancel" : "Edit Display Name"}
+        />
+      </div>
       {showForm && (
-        <form onSubmit={HandleSubmitUpdate}>
+        <form
+          onSubmit={HandleSubmitUpdate}
+          className="flex flex-col items-center justify-center gap-4 bg-white/20 p-2 rounded-md"
+        >
           <Input
             id="nameInput"
-            labelText="Name:"
+            withLabel
+            labelText="New Display Name:"
             value={nameInput}
+            outerStyles="flex flex-col"
+            inputStyles="border-2 border-slate-200 rounded-md focus:border-green-400"
             onChange={(e) => setNameInput(e.target.value)}
           />
-          <Button disabled={isLoading} type="submit" text="Update Profile" />
+          <Button disabled={isLoading} type="submit" text="Submit" />
         </form>
       )}
+      <div className="flex flex-col p-4 gap-4 justify-center">
+        <div className="text-2xl">Your Community Invitations</div>
+        <InvitationPanel />
+      </div>
     </div>
   );
 }

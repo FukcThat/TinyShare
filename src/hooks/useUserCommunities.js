@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
+import inFilter from "../lib/inFilter";
 
 export default function useUserCommunities(session) {
-  const [userCommunities, setUserCommunities] = useState([]);
+  const [userCommunities, setUserCommunities] = useState(null);
   const UpdateUserCommunities = () => {
     supabase
       .from("memberships")
@@ -27,6 +28,7 @@ export default function useUserCommunities(session) {
 
     const channel = listenForUserCommunityChanges(
       session.user.id,
+      userCommunities ? userCommunities.map((community) => community.id) : [],
       (payload) => {
         UpdateUserCommunities();
       }
@@ -36,12 +38,12 @@ export default function useUserCommunities(session) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [session]);
+  }, [session, userCommunities]);
 
   return [userCommunities, setUserCommunities, UpdateUserCommunities];
 }
 
-function listenForUserCommunityChanges(userId, onChange) {
+function listenForUserCommunityChanges(userId, userCommunities, onChange) {
   const channel = supabase
     .channel(`userCommunities-${userId}`)
     .on(
@@ -51,6 +53,19 @@ function listenForUserCommunityChanges(userId, onChange) {
         schema: "public",
         table: "memberships",
         filter: `user_id=eq.${userId}`,
+      },
+      (payload) => {
+        console.log("🔄 User Communities change:", payload);
+        onChange(payload);
+      }
+    )
+    .on(
+      "postgres_changes",
+      {
+        event: "*", // can be 'INSERT', 'UPDATE', 'DELETE'
+        schema: "public",
+        table: "communities",
+        filter: inFilter("id", userCommunities),
       },
       (payload) => {
         console.log("🔄 User Communities change:", payload);

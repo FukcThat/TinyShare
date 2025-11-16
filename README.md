@@ -1,9 +1,11 @@
 # TinyShare Roadmap
 
-Current Commit: 👻🎃
+Current Commit: 16.11.2025
 
-- Implemented LocalStorage with mockAPI data
-- Deleted redundant data structures
+- Added invite notification badge to profile navbar tab
+- Local Storage for active community
+- delete community as last member
+- edit community data as admin
 
 ### Reservation and Booking System
 
@@ -60,15 +62,6 @@ Current Commit: 👻🎃
 [x] move membership crud to api - toggle, kick, leave, accept invite, decline invite
 [x] loading state component
 
-### Deletion
-
-[ ] think about deletion and how that will work exactly (who can do it, what happens to dependencies, other things to think about?)
--- [] deleting items
--- [] deleting users
--- [] deleting communities
--- [] deleting reservation
--- [] deleting membership
-
 ### Supabase Integration
 
 [x] Reservation CRUD
@@ -90,10 +83,12 @@ Current Commit: 👻🎃
 ----[x] Log Out Btn
 ----[x] Profile Info
 ----[x] Change Display Name
-[] Community CRUD
+[x] Community CRUD
 ----[x] Create New Community
-----[] Edit Community Details
-----[] Delete Community
+----[x] Edit Community Details
+----[X] Delete Community - on last member leave
+----[x] Default Community Handling via localstorage
 [x] Realtime Integration
 ----[x] Split up the global session db call into 3 for items, invitations and members
 ----[x] create custom hook for realtime and db call
+[] Integrate React Query into server state hooks for caching

@@ -11,13 +11,10 @@ export default function Layout() {
   return (
     <div>
       <Navbar ToggleSidebar={ToggleSidebar} />
-      {isShowingSidebar ? (
-        <Sidebar />
-      ) : (
-        <div>
-          <Outlet />
-        </div>
-      )}
+      <div>
+        {isShowingSidebar && <Sidebar />}
+        <Outlet />
+      </div>
     </div>
   );
 }

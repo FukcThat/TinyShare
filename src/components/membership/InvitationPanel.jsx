@@ -7,7 +7,6 @@ import { supabase } from "../../lib/supabaseClient";
 export default function InvitationPanel() {
   const {
     session,
-    setUserCommunities,
     userInvitations,
     setUserInvitations,
     UpdateUserCommunities,
@@ -69,25 +68,33 @@ export default function InvitationPanel() {
     <Loading />
   ) : (
     <div>
+      {userInvitations.length === 0 && <div>No invites yet...</div>}
       {userInvitations.map((invite) => (
-        <div key={invite.id}>
+        <div
+          key={invite.id}
+          className="flex flex-col gap-4 bg-white/20 border border-transparent hover:border-white rounded-md p-4"
+        >
           <div> Invitation to {invite.communities.name}</div>
-          <Button
-            disabled={isLoading}
-            text="✔️"
-            onClick={() =>
-              HandleAcceptInviteBtnClick(
-                invite.id,
-                invite.community_id,
-                invite.role
-              )
-            }
-          />
-          <Button
-            disabled={isLoading}
-            text="❌"
-            onClick={() => HandleDeclineInviteBtnClick(invite.id)}
-          />
+          <div className="flex gap-4">
+            <Button
+              disabled={isLoading}
+              styles="w-[50%]"
+              text="✔️"
+              onClick={() =>
+                HandleAcceptInviteBtnClick(
+                  invite.id,
+                  invite.community_id,
+                  invite.role
+                )
+              }
+            />
+            <Button
+              disabled={isLoading}
+              styles="w-[50%]"
+              text="❌"
+              onClick={() => HandleDeclineInviteBtnClick(invite.id)}
+            />
+          </div>
         </div>
       ))}
     </div>

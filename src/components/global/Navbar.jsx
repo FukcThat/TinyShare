@@ -5,15 +5,14 @@ import { useSession } from "../../context/session_context/useSession";
 import { supabase } from "../../lib/supabaseClient";
 
 const NavElements = [
-  { path: "/", name: "Home", needCommunity: false },
   { path: "/items", name: "Items", needCommunity: true },
   { path: "/members", name: "Members", needCommunity: true },
-  { path: "/profile", name: "Profile", needCommunity: false },
+  { path: "/", name: "Profile", needCommunity: false, badge: true },
 ];
 
 export default function Navbar({ ToggleSidebar }) {
   const location = useLocation();
-  const { session, userProfile } = useSession();
+  const { session, userProfile, userInvitations } = useSession();
   const { activeCommunity } = useGlobal();
 
   const HandleLogOut = async () => {
@@ -53,15 +52,23 @@ export default function Navbar({ ToggleSidebar }) {
             (activeCommunity && activeCommunity.id !== -1)
           )
             return (
-              <Link
-                key={element.path}
-                to={element.path}
-                className={`hover:scale-110 transition-all text-2xl duration-50 ease-in ${
-                  location.pathname === element.path && " text-blue-400"
-                }`}
-              >
-                {element.name}
-              </Link>
+              <div className="flex relative" key={element.path}>
+                <Link
+                  to={element.path}
+                  className={`hover:scale-110 transition-all text-2xl duration-50 ease-in ${
+                    location.pathname === element.path && " text-blue-400"
+                  }`}
+                >
+                  {element.name}
+                </Link>
+                {element.badge &&
+                  userInvitations &&
+                  userInvitations.length > 0 && (
+                    <div className="absolute -right-3 -top-2 text-sm bg-red-500 rounded-full h-5 w-5 text-center">
+                      {userInvitations.length}
+                    </div>
+                  )}
+              </div>
             );
         })}
         <Button
