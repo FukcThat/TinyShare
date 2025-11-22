@@ -38,7 +38,7 @@ export default function useUserCommunities(session) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [session, userCommunities]);
+  }, [session]);
 
   return [userCommunities, setUserCommunities, UpdateUserCommunities];
 }

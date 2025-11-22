@@ -33,7 +33,7 @@ export default function Input({
         value={value}
         onChange={onChange}
         className={twMerge([
-          "outline-none p-2 border-white/40 border-b text-center",
+          "outline-none p-2 border-white/40 border-b text-center rounded-md text-lg",
           inputStyles,
         ])}
       ></input>

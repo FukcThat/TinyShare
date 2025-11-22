@@ -17,7 +17,7 @@ export default function useCommunityMembers(activeCommunity) {
   };
 
   useEffect(() => {
-    if (!activeCommunity) return;
+    if (!activeCommunity || activeCommunity.id === -1) return;
 
     UpdateCommunityMembers();
 

@@ -2,10 +2,9 @@
 
 Current Commit: 16.11.2025
 
-- Added invite notification badge to profile navbar tab
-- Local Storage for active community
-- delete community as last member
-- edit community data as admin
+- Added custom Auth UI (Sign In, Sign Up, Reset Password)
+- Implemented update password on recovery/invite
+- Refactor done
 
 ### Reservation and Booking System
 
@@ -30,29 +29,29 @@ Current Commit: 16.11.2025
 
 ### Admin System
 
-#### Community CRUD
+#### Community CRUD [X]
 
-[] Community Selection Dropdown
+[x] Community Selection Dropdown
 -- [x] On community change, show only items of members belonging to that community
 -- [X] Handle no community, Navbar | Dropdown (Navbar spawns in dummy obj, if dummy obj is true hide navbar routes and redirect on manual page access)
--- [later] Local Storage user-preset active community
+-- [x] Local Storage user-preset active community
 -- [x] Make dropdown universal component
 [x] Create new Community
-[] Update community Data
+[x] Update community Data
 -- [x] Create Community Sidebar
 -- [x] Move active Selection to Sidebar
--- [] Implement edit functionality in Sidebar if admin
--- [] Delete Community
+-- [x] Implement edit functionality in Sidebar if admin
+-- [x] Delete Community
 
-#### Membership System
+#### Membership System [x]
 
 [x] Kick from community
 [x] Update user role (member/admin)
 [x] Accept / Decline invite\
 [x] Leave community
-[later] Invite to community
+[x] Invite to community
 
-### Mock-API
+### Mock-API [x]
 
 [x] Create Basic Mock-API-Objects
 [x] Move item page functionality to api
@@ -64,18 +63,25 @@ Current Commit: 16.11.2025
 
 ### Supabase Integration
 
+[x] Auth
+----[x] Login
+----[x] sign up
+----[x] verify email page
+----[x] reset password form
+----[x] on sign in, if password not set, set password [type = invite, recovery ]
+----[x] reset password page for invite
+----[x] reset password page for recovery
+----[x] refactor and check useSessionProvider with jipity
 [x] Reservation CRUD
 ----[x] Submit Reservation // anyone who is a member of overlapping communities can create the reservation
 ----[x] Accept Reservation //only item owner or person who reserve can update/delete
 ----[x] Cancel/Deny Reservation //only item owner or person who reserve can update/delete
-[] Invitation CRUD
+[X] Invitation CRUD
 ----[x] Accept Invite // invitee or inviter can update
 ----[x] Decline Invite // invitee or inviter can delete
 ----[x] Rescind Invite // inviter or inviter can delete
 ----[x] Invite User // member of community can create invitation
 ----[x] Handle Send Invite Form
-----[] on sign in, if password not set, set password
-----[] reset password component?
 [x] Membership CRUD
 ----[x] Kick // only admins of communities RLS
 ----[x] Toggle Role // only admins of communities RLS, cannot toggle your own

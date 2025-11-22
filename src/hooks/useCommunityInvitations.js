@@ -20,7 +20,7 @@ export default function useCommunityInvitations(activeCommunity) {
   };
 
   useEffect(() => {
-    if (!activeCommunity) return;
+    if (!activeCommunity || activeCommunity.id === -1) return;
 
     UpdateCommunityInvitations();
 
