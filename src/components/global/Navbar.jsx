@@ -3,6 +3,8 @@ import { useGlobal } from "../../context/useGlobal";
 import Button from "../ui/Button";
 import { useSession } from "../../context/session_context/useSession";
 import { supabase } from "../../lib/supabaseClient";
+import useUserProfile from "../../hooks/tanstack_queries/useUserProfile";
+import useUserInvitations from "../../hooks/tanstack_queries/useUserInvitations";
 
 const NavElements = [
   { path: "/items", name: "Items", needCommunity: true },
@@ -12,7 +14,9 @@ const NavElements = [
 
 export default function Navbar({ ToggleSidebar }) {
   const location = useLocation();
-  const { session, userProfile, userInvitations } = useSession();
+  const { session } = useSession();
+  const { data: userInvitations } = useUserInvitations();
+  const { data: userProfile } = useUserProfile(session);
   const { activeCommunity } = useGlobal();
 
   const HandleLogOut = async () => {

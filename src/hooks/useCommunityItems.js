@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import inFilter from "../lib/inFilter";
+import useCommunityMembers from "./tanstack_queries/useCommunityMembers";
 
-export default function useCommunityItems(activeCommunity, communityMembers) {
+export default function useCommunityItems(activeCommunity) {
   const [communityItems, setCommunityItems] = useState(null);
+  const { data: communityMembers } = useCommunityMembers(activeCommunity);
 
   const UpdateCommunityItems = () => {
     supabase
@@ -20,12 +22,12 @@ export default function useCommunityItems(activeCommunity, communityMembers) {
   };
 
   useEffect(() => {
-    if (!communityMembers) return;
+    if (!communityMembers || communityMembers.length === 0) return;
     UpdateCommunityItems();
   }, [communityMembers]);
 
   useEffect(() => {
-    if (!communityItems) return;
+    if (!communityMembers || communityMembers.length === 0) return;
 
     const channel = listenForCommunityItemChanges(
       activeCommunity.id,

@@ -2,22 +2,19 @@ import { useNavigate } from "react-router";
 import MembershipPanel from "../components/membership/MembershipPanel";
 import Button from "../components/ui/Button";
 import { useGlobal } from "../context/useGlobal";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSession } from "../context/session_context/useSession";
-import { supabase } from "../lib/supabaseClient";
 import InviteForm from "../components/membership/InviteForm";
+import useKickMember from "../hooks/tanstack_mutations/useKickMember";
+import useCommunityInvitations from "../hooks/tanstack_queries/useCommunityInvitations";
+import useDeclineInvitation from "../hooks/tanstack_mutations/useDeclineInvitation";
 
 export default function MembersPage() {
-  const { session, UpdateUserCommunities } = useSession();
-  const {
-    activeCommunity,
-    setCommunityMembers,
-    communityInvitations,
-    setCommunityInvitations,
-  } = useGlobal();
-
-  const [isLoading, setIsLoading] = useState(false);
-
+  const { session } = useSession();
+  const { activeCommunity } = useGlobal();
+  const { data: communityInvitations } = useCommunityInvitations();
+  const kickMember = useKickMember();
+  const DeclineInvitation = useDeclineInvitation();
   const nav = useNavigate();
 
   useEffect(() => {
@@ -25,89 +22,46 @@ export default function MembersPage() {
     if (activeCommunity.id === -1) nav("/");
   }, [activeCommunity]);
 
-  const HandleKickMemberBtnClick = async (memberId) => {
-    try {
-      setIsLoading(true);
-
-      const { data, error } = await supabase
-        .from("memberships")
-        .delete()
-        .eq("user_id", memberId)
-        .eq("community_id", activeCommunity.id)
-        .select();
-
-      if (error || data.length === 0)
-        throw new Error(
-          "Issue Kicking Member: ",
-          error ? error.message : "last member"
-        );
-
-      if (memberId === session.user.id) {
-        UpdateUserCommunities();
-        nav("/");
-        return;
-      }
-      setCommunityMembers((oldMembers) =>
-        oldMembers.filter((member) => member.profiles.id !== memberId)
-      );
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
+  const HandleKickMemberBtnClick = (memberId) => {
+    kickMember.mutate({
+      memberId,
+      activeCommunity,
+    });
   };
 
   const HandleDeclineInviteBtnClick = async (inviteId) => {
-    try {
-      setIsLoading(true);
-
-      const { data, error } = await supabase
-        .from("invitations")
-        .delete()
-        .eq("id", inviteId)
-        .select()
-        .single();
-      if (!data || error)
-        throw new Error("Issue Declining the invitation: ", error);
-      setCommunityInvitations((old) => old.filter((inv) => inv.id != inviteId));
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
+    DeclineInvitation.mutate({ inviteId });
   };
 
   return (
     <div className="flex flex-col justify-center items-center gap-10">
       <MembershipPanel
         HandleKickMemberBtnClick={HandleKickMemberBtnClick}
-        isKickLoading={isLoading}
+        isKickLoading={kickMember.isPending}
       />
       <InviteForm />
-      {activeCommunity &&
-        activeCommunity.role == "admin" &&
-        communityInvitations && (
-          <div className="flex flex-col gap-10 justify-center items-center">
-            <div className="text-3xl">Community Invitations</div>
-            <div>
-              {communityInvitations.map((invite) => {
-                return (
-                  <div
-                    key={invite.id}
-                    className="flex gap-4 justify-center items-center"
-                  >
-                    <div>{invite.profiles.email}</div>
-                    <Button
-                      onClick={() => HandleDeclineInviteBtnClick(invite.id)}
-                      disabled={isLoading}
-                      text="🗑️"
-                    />
-                  </div>
-                );
-              })}
-            </div>
+      {activeCommunity && activeCommunity.role == "admin" && (
+        <div className="flex flex-col gap-10 justify-center items-center">
+          <div className="text-3xl">Community Invitations</div>
+          <div>
+            {communityInvitations?.map((invite) => {
+              return (
+                <div
+                  key={invite.id}
+                  className="flex gap-4 justify-center items-center"
+                >
+                  <div>{invite.profiles.email}</div>
+                  <Button
+                    onClick={() => HandleDeclineInviteBtnClick(invite.id)}
+                    disabled={DeclineInvitation.isPending}
+                    text="🗑️"
+                  />
+                </div>
+              );
+            })}
           </div>
-        )}
+        </div>
+      )}
 
       <div>
         <Button

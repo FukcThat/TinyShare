@@ -3,38 +3,31 @@ import { useSession } from "../context/session_context/useSession";
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
 import Loading from "../components/global/Loading";
-import { supabase } from "../lib/supabaseClient";
 import InvitationPanel from "../components/membership/InvitationPanel";
+import useUserProfile from "../hooks/tanstack_queries/useUserProfile";
+import useUpdateUserProfile from "../hooks/tanstack_mutations/useUpdateUserProfile";
 
 export default function ProfilePage() {
-  const { userProfile, setUserProfile, session } = useSession();
+  const { session } = useSession();
+  const userId = session?.user?.id;
+
+  const { data: userProfile } = useUserProfile(session);
+  const updateProfile = useUpdateUserProfile();
 
   const [showForm, setShowForm] = useState(false);
   const [nameInput, setNameInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
   const HandleSubmitUpdate = async (e) => {
     e.preventDefault();
     if (nameInput == "") return;
-    try {
-      setIsLoading(true);
-      const { data, error } = await supabase
-        .from("profiles")
-        .update({ name: nameInput })
-        .eq("id", session.user.id)
-        .select("name")
-        .single();
-
-      if (error) throw new Error(error.message);
-
-      setUserProfile(data);
-      setShowForm(false);
-      setNameInput(data.name);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
+    updateProfile.mutate(
+      { userId, name: nameInput },
+      {
+        onSuccess: () => {
+          setShowForm(false);
+        },
+      }
+    );
   };
 
   useEffect(() => {
@@ -70,7 +63,11 @@ export default function ProfilePage() {
             inputStyles="border-2 border-slate-200 rounded-md focus:border-green-400"
             onChange={(e) => setNameInput(e.target.value)}
           />
-          <Button disabled={isLoading} type="submit" text="Submit" />
+          <Button
+            disabled={updateProfile.isPending}
+            type="submit"
+            text="Submit"
+          />
         </form>
       )}
       <div className="flex flex-col p-4 gap-4 justify-center">

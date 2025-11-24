@@ -5,98 +5,60 @@ import CommunityDropdown from "./CommunityDropdown";
 import Input from "../ui/Input";
 import { useSession } from "../../context/session_context/useSession";
 import { supabase } from "../../lib/supabaseClient";
+import useCreateCommunity from "../../hooks/tanstack_mutations/useCreateCommunity";
+import useUpdateCommunity from "../../hooks/tanstack_mutations/useUpdateCommunity";
 
 export default function Sidebar() {
-  const { session, setUserCommunities } = useSession();
+  const { session } = useSession();
   const { activeCommunity } = useGlobal();
 
   const [isShowingCommunityForm, setIsShowingCommunityForm] = useState(false);
   const [nameInput, setNameInput] = useState("");
   const [editNameInput, setEditNameInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
   const [communityToEdit, setCommunityToEdit] = useState(null);
+  const CreateCommunity = useCreateCommunity();
+  const UpdateCommunity = useUpdateCommunity();
 
-  const createNewCommunity = async (e) => {
+  const createNewCommunity = (e) => {
     e.preventDefault();
 
     if (!nameInput) {
       window.alert("Please provide a name for the community :) ");
       return;
     }
-    setIsLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from("communities")
-        .insert([{ name: nameInput }])
-        .select()
-        .single();
 
-      if (error)
-        throw new Error("Issue creating new community: ", error.message);
-
-      const { data: membershipData, error: membershipError } = await supabase
-        .from("memberships")
-        .insert([
-          {
-            user_id: session.user.id,
-            community_id: data.id,
-            role: "admin",
-          },
-        ])
-        .select()
-        .single();
-
-      if (membershipError)
-        throw new Error(
-          "Issue creating new community: ",
-          membershipError.message
-        );
-
-      setUserCommunities((oldCommunities) =>
-        activeCommunity.id === -1
-          ? [{ ...data, role: "admin" }]
-          : [...oldCommunities, { ...data, role: "admin" }]
-      );
-      setNameInput("");
-      setIsShowingCommunityForm(false);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
+    CreateCommunity.mutate(
+      {
+        nameInput,
+        user_id: session.user.id,
+        role: "admin",
+      },
+      {
+        onSuccess: () => {
+          setNameInput("");
+          setIsShowingCommunityForm(false);
+        },
+      }
+    );
   };
 
   const HandleSubmitUpdate = async (e) => {
     e.preventDefault();
-
     if (editNameInput === "") return;
 
-    try {
-      setIsLoading(true);
-
-      const { data, error } = await supabase
-        .from("communities")
-        .update({ name: editNameInput })
-        .eq("id", communityToEdit.id)
-        .select()
-        .single();
-
-      if (error) throw new Error("Issue updating community data: ", error);
-      setUserCommunities((oldCommunities) =>
-        oldCommunities.map((community) => {
-          if (community.id !== communityToEdit.id) return community;
-
-          return { ...community, name: data.name };
-        })
-      );
-      setEditNameInput("");
-      setCommunityToEdit(null);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
+    UpdateCommunity.mutate(
+      {
+        communityToEditId: communityToEdit.id,
+        editNameInput,
+      },
+      {
+        onSuccess: () => {
+          setEditNameInput("");
+          setCommunityToEdit(null);
+        },
+      }
+    );
   };
 
   return (
@@ -128,7 +90,11 @@ export default function Sidebar() {
               inputStyles="border-2 border-slate-200 rounded-md focus:border-green-400"
               onChange={(e) => setEditNameInput(e.target.value)}
             />
-            <Button disabled={isLoading} type="submit" text="Submit" />
+            <Button
+              disabled={UpdateCommunity.isPending}
+              type="submit"
+              text="Submit"
+            />
           </form>
         )}
       </div>
@@ -151,7 +117,11 @@ export default function Sidebar() {
                 setNameInput(e.target.value);
               }}
             />
-            <Button disabled={isLoading} type="submit" text="Done!" />
+            <Button
+              disabled={CreateCommunity.isPending}
+              type="submit"
+              text="Done!"
+            />
           </form>
         )}
       </div>

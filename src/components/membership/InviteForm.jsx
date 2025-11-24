@@ -1,76 +1,28 @@
-import React, { use, useState } from "react";
+import { useState } from "react";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
-import { supabase } from "../../lib/supabaseClient";
+import useCreateInvitation from "../../hooks/tanstack_mutations/useCreateInvitation";
 import { useSession } from "../../context/session_context/useSession";
 import { useGlobal } from "../../context/useGlobal";
 
 export default function InviteForm() {
   const { session } = useSession();
-  const { activeCommunity, setCommunityInvitations } = useGlobal();
-
-  const [isLoading, setIsLoading] = useState(false);
+  const { activeCommunity } = useGlobal();
   const [inviteeEmail, setInviteeEmail] = useState("anton.harbers23@gmail.com");
+  const CreateInvitation = useCreateInvitation();
 
   const submitInvitation = async (e) => {
-    try {
-      e.preventDefault();
-      setIsLoading(true);
-      if (inviteeEmail == "") return;
+    e.preventDefault();
+    if (inviteeEmail == "") return;
 
-      let { data: profiles, error } = await supabase
-        .from("profiles")
-        .select()
-        .eq("email", inviteeEmail);
-
-      if (error) throw new Error("Error looking for profiles,", error.message);
-
-      let inviteeId = null;
-
-      if (profiles.length === 1) {
-        inviteeId = profiles[0].id;
-      }
-
-      if (profiles.length === 0) {
-        const { data: inviteEmailData, inviteEmailError } =
-          await supabase.functions.invoke("invite-new-user", {
-            body: { email: inviteeEmail },
-          });
-
-        if (inviteEmailError)
-          throw new Error("App Invite Error: ", inviteEmailError.message);
-
-        inviteeId = inviteEmailData.data.user.id;
-      }
-
-      const { data: invitation, inviteCreationError } = await supabase
-        .from("invitations")
-        .insert([
-          {
-            inviter_id: session.user.id,
-            community_id: activeCommunity.id,
-            invitee_email: inviteeEmail,
-            invitee_id: inviteeId,
-            role: "member",
-          },
-        ])
-        .select("*, profiles!invitations_invitee_id_fkey(*)")
-        .single();
-
-      if (inviteCreationError)
-        throw new Error(
-          "Error creating invitation,",
-          inviteCreationError.message
-        );
-
-      setCommunityInvitations((old) => [...old, invitation]);
-      setInviteeEmail("");
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-    // Either way: Update local state
+    CreateInvitation.mutate(
+      {
+        inviterId: session.user.id,
+        inviteeEmail,
+        activeCommunityId: activeCommunity.id,
+      },
+      { onSuccess: () => setInviteeEmail("") }
+    );
   };
 
   return (
@@ -80,7 +32,7 @@ export default function InviteForm() {
     >
       <Input
         value={inviteeEmail}
-        disabled={isLoading}
+        disabled={CreateInvitation.isPending}
         required
         type="email"
         placeholder="Enter new members email..."
@@ -88,7 +40,11 @@ export default function InviteForm() {
         outerStyles="flex-grow"
         inputStyles="w-full"
       />
-      <Button type="submit" text="Invite New Member" />
+      <Button
+        type="submit"
+        disabled={CreateInvitation.isPending}
+        text="Invite New Member"
+      />
     </form>
   );
 }

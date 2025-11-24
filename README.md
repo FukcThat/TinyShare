@@ -1,12 +1,15 @@
 # TinyShare Roadmap
 
-Current Commit: 16.11.2025
+Current Commit: TanStack Query Integration
 
-- Added custom Auth UI (Sign In, Sign Up, Reset Password)
-- Implemented update password on recovery/invite
-- Refactor done
+- [x] User Profile Data
+- [x] User Communities Data
+- [x] User Invitation Data (invalidate when accepting invitation)
+- [x] Community Member Data (invalidate when member kicked that isnt you)
+- [x] Community Invite Data
+- [] Community Item Data
 
-### Reservation and Booking System
+### Reservation and Booking System [70%]
 
 [66%] Request a new booking by clicking start and end on the calander
 -- [x] check that no reservations lie between those dates
@@ -27,7 +30,7 @@ Current Commit: 16.11.2025
 [x] timeText passed on both first and last day of booking, fix it to only be one or the other
 [x] edit item and new item form share state leading to weird behavior, fix this
 
-### Admin System
+### Admin System [x]
 
 #### Community CRUD [X]
 
@@ -61,7 +64,7 @@ Current Commit: 16.11.2025
 [x] move membership crud to api - toggle, kick, leave, accept invite, decline invite
 [x] loading state component
 
-### Supabase Integration
+### Supabase Integration [90%]
 
 [x] Auth
 ----[x] Login
@@ -98,3 +101,11 @@ Current Commit: 16.11.2025
 ----[x] Split up the global session db call into 3 for items, invitations and members
 ----[x] create custom hook for realtime and db call
 [] Integrate React Query into server state hooks for caching
+
+### Styling [0%]
+
+### Finishing Touches [0%]
+
+#### Handle Errors
+
+#### Future Features

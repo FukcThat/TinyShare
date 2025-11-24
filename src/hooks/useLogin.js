@@ -41,8 +41,8 @@ export default function useLogin() {
       setSession(session);
 
       if (event === "SIGNED_IN") {
-        if (hashParams?.type === "invite") setInviteLogin(true);
-        if (hashParams?.type === "recovery") setRecoveryLogin(true);
+        if (hashRef.current?.type === "invite") setInviteLogin(true);
+        if (hashRef.current?.type === "recovery") setRecoveryLogin(true);
       }
     });
 

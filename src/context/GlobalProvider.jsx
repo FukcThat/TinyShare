@@ -1,26 +1,16 @@
 import { useEffect, useState } from "react";
 import { GlobalContext } from "./GlobalContext";
-import { useSession } from "./session_context/useSession";
-import Loading from "../components/global/Loading";
-import useCommunityInvitations from "../hooks/useCommunityInvitations";
-import useCommunityMembers from "../hooks/useCommunityMembers";
 import useCommunityItems from "../hooks/useCommunityItems";
+import useUserCommunities from "../hooks/tanstack_queries/useUserCommunities";
 
 export function GlobalProvider({ children }) {
-  const { userCommunities } = useSession();
+  const { data: userCommunities } = useUserCommunities();
   const [activeCommunity, setActiveCommunity] = useState(null);
-  const [communityMembers, setCommunityMembers] =
-    useCommunityMembers(activeCommunity);
-  const [communityItems, setCommunityItems] = useCommunityItems(
-    activeCommunity,
-    communityMembers
-  );
-  const [communityInvitations, setCommunityInvitations] =
-    useCommunityInvitations(activeCommunity);
-  const [isLoading, setIsLoading] = useState(false);
+  const [communityItems, setCommunityItems] =
+    useCommunityItems(activeCommunity);
 
   useEffect(() => {
-    if (!userCommunities) return;
+    if (!userCommunities || userCommunities.length === 0) return;
 
     let lsCommunity = localStorage.getItem("tiny-share-active-community-id");
 
@@ -38,19 +28,13 @@ export function GlobalProvider({ children }) {
     }
   }, [userCommunities]); // Fix how this works later -T
 
-  return isLoading ? (
-    <Loading />
-  ) : (
+  return (
     <GlobalContext.Provider
       value={{
         activeCommunity,
         setActiveCommunity,
         communityItems,
         setCommunityItems,
-        communityMembers,
-        setCommunityMembers,
-        communityInvitations,
-        setCommunityInvitations,
       }}
     >
       {children}

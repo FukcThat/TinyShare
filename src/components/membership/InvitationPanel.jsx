@@ -2,66 +2,44 @@ import { useState } from "react";
 import Loading from "../global/Loading";
 import Button from "../ui/Button";
 import { useSession } from "../../context/session_context/useSession";
-import { supabase } from "../../lib/supabaseClient";
+import useAcceptInvitation from "../../hooks/tanstack_mutations/useAcceptInvitation";
+import useUserInvitations from "../../hooks/tanstack_queries/useUserInvitations";
+import useDeclineInvitation from "../../hooks/tanstack_mutations/useDeclineInvitation";
 
 export default function InvitationPanel() {
-  const {
-    session,
-    userInvitations,
-    setUserInvitations,
-    UpdateUserCommunities,
-  } = useSession();
-  const [isLoading, setIsLoading] = useState(false);
+  const { session } = useSession();
+  const { data: userInvitations } = useUserInvitations();
+  const acceptInvitation = useAcceptInvitation();
+  const DeclineInvitation = useDeclineInvitation();
 
-  const HandleAcceptInviteBtnClick = async (
+  const HandleAcceptInviteBtnClick = (
     inviteId,
     inviteCommunityId,
     inviteRole
   ) => {
-    try {
-      setIsLoading(true);
-
-      const { data, error } = await supabase
-        .from("memberships")
-        .insert([
-          {
-            user_id: session.user.id,
-            community_id: inviteCommunityId,
-            role: inviteRole,
-          },
-        ])
-        .select()
-        .single();
-
-      if (error) throw new Error("Issue Accepting the invitation: ", error);
-
-      UpdateUserCommunities();
-      HandleDeclineInviteBtnClick(inviteId);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
+    acceptInvitation.mutate(
+      {
+        user_id: session.user.id,
+        community_id: inviteCommunityId,
+        role: inviteRole,
+      },
+      {
+        onSuccess: () => {
+          HandleDeclineInviteBtnClick(inviteId);
+        },
+      }
+    );
   };
 
   const HandleDeclineInviteBtnClick = async (inviteId) => {
-    try {
-      setIsLoading(true);
-
-      const { data, error } = await supabase
-        .from("invitations")
-        .delete()
-        .eq("id", inviteId)
-        .select()
-        .single();
-      if (!data || error)
-        throw new Error("Issue Declining the invitation: ", error);
-      setUserInvitations((old) => old.filter((inv) => inv.id != inviteId));
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
+    DeclineInvitation.mutate(
+      { inviteId },
+      {
+        onSuccess: () => {
+          console.log("s");
+        },
+      }
+    );
   };
 
   return !userInvitations ? (
@@ -77,7 +55,9 @@ export default function InvitationPanel() {
           <div> Invitation to {invite.communities.name}</div>
           <div className="flex gap-4">
             <Button
-              disabled={isLoading}
+              disabled={
+                DeclineInvitation.isPending || acceptInvitation.isPending
+              }
               styles="w-[50%]"
               text="✔️"
               onClick={() =>
@@ -89,7 +69,9 @@ export default function InvitationPanel() {
               }
             />
             <Button
-              disabled={isLoading}
+              disabled={
+                DeclineInvitation.isPending || acceptInvitation.isPending
+              }
               styles="w-[50%]"
               text="❌"
               onClick={() => HandleDeclineInviteBtnClick(invite.id)}
