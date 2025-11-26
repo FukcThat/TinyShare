@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { GlobalContext } from "./GlobalContext";
-import useCommunityItems from "../hooks/useCommunityItems";
 import useUserCommunities from "../hooks/tanstack_queries/useUserCommunities";
+import useCommunityMembers from "../hooks/tanstack_queries/useCommunityMembers";
 
 export function GlobalProvider({ children }) {
   const { data: userCommunities } = useUserCommunities();
   const [activeCommunity, setActiveCommunity] = useState(null);
-  const [communityItems, setCommunityItems] =
-    useCommunityItems(activeCommunity);
+  const { data: communityMembers } = useCommunityMembers(activeCommunity);
 
   useEffect(() => {
     if (!userCommunities || userCommunities.length === 0) return;
@@ -33,8 +32,7 @@ export function GlobalProvider({ children }) {
       value={{
         activeCommunity,
         setActiveCommunity,
-        communityItems,
-        setCommunityItems,
+        communityMembers,
       }}
     >
       {children}

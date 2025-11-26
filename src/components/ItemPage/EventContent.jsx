@@ -1,9 +1,8 @@
-import { useState } from "react";
 import { useItemContext } from "../../context/item_context/useItemContext";
 import { useSession } from "../../context/session_context/useSession";
-import { useGlobal } from "../../context/useGlobal";
 import Button from "../ui/Button";
-import { supabase } from "../../lib/supabaseClient";
+import useCancelItemReservation from "../../hooks/tanstack_mutations/useCancelItemReservation";
+import useApproveItemReservation from "../../hooks/tanstack_mutations/useApproveItemReservation";
 
 export default function EventContent({
   arg,
@@ -12,56 +11,17 @@ export default function EventContent({
   setEndTime,
 }) {
   const { session } = useSession();
-  const { setCommunityItems } = useGlobal();
-  const { itemToRequest, setItemToRequest } = useItemContext();
-  const [isLoading, setIsLoading] = useState(false);
+  const { itemToRequest } = useItemContext();
+  const CancelItemReservation = useCancelItemReservation();
+  const ApproveItemReservation = useApproveItemReservation();
 
   const HandleApproveBtnClick = async (e) => {
     if (arg.event._def.extendedProps.status == "preview") {
       OnSubmitReservation(e, true);
     } else {
-      try {
-        setIsLoading(true);
-
-        // supabase
-
-        const { data, error } = await supabase
-          .from("item_reservations")
-          .update({ status: "booking" })
-          .eq("id", arg.event._def.extendedProps.resId)
-          .select()
-          .single();
-
-        if (error)
-          throw new Error("Approve Reservation failed: ", error.message);
-
-        setCommunityItems((oldItems) => {
-          return oldItems.map((item) => {
-            if (item.id === data.item_id) {
-              return {
-                ...item,
-                item_reservations: item.item_reservations.map((itemRes) =>
-                  itemRes.id === data.id ? data : itemRes
-                ),
-              };
-            }
-            return item;
-          });
-        });
-
-        setItemToRequest((oldItem) => {
-          return {
-            ...oldItem,
-            item_reservations: oldItem.item_reservations.map((itemRes) =>
-              itemRes.id === data.id ? data : itemRes
-            ),
-          };
-        });
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
+      ApproveItemReservation.mutate({
+        reservationId: arg.event._def.extendedProps.resId,
+      });
     }
   };
 
@@ -75,42 +35,9 @@ export default function EventContent({
   };
 
   const HandleCancelBtnClick = async () => {
-    try {
-      setIsLoading(true);
-
-      const { error } = await supabase
-        .from("item_reservations")
-        .delete()
-        .eq("id", arg.event._def.extendedProps.resId);
-
-      if (error) throw new Error("Deny reservation error: ", error.message);
-      setCommunityItems((oldItems) => {
-        return oldItems.map((item) => {
-          if (item.id === itemToRequest.id) {
-            return {
-              ...item,
-              item_reservations: item.item_reservations.filter(
-                (itemRes) => itemRes.id !== arg.event._def.extendedProps.resId
-              ),
-            };
-          }
-          return item;
-        });
-      });
-
-      setItemToRequest((oldItem) => {
-        return {
-          ...oldItem,
-          item_reservations: oldItem.item_reservations.filter(
-            (itemRes) => itemRes.id !== arg.event._def.extendedProps.resId
-          ),
-        };
-      });
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
+    CancelItemReservation.mutate({
+      reservationId: arg.event._def.extendedProps.resId,
+    });
   };
 
   // Sets Display Time even on days where its not passed in
@@ -135,17 +62,30 @@ export default function EventContent({
       {IsOwnerAndNotBooked() && (
         <div className="flex">
           <Button
-            disabled={isLoading}
+            disabled={
+              ApproveItemReservation.isPending ||
+              CancelItemReservation.isPending
+            }
             text="✔️"
             onClick={HandleApproveBtnClick}
           />
-          <Button disabled={isLoading} text="❌" onClick={HandleDenyBtnClick} />
+          <Button
+            disabled={
+              ApproveItemReservation.isPending ||
+              CancelItemReservation.isPending
+            }
+            text="❌"
+            onClick={HandleDenyBtnClick}
+          />
         </div>
       )}
       {(IsOurBooking() || IsOwnerAndIsBooked()) && (
         <div>
           <Button
-            disabled={isLoading}
+            disabled={
+              ApproveItemReservation.isPending ||
+              CancelItemReservation.isPending
+            }
             text="Cancel"
             onClick={HandleCancelBtnClick}
           />

@@ -1,55 +1,43 @@
 import { useState } from "react";
 import Button from "../ui/Button";
-import { useGlobal } from "../../context/useGlobal";
 import Input from "../ui/Input";
 import Checkbox from "../ui/Checkbox";
 import { useItemContext } from "../../context/item_context/useItemContext";
+import useCreateItem from "../../hooks/tanstack_mutations/useCreateItem";
 import { useSession } from "../../context/session_context/useSession";
-import { supabase } from "../../lib/supabaseClient";
 
 export default function ItemForm() {
   const { session } = useSession();
-  const { setCommunityItems } = useGlobal();
   const { itemToEdit } = useItemContext();
-  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     isAvailable: true,
   });
+  const CreateItem = useCreateItem();
 
-  const CreateItem = async (e) => {
+  const HandleCreateItem = async (e) => {
     e.preventDefault();
     if (formData.name == "") return;
-    setIsLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from("items")
-        .insert([
-          {
-            owner: session.user.id,
-            name: formData.name,
-            is_available: formData.isAvailable,
-          },
-        ])
-        .select("id, owner, name, is_available, item_reservations(*)");
 
-      if (error) throw new Error(error.message);
-      setCommunityItems((old) => [...old, ...data]);
-      setFormData({ ...formData, name: "" });
-    } catch (error) {
-      console.error("Create Item Error: ", error);
-    } finally {
-      setIsLoading(false);
-    }
+    CreateItem.mutate(
+      {
+        owner: session.user.id,
+        is_available: formData.isAvailable,
+        name: formData.name,
+      },
+      {
+        onSuccess: () => setFormData({ ...formData, name: "" }),
+      }
+    );
   };
 
   return (
     <form
-      onSubmit={CreateItem}
+      onSubmit={HandleCreateItem}
       className="flex flex-col w-full items-center gap-4 bg-slate-800 py-6"
     >
       <Input
-        disabled={isLoading}
+        disabled={CreateItem.isPending}
         id="name"
         placeholder="Item..."
         value={formData.name}
@@ -58,7 +46,7 @@ export default function ItemForm() {
         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
       />
       <Checkbox
-        disabled={isLoading}
+        disabled={CreateItem.isPending}
         id="isAvailableCheckbox"
         labelText="Available"
         onChange={(e) =>
@@ -67,7 +55,7 @@ export default function ItemForm() {
         value={formData.isAvailable}
       />
       <Button
-        disabled={isLoading}
+        disabled={CreateItem.isPending}
         text={itemToEdit === null ? "Submit" : "Update"}
         type="submit"
       />

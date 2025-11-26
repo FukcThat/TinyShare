@@ -7,7 +7,8 @@ Current Commit: TanStack Query Integration
 - [x] User Invitation Data (invalidate when accepting invitation)
 - [x] Community Member Data (invalidate when member kicked that isnt you)
 - [x] Community Invite Data
-- [] Community Item Data
+- [x] Community Item Data
+- Realtime Issue with Community Items
 
 ### Reservation and Booking System [70%]
 
@@ -64,7 +65,7 @@ Current Commit: TanStack Query Integration
 [x] move membership crud to api - toggle, kick, leave, accept invite, decline invite
 [x] loading state component
 
-### Supabase Integration [90%]
+### Supabase Integration [100%]
 
 [x] Auth
 ----[x] Login
@@ -100,7 +101,7 @@ Current Commit: TanStack Query Integration
 [x] Realtime Integration
 ----[x] Split up the global session db call into 3 for items, invitations and members
 ----[x] create custom hook for realtime and db call
-[] Integrate React Query into server state hooks for caching
+[x] Integrate React Query into server state hooks for caching
 
 ### Styling [0%]
 

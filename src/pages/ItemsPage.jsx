@@ -10,10 +10,12 @@ import { useItemContext } from "../context/item_context/useItemContext";
 import EditItemForm from "../components/ItemPage/EditItemForm";
 import { useNavigate } from "react-router";
 import { useSession } from "../context/session_context/useSession";
+import useCommunityItems from "../hooks/useCommunityItems";
 
 export default function ItemsPage() {
   const { session } = useSession();
-  const { communityItems, activeCommunity } = useGlobal();
+  const { activeCommunity } = useGlobal();
+  const { data: communityItems, status } = useCommunityItems();
 
   const {
     availabilityFilterDates,
@@ -29,27 +31,25 @@ export default function ItemsPage() {
     if (activeCommunity.id === -1) nav("/");
   }, [activeCommunity]);
 
-  const availableItems = useMemo(
-    () =>
-      communityItems
-        ? communityItems.filter((item) => {
-            if (!availabilityFilterDates)
-              return item.is_available && item.owner.id != session.user.id;
-            else {
-              return (
-                item.is_available &&
-                item.owner.id != session.user.id &&
-                !HasReservationConflict(
-                  item.item_reservations,
-                  availabilityFilterDates.start,
-                  availabilityFilterDates.end
-                )
-              ); // get all the reservations of this item and see if any of those have overlap
-            }
-          })
-        : null,
-    [communityItems, availabilityFilterDates]
-  );
+  const availableItems = useMemo(() => {
+    return communityItems
+      ? communityItems.filter((item) => {
+          if (!availabilityFilterDates)
+            return item.is_available && item.owner.id != session.user.id;
+          else {
+            return (
+              item.is_available &&
+              item.owner.id != session.user.id &&
+              !HasReservationConflict(
+                item.item_reservations,
+                availabilityFilterDates.start,
+                availabilityFilterDates.end
+              )
+            ); // get all the reservations of this item and see if any of those have overlap
+          }
+        })
+      : null;
+  }, [communityItems, availabilityFilterDates]);
 
   const yourItems = useMemo(
     () =>

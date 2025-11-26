@@ -13,7 +13,6 @@ const fetchCommunityMembers = async (communityId) => {
 
 export default function useCommunityMembers(activeCommunity) {
   const queryClient = useQueryClient();
-
   const activeCommunityId = useMemo(
     () => activeCommunity?.id,
     [activeCommunity]
@@ -32,7 +31,10 @@ export default function useCommunityMembers(activeCommunity) {
     const channel = listenForCommunityMembershipChanges(
       activeCommunityId,
       (payload) => {
-        queryClient.invalidateQueries("CommunityMembers", activeCommunityId);
+        queryClient.invalidateQueries(["CommunityMembers", activeCommunityId]);
+        setTimeout(() => {
+          queryClient.invalidateQueries(["CommunityItems", activeCommunityId]);
+        }, 1000);
       }
     );
 
@@ -58,7 +60,7 @@ function listenForCommunityMembershipChanges(communityId, onChange) {
         onChange(payload);
       }
     )
-    .subscribe();
+    .subscribe((stat) => console.log(stat));
 
   return channel;
 }

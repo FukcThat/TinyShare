@@ -1,47 +1,63 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { supabase } from "../lib/supabaseClient";
 import inFilter from "../lib/inFilter";
-import useCommunityMembers from "./tanstack_queries/useCommunityMembers";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useGlobal } from "../context/useGlobal";
+import { useItemContext } from "../context/item_context/useItemContext";
 
-export default function useCommunityItems(activeCommunity) {
-  const [communityItems, setCommunityItems] = useState(null);
-  const { data: communityMembers } = useCommunityMembers(activeCommunity);
+const fetchCommunityItems = async (
+  communityMemberIds,
+  itemToRequest,
+  setItemToRequest
+) => {
+  const { data, error } = await supabase
+    .from("items")
+    .select("id, name, is_available, owner(*), item_reservations(*)")
+    .in("owner", communityMemberIds);
 
-  const UpdateCommunityItems = () => {
-    supabase
-      .from("items")
-      .select("id, name, is_available, owner(*), item_reservations(*)")
-      .in(
-        "owner",
-        communityMembers.map((member) => member.profiles.id)
-      )
-      .then((res) => {
-        setCommunityItems(res.data);
-      })
-      .catch((err) => console.error(err));
-  };
+  if (error) throw new Error("Issue fetching community items.");
 
-  useEffect(() => {
-    if (!communityMembers || communityMembers.length === 0) return;
-    UpdateCommunityItems();
+  if (itemToRequest) {
+    for (let item of data) {
+      if (item.id === itemToRequest.id) {
+        setItemToRequest(item);
+      }
+    }
+  }
+
+  return data;
+};
+
+export default function useCommunityItems() {
+  const queryClient = useQueryClient();
+  const { activeCommunity, communityMembers } = useGlobal();
+  const { itemToRequest, setItemToRequest } = useItemContext();
+  const activeId = activeCommunity?.id;
+  const communityMemberIds = useMemo(() => {
+    return communityMembers ? communityMembers.map((m) => m.profiles.id) : [];
   }, [communityMembers]);
 
-  useEffect(() => {
-    if (!communityMembers || communityMembers.length === 0) return;
+  const query = useQuery({
+    queryKey: ["CommunityItems", activeId],
+    queryFn: () =>
+      fetchCommunityItems(communityMemberIds, itemToRequest, setItemToRequest),
+    enabled: !!activeId && communityMembers?.length > 0,
+    staleTime: Infinity,
+  });
 
+  useEffect(() => {
+    if (!activeId || communityMemberIds.length === 0) return;
     const channel = listenForCommunityItemChanges(
-      activeCommunity.id,
-      communityMembers.map((member) => member.profiles.id),
+      activeId,
+      communityMemberIds,
       (payload) => {
-        UpdateCommunityItems();
-        console.log("refetch");
+        queryClient.invalidateQueries(["CommunityItems", activeId]);
       }
     );
-
     return () => supabase.removeChannel(channel);
-  }, [communityMembers]);
+  }, [communityMemberIds, activeId]);
 
-  return [communityItems, setCommunityItems];
+  return query;
 }
 
 function listenForCommunityItemChanges(
@@ -77,7 +93,7 @@ function listenForCommunityItemChanges(
         onChange(payload);
       }
     )
-    .subscribe();
+    .subscribe((stat) => console.log(stat));
 
   return channel;
 }

@@ -3,17 +3,15 @@ import Button from "../ui/Button";
 import Loading from "../global/Loading";
 import { useSession } from "../../context/session_context/useSession";
 import useUserCommunities from "../../hooks/tanstack_queries/useUserCommunities";
-import useCommunityMembers from "../../hooks/tanstack_queries/useCommunityMembers";
 import useToggleMemberRole from "../../hooks/tanstack_mutations/useToggleMemberRole";
 
 export default function MembershipPanel({
   HandleKickMemberBtnClick,
   isKickLoading,
 }) {
-  const { activeCommunity } = useGlobal();
+  const { activeCommunity, communityMembers } = useGlobal();
   const { session } = useSession();
 
-  const { data: communityMembers } = useCommunityMembers(activeCommunity);
   const { data: userCommunities } = useUserCommunities();
   const ToggleMemberRole = useToggleMemberRole();
 

@@ -3,73 +3,45 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction"; // for selectable
 import { useEffect, useMemo, useState } from "react";
-import { useGlobal } from "../../context/useGlobal";
 import { FormatDateStringAddHalfHour } from "../../lib/FormatDateStringAddHalfHour";
 import { HasReservationConflict } from "../../lib/HasReservationConflict";
 import { useItemContext } from "../../context/item_context/useItemContext";
 import EventContent from "./EventContent";
 import { useSession } from "../../context/session_context/useSession";
-import { supabase } from "../../lib/supabaseClient";
+import useSubmitItemReservation from "../../hooks/tanstack_mutations/useSubmitItemReservation";
 
 export default function ItemReservationModal() {
   const { session } = useSession();
   const { itemToRequest, setItemToRequest } = useItemContext();
-  const { setCommunityItems } = useGlobal();
-
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [reservationEvent, setReservationEvent] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const SubmitItemReservation = useSubmitItemReservation();
 
   const OnSubmitReservation = async (e, selfBooking = false) => {
     e.preventDefault();
     if (startTime === "" || endTime === "") return;
-
-    try {
-      setIsLoading(true);
-
-      const { data, error } = await supabase
-        .from("item_reservations")
-        .insert([
-          {
-            user_id: session.user.id,
-            item_id: itemToRequest.id,
-            start: startTime,
-            end: endTime,
-            status: selfBooking ? "booking" : "request",
-          },
-        ])
-        .select()
-        .single();
-
-      if (error)
-        throw new Error("Creating reservation failed: ", error.message);
-
-      setCommunityItems((oldItems) => {
-        return oldItems.map((item) => {
-          if (item.id === data.item_id) {
+    SubmitItemReservation.mutate(
+      {
+        user_id: session.user.id,
+        item_id: itemToRequest.id,
+        start: startTime,
+        end: endTime,
+        status: selfBooking ? "booking" : "request",
+      },
+      {
+        onSuccess: (data) => {
+          setItemToRequest((oldItem) => {
             return {
-              ...item,
+              ...oldItem,
               item_reservations: [...itemReservations, data],
             };
-          }
-          return item;
-        });
-      });
-
-      setItemToRequest((oldItem) => {
-        return { ...oldItem, item_reservations: [...itemReservations, data] };
-      });
-
-      // update this items reservations in local state
-
-      setStartTime("");
-      setEndTime("");
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
+          });
+          setStartTime("");
+          setEndTime("");
+        },
+      }
+    );
   };
 
   useEffect(() => {
@@ -142,7 +114,11 @@ export default function ItemReservationModal() {
         <form onSubmit={OnSubmitReservation}>
           <div>Start time: {startTime}</div>
           <div>End time: {endTime}</div>
-          <Button text="Submit" type="submit" disabled={isLoading} />
+          <Button
+            text="Submit"
+            type="submit"
+            disabled={SubmitItemReservation.isPending}
+          />
         </form>
       )}
       <FullCalendar

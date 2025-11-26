@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import Button from "../ui/Button";
-import { useGlobal } from "../../context/useGlobal";
 import Input from "../ui/Input";
 import Checkbox from "../ui/Checkbox";
 import { useItemContext } from "../../context/item_context/useItemContext";
-import { supabase } from "../../lib/supabaseClient";
+import useDeleteItem from "../../hooks/tanstack_mutations/useDeleteItem";
+import useUpdateItem from "../../hooks/tanstack_mutations/useUpdateItem";
 
 export default function EditItemForm() {
   const { itemToEdit, setItemToEdit } = useItemContext();
-  const { setCommunityItems } = useGlobal();
-  const [isLoading, setIsLoading] = useState(false);
-
+  const DeleteItem = useDeleteItem();
+  const UpdateItem = useUpdateItem();
   const [formData, setFormData] = useState({
     name: itemToEdit.name,
     isAvailable: itemToEdit.is_available,
@@ -21,53 +20,34 @@ export default function EditItemForm() {
     [itemToEdit]
   );
 
-  const UpdateItem = async (e) => {
+  const HandleUpdateItem = async (e) => {
     e.preventDefault();
     if (formData.name == "") return;
-    try {
-      setIsLoading(true);
-      const { data, error } = await supabase
-        .from("items")
-        .update({ name: formData.name, is_available: formData.isAvailable })
-        .eq("id", itemToEdit.id)
-        .select("id, owner, name, is_available, item_reservations(*)");
 
-      if (error) throw new Error(error.message);
-
-      setCommunityItems((old) =>
-        old.map((item) => (item.id === itemToEdit.id ? data : item)).flat()
-      );
-      setItemToEdit(data[0]);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
+    UpdateItem.mutate(
+      {
+        item_id: itemToEdit.id,
+        name: formData.name,
+        is_available: formData.isAvailable,
+      },
+      { onSuccess: (data) => setItemToEdit(data) }
+    );
   };
 
-  const DeleteItem = async (e) => {
-    setIsLoading(true);
-    try {
-      const { error } = await supabase
-        .from("items")
-        .delete()
-        .eq("id", itemToEdit.id);
-
-      if (error) throw new Error(error.message);
-      setCommunityItems((oldItems) =>
-        oldItems.filter((item) => item.id !== itemToEdit.id)
-      );
-      setItemToEdit(null);
-    } catch (error) {
-      console.error("Delete Item Error: ", error);
-    } finally {
-      setIsLoading(false);
-    }
+  const HandleDeleteItem = async (e) => {
+    DeleteItem.mutate(
+      { item_id: itemToEdit.id },
+      {
+        onSuccess: () => {
+          setItemToEdit(null);
+        },
+      }
+    );
   };
 
   return (
     <form
-      onSubmit={UpdateItem}
+      onSubmit={HandleUpdateItem}
       className="flex flex-col w-full items-center gap-4 bg-slate-800 py-6"
     >
       <Input
@@ -81,27 +61,27 @@ export default function EditItemForm() {
       <Checkbox
         id="isAvailableCheckbox"
         labelText="Available"
-        onChange={(e) =>
+        onChange={() =>
           setFormData({ ...formData, isAvailable: !formData.isAvailable })
         }
         value={formData.isAvailable}
       />
       <Button
-        disabled={isLoading}
+        disabled={UpdateItem.isPending || DeleteItem.isPending}
         text={itemToEdit === null ? "Submit" : "Update"}
         type="submit"
       />
       <div className="flex flex-col gap-4">
         <Button
-          disabled={isLoading}
+          disabled={UpdateItem.isPending || DeleteItem.isPending}
           text="Cancel"
           onClick={() => setItemToEdit(null)}
         />
         <Button
-          disabled={isLoading}
+          disabled={UpdateItem.isPending || DeleteItem.isPending}
           text="Delete"
           styles=" bg-red-500"
-          onClick={DeleteItem}
+          onClick={HandleDeleteItem}
         />
       </div>
     </form>
