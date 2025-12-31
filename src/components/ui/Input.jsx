@@ -5,7 +5,7 @@ export default function Input({
   withLabel = false,
   labelText = "",
   type = "text",
-  placeholder = "...",
+  placeholder = "",
   value = null,
   onChange = () => {},
   outerStyles = "",

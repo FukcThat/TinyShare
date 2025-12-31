@@ -102,6 +102,7 @@ export default function ItemReservationModal() {
         OnSubmitReservation={OnSubmitReservation}
         setStartTime={setStartTime}
         setEndTime={setEndTime}
+        editable={arg.event._def.extendedProps.status === "preview"}
       />
     );
   };
@@ -130,6 +131,8 @@ export default function ItemReservationModal() {
             ? [...itemReservations, reservationEvent]
             : itemReservations
         }
+        editable={true}
+        eventOverlap={false}
         allDaySlot={false}
         headerToolbar={{
           left: "prev,next",
@@ -138,6 +141,17 @@ export default function ItemReservationModal() {
         }}
         height={"80%"}
         selectable={true}
+        eventAllow={(_newInfo, obj) => {
+          return obj._def.extendedProps.status === "preview";
+        }}
+        eventResize={(e) => {
+          setStartTime(e.event.start.toISOString());
+          setEndTime(e.event.end.toISOString());
+        }}
+        eventDrop={(e) => {
+          setStartTime(e.event.start.toISOString());
+          setEndTime(e.event.end.toISOString());
+        }}
         dateClick={(e) => SetTime(e.dateStr)}
         firstDay={1}
       />

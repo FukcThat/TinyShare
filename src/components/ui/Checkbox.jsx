@@ -10,7 +10,7 @@ export default function Checkbox({
   disabled = false,
 }) {
   return (
-    <div className={twMerge([styles, "flex gap-4"])}>
+    <div className={twMerge(["flex gap-4", styles])}>
       <label htmlFor={id}>{labelText}</label>
       <input
         disabled={disabled}

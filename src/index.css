@@ -1,10 +1,21 @@
 @import "tailwindcss";
+@theme {
+  --color-primary: #222831;
+  --color-secondary: #31363f;
+  --color-accent: #76abae;
+  --color-text-primary: #eeeeee;
+  --color-text-secondary: #76abae;
+  --color-disabled: #f0f0f0;
+  --color-warning: rgb(202, 0, 27);
+}
 
 body {
-  background-color: rgb(33, 33, 33);
-  color: whitesmoke;
+  background-color: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
 * {
   user-select: none;
+  transition: all;
+  transition-duration: 50ms;
 }

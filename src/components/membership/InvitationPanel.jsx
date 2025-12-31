@@ -46,7 +46,6 @@ export default function InvitationPanel() {
     <Loading />
   ) : (
     <div>
-      {userInvitations.length === 0 && <div>No invites yet...</div>}
       {userInvitations.map((invite) => (
         <div
           key={invite.id}

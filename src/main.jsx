@@ -12,6 +12,7 @@ import ErrorPage from "./pages/ErrorPage.jsx";
 import SessionProvider from "./context/session_context/SessionContextProvider.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import ItemPage from "./pages/ItemPage.jsx";
 
 const queryClient = new QueryClient();
 
@@ -22,21 +23,17 @@ createRoot(document.getElementById("root")).render(
         <ReactQueryDevtools initialIsOpen={false} />
         <SessionProvider>
           <GlobalProvider>
-            <Routes>
-              <Route path="/" element={<Layout />}>
-                <Route index element={<ProfilePage />}></Route>
-                <Route path="/members" element={<MembersPage />}></Route>
-                <Route
-                  path="/items"
-                  element={
-                    <ItemContextProvider>
-                      <ItemsPage />
-                    </ItemContextProvider>
-                  }
-                ></Route>
-                <Route path="*" element={<ErrorPage />}></Route>
-              </Route>
-            </Routes>
+            <ItemContextProvider>
+              <Routes>
+                <Route path="/" element={<Layout />}>
+                  <Route index element={<ProfilePage />}></Route>
+                  <Route path="/members" element={<MembersPage />}></Route>
+                  <Route path="/items" element={<ItemsPage />}></Route>
+                  <Route path="/items/:id" element={<ItemPage />}></Route>
+                  <Route path="*" element={<ErrorPage />}></Route>
+                </Route>
+              </Routes>
+            </ItemContextProvider>
           </GlobalProvider>
         </SessionProvider>
       </QueryClientProvider>

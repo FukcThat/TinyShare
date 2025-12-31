@@ -1,5 +1,7 @@
 # TinyShare Roadmap
 
+ISSUES:
+
 Current Commit: TanStack Query Integration
 
 - [x] User Profile Data
@@ -8,7 +10,7 @@ Current Commit: TanStack Query Integration
 - [x] Community Member Data (invalidate when member kicked that isnt you)
 - [x] Community Invite Data
 - [x] Community Item Data
-- Realtime Issue with Community Items
+- [x] Realtime Issue with Community Items
 
 ### Reservation and Booking System [70%]
 
@@ -19,9 +21,8 @@ Current Commit: TanStack Query Integration
 -- [later] Datetime picker library integration
 -- [x] creating reservation
 -- [x] Cancel Booking from requester view
-[50%] Owners side of booking
+[x] Owners side of booking
 -- [x] Accept/Deny Booking
--- [later] Update booking time
 [x] Search/Filter Items by status and other things to find free items in your needed timeline
 [x] Availablitiy functionality (when is not available, new bookings cannot be made but standing bookings are upheld)
 

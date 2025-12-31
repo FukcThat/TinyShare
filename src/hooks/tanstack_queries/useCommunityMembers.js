@@ -32,9 +32,7 @@ export default function useCommunityMembers(activeCommunity) {
       activeCommunityId,
       (payload) => {
         queryClient.invalidateQueries(["CommunityMembers", activeCommunityId]);
-        setTimeout(() => {
-          queryClient.invalidateQueries(["CommunityItems", activeCommunityId]);
-        }, 1000);
+        queryClient.invalidateQueries(["CommunityItems", activeCommunityId]);
       }
     );
 

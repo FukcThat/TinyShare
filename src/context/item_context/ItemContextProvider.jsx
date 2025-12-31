@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { ItemContext } from "./ItemContext";
-import useCommunityMembers from "../../hooks/tanstack_queries/useCommunityMembers";
 
 export default function ItemContextProvider({ children }) {
   const [isOpen, setIsOpen] = useState(false);

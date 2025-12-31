@@ -1,20 +1,30 @@
 import { useEffect, useMemo } from "react";
-import { supabase } from "../lib/supabaseClient";
-import inFilter from "../lib/inFilter";
+import { supabase } from "../../lib/supabaseClient";
+import inFilter from "../../lib/inFilter";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useGlobal } from "../context/useGlobal";
-import { useItemContext } from "../context/item_context/useItemContext";
+import { useGlobal } from "../../context/useGlobal";
+import { useItemContext } from "../../context/item_context/useItemContext";
 
 const fetchCommunityItems = async (
-  communityMemberIds,
+  communityId,
   itemToRequest,
   setItemToRequest
 ) => {
+  const { data: members, error: membersErr } = await supabase
+    .from("memberships")
+    .select("user_id")
+    .eq("community_id", communityId);
+
+  if (membersErr)
+    throw new Error("Issue fetching members for community items.!");
+
   const { data, error } = await supabase
     .from("items")
     .select("id, name, is_available, owner(*), item_reservations(*)")
-    .in("owner", communityMemberIds);
-
+    .in(
+      "owner",
+      members.map((m) => m.user_id)
+    );
   if (error) throw new Error("Issue fetching community items.");
 
   if (itemToRequest) {
@@ -40,13 +50,14 @@ export default function useCommunityItems() {
   const query = useQuery({
     queryKey: ["CommunityItems", activeId],
     queryFn: () =>
-      fetchCommunityItems(communityMemberIds, itemToRequest, setItemToRequest),
-    enabled: !!activeId && communityMembers?.length > 0,
+      fetchCommunityItems(activeId, itemToRequest, setItemToRequest),
+    enabled: !!activeId,
     staleTime: Infinity,
   });
 
   useEffect(() => {
     if (!activeId || communityMemberIds.length === 0) return;
+
     const channel = listenForCommunityItemChanges(
       activeId,
       communityMemberIds,
@@ -54,6 +65,7 @@ export default function useCommunityItems() {
         queryClient.invalidateQueries(["CommunityItems", activeId]);
       }
     );
+
     return () => supabase.removeChannel(channel);
   }, [communityMemberIds, activeId]);
 

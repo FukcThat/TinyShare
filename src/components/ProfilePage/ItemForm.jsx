@@ -6,7 +6,7 @@ import { useItemContext } from "../../context/item_context/useItemContext";
 import useCreateItem from "../../hooks/tanstack_mutations/useCreateItem";
 import { useSession } from "../../context/session_context/useSession";
 
-export default function ItemForm() {
+export default function ItemForm({ setIsOpen }) {
   const { session } = useSession();
   const { itemToEdit } = useItemContext();
   const [formData, setFormData] = useState({
@@ -34,31 +34,45 @@ export default function ItemForm() {
   return (
     <form
       onSubmit={HandleCreateItem}
-      className="flex flex-col w-full items-center gap-4 bg-slate-800 py-6"
+      className="flex flex-col w-full items-center gap-4 bg-primary p-2 rounded-xl"
     >
       <Input
         disabled={CreateItem.isPending}
         id="name"
-        placeholder="Item..."
+        outerStyles="w-full grid grid-cols-2"
+        placeholder=""
         value={formData.name}
         withLabel
-        labelText="Name:"
+        labelText="Item Name"
+        labelStyles="ml-4"
+        inputStyles="border"
         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
       />
       <Checkbox
         disabled={CreateItem.isPending}
         id="isAvailableCheckbox"
         labelText="Available"
+        styles="grid grid-cols-2 w-full px-4 text-lg gap-0"
         onChange={(e) =>
           setFormData({ ...formData, isAvailable: !formData.isAvailable })
         }
         value={formData.isAvailable}
       />
-      <Button
-        disabled={CreateItem.isPending}
-        text={itemToEdit === null ? "Submit" : "Update"}
-        type="submit"
-      />
+      <div className="flex w-full justify-around">
+        <Button
+          disabled={CreateItem.isPending}
+          text={itemToEdit === null ? "Submit" : "Update"}
+          type="submit"
+          styles="bg-accent/80 hover:bg-accent"
+        />
+        <Button
+          disabled={CreateItem.isPending}
+          type="button"
+          text="Cancel"
+          styles="bg-warning/80 hover:bg-warning"
+          onClick={() => setIsOpen(false)}
+        />
+      </div>
     </form>
   );
 }

@@ -4,7 +4,7 @@ import { supabase } from "../../lib/supabaseClient";
 const fetchUserProfile = async (userId) => {
   const { data, error } = await supabase
     .from("profiles")
-    .select("name")
+    .select("name, created_at")
     .eq("id", userId)
     .single();
 
