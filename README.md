@@ -1,6 +1,38 @@
 # TinyShare Roadmap
 
-ISSUES:
+Todos:
+
+-[x] Item is Currently booked function returns true or false and can be used on profile page, item page 
+-[e] Item Edit Delete, Calendar Design/Legend [3.Jan]
+-[c] Image CRUD [4.Jan]
+-[d] Community Page, info, edit, delete, members with role toggle, admin panel invite/settings [5.Jan]
+-[s] Homepage invites, item list view of active community with search and filters [6.Jan]
+-[r] General Refactor of code [7-9.Jan]
+-[l] Loading States / Typescript Migration [10.Jan]
+-[t] Hosting [11.Jan]
+
+-[x] Profile Page
+--[x] Show if items are currently booked or not with small badge
+-[] Item Page
+--[c] Image CRUD
+--[e] Edit/Delete Item if owner
+--[x] Currently booked badge
+--[e] Calendar design update
+--[e] Calendar legend 
+--[x] Currently Booked Status in the booking form
+-[s] Home Page
+--[s] Invites
+--[i] Active Bookings
+--[i] My Booked Items
+--[s] Item List View of active community
+-[d] Community Page
+--[d] Community Info
+--[d] Community Info Edit if admin
+--[d] Community Members List / role toggle and kicks for admin
+--[d] Admin Panel Invites
+--[d] Admin Panel Settings\
+
+### Issues
 
 Current Commit: TanStack Query Integration
 

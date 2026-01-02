@@ -1,11 +1,12 @@
-import { useState } from "react";
-import useCreateCommunity from "../../hooks/tanstack_mutations/useCreateCommunity";
-import { useSession } from "../../context/session_context/useSession";
-import Button from "../ui/Button";
-import Input from "../ui/Input";
-import useUserCommunities from "../../hooks/tanstack_queries/useUserCommunities";
-import { useGlobal } from "../../context/useGlobal";
-import InvitationPanel from "../membership/InvitationPanel";
+import { useState } from 'react';
+import useCreateCommunity from '../../hooks/tanstack_mutations/useCreateCommunity';
+import { useSession } from '../../context/session_context/useSession';
+import Button from '../ui/Button';
+import Input from '../ui/Input';
+import useUserCommunities from '../../hooks/tanstack_queries/useUserCommunities';
+import { useGlobal } from '../../context/useGlobal';
+import InvitationPanel from '../membership/InvitationPanel';
+import BgPanel from '../global/BgPanel';
 
 export default function UserCommunitiesPanel() {
   const { session } = useSession();
@@ -13,14 +14,14 @@ export default function UserCommunitiesPanel() {
 
   const { data: userCommunities } = useUserCommunities();
   const [showForm, setShowForm] = useState(false);
-  const [nameInput, setNameInput] = useState("");
+  const [nameInput, setNameInput] = useState('');
   const CreateCommunity = useCreateCommunity();
 
   const createNewCommunity = (e) => {
     e.preventDefault();
 
     if (!nameInput) {
-      window.alert("Please provide a name for the community :) ");
+      window.alert('Please provide a name for the community :) ');
       return;
     }
 
@@ -28,12 +29,12 @@ export default function UserCommunitiesPanel() {
       {
         nameInput,
         user_id: session.user.id,
-        role: "admin",
+        role: 'admin',
       },
       {
         onSuccess: () => {
-          setNameInput("");
-          setIsShowingCommunityForm(false);
+          setNameInput('');
+          setShowForm(false);
         },
       }
     );
@@ -47,19 +48,19 @@ export default function UserCommunitiesPanel() {
         return community.id == e.id;
       })
     );
-    localStorage.setItem("tiny-share-active-community-id", e.id);
+    localStorage.setItem('tiny-share-active-community-id', e.id);
   };
 
   return (
-    <div className="bg-secondary p-4 rounded-xl flex flex-col items-center justify-between w-[90%] gap-4">
+    <BgPanel>
       <div className="flex w-full justify-between">
-        <div className="text-start w-full">My Communities</div>
+        <div className="text-start w-full text-2xl">My Communities</div>
 
         <div>
           <Button
             text="+ Create Community"
             onClick={() => {
-              setNameInput("");
+              setNameInput('');
               setShowForm(!showForm);
             }}
             styles="w-[200px] bg-primary"
@@ -108,12 +109,12 @@ export default function UserCommunitiesPanel() {
               onClick={() => HandleSelectActiveCommunity(e)}
               key={e.id}
               className={`cursor-pointer grid grid-cols-2 items-center bg-primary border  hover:border-white w-full h-20 rounded-md ${
-                e.role == "admin" ? " border-accent" : "border-transparent"
+                e.role == 'admin' ? ' border-accent' : 'border-transparent'
               }`}
             >
               <div className="text-center">{e.name}</div>
               <div className="text-center">
-                {activeCommunity?.id === e.id ? "✔️" : "❌"}
+                {activeCommunity?.id === e.id ? '✔️' : '❌'}
               </div>
             </div>
           );
@@ -122,6 +123,6 @@ export default function UserCommunitiesPanel() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-2">
         <InvitationPanel />
       </div>
-    </div>
+    </BgPanel>
   );
 }

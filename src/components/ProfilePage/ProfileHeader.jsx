@@ -1,16 +1,18 @@
-import { useEffect, useMemo, useState } from "react";
-import Button from "../ui/Button";
-import EditProfileForm from "./EditProfileForm";
-import useUserProfile from "../../hooks/tanstack_queries/useUserProfile";
-import { useSession } from "../../context/session_context/useSession";
-import Loading from "../global/Loading";
+import { useEffect, useMemo, useState } from 'react';
+import Button from '../ui/Button';
+import EditProfileForm from './EditProfileForm';
+import useUserProfile from '../../hooks/tanstack_queries/useUserProfile';
+import { useSession } from '../../context/session_context/useSession';
+import Loading from '../global/Loading';
+import { supabase } from '@supabase/auth-ui-shared';
+import BgPanel from '../global/BgPanel';
 
 const oneDay = 24 * 60 * 60 * 1000;
 
 export default function ProfileHeader({ yourItems }) {
   const { session } = useSession();
   const [showForm, setShowForm] = useState(false);
-  const [nameInput, setNameInput] = useState("");
+  const [nameInput, setNameInput] = useState('');
   const { data: userProfile } = useUserProfile(session);
 
   useEffect(() => {
@@ -44,9 +46,9 @@ export default function ProfileHeader({ yourItems }) {
   if (!userProfile) return <Loading />;
 
   return (
-    <div className="bg-secondary p-4 rounded-xl flex flex-col items-center justify-between w-[90%] gap-4">
-      <div className="flex justify-between w-full border-b-2 border-accent py-4">
-        {userProfile && userProfile.name != "" ? (
+    <BgPanel>
+      <div className="flex justify-between w-full border-b border-accent/50 py-4">
+        {userProfile && userProfile.name != '' ? (
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
               {showForm ? (
@@ -66,7 +68,7 @@ export default function ProfileHeader({ yourItems }) {
                   setNameInput(userProfile.name);
                 }}
                 styles="bg-primary p-1"
-                text={showForm ? "❌" : "✏️"}
+                text={showForm ? '❌' : '✏️'}
               />
             </div>
 
@@ -87,9 +89,9 @@ export default function ProfileHeader({ yourItems }) {
       {/* PROFILE DETAILS */}
       <div className="flex flex-col gap-4 md:flex-row justify-between w-full ">
         {[
-          ["Account Age: ", accountAge + "Days"],
-          ["Total Items: ", totalItems],
-          ["Available Items: ", availableItems],
+          ['Account Age: ', accountAge + 'Days'],
+          ['Total Items: ', totalItems],
+          ['Available Items: ', availableItems],
         ].map((e) => {
           return (
             <div key={e[0]}>
@@ -99,6 +101,6 @@ export default function ProfileHeader({ yourItems }) {
           );
         })}
       </div>
-    </div>
+    </BgPanel>
   );
 }

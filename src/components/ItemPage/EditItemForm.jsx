@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import Button from "../ui/Button";
-import Input from "../ui/Input";
-import Checkbox from "../ui/Checkbox";
-import { useItemContext } from "../../context/item_context/useItemContext";
-import useDeleteItem from "../../hooks/tanstack_mutations/useDeleteItem";
-import useUpdateItem from "../../hooks/tanstack_mutations/useUpdateItem";
+import { useEffect, useState } from 'react';
+import Button from '../ui/Button';
+import Input from '../ui/Input';
+import Checkbox from '../ui/Checkbox';
+import { useItemContext } from '../../context/item_context/useItemContext';
+import useDeleteItem from '../../hooks/tanstack_mutations/useDeleteItem';
+import useUpdateItem from '../../hooks/tanstack_mutations/useUpdateItem';
 
 export default function EditItemForm() {
   const { itemToEdit, setItemToEdit } = useItemContext();
@@ -17,12 +17,12 @@ export default function EditItemForm() {
 
   useEffect(
     () => setFormData({ ...formData, name: itemToEdit.name }),
-    [itemToEdit]
+    [itemToEdit, formData]
   );
 
   const HandleUpdateItem = async (e) => {
     e.preventDefault();
-    if (formData.name == "") return;
+    if (formData.name == '') return;
 
     UpdateItem.mutate(
       {
@@ -34,7 +34,7 @@ export default function EditItemForm() {
     );
   };
 
-  const HandleDeleteItem = async (e) => {
+  const HandleDeleteItem = async () => {
     DeleteItem.mutate(
       { item_id: itemToEdit.id },
       {
@@ -68,7 +68,7 @@ export default function EditItemForm() {
       />
       <Button
         disabled={UpdateItem.isPending || DeleteItem.isPending}
-        text={itemToEdit === null ? "Submit" : "Update"}
+        text={itemToEdit === null ? 'Submit' : 'Update'}
         type="submit"
       />
       <div className="flex flex-col gap-4">

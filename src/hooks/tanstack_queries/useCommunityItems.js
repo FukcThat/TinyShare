@@ -1,9 +1,9 @@
-import { useEffect, useMemo } from "react";
-import { supabase } from "../../lib/supabaseClient";
-import inFilter from "../../lib/inFilter";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useGlobal } from "../../context/useGlobal";
-import { useItemContext } from "../../context/item_context/useItemContext";
+import { useEffect, useMemo } from 'react';
+import { supabase } from '../../lib/supabaseClient';
+import inFilter from '../../lib/inFilter';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useGlobal } from '../../context/useGlobal';
+import { useItemContext } from '../../context/item_context/useItemContext';
 
 const fetchCommunityItems = async (
   communityId,
@@ -11,21 +11,21 @@ const fetchCommunityItems = async (
   setItemToRequest
 ) => {
   const { data: members, error: membersErr } = await supabase
-    .from("memberships")
-    .select("user_id")
-    .eq("community_id", communityId);
+    .from('memberships')
+    .select('user_id')
+    .eq('community_id', communityId);
 
   if (membersErr)
-    throw new Error("Issue fetching members for community items.!");
+    throw new Error('Issue fetching members for community items.!');
 
   const { data, error } = await supabase
-    .from("items")
-    .select("id, name, is_available, owner(*), item_reservations(*)")
+    .from('items')
+    .select('id, name, is_available, owner(*), item_reservations(*)')
     .in(
-      "owner",
+      'owner',
       members.map((m) => m.user_id)
     );
-  if (error) throw new Error("Issue fetching community items.");
+  if (error) throw new Error('Issue fetching community items.');
 
   if (itemToRequest) {
     for (let item of data) {
@@ -48,7 +48,7 @@ export default function useCommunityItems() {
   }, [communityMembers]);
 
   const query = useQuery({
-    queryKey: ["CommunityItems", activeId],
+    queryKey: ['CommunityItems', activeId],
     queryFn: () =>
       fetchCommunityItems(activeId, itemToRequest, setItemToRequest),
     enabled: !!activeId,
@@ -61,8 +61,8 @@ export default function useCommunityItems() {
     const channel = listenForCommunityItemChanges(
       activeId,
       communityMemberIds,
-      (payload) => {
-        queryClient.invalidateQueries(["CommunityItems", activeId]);
+      () => {
+        queryClient.invalidateQueries(['CommunityItems', activeId]);
       }
     );
 
@@ -80,28 +80,28 @@ function listenForCommunityItemChanges(
   const channel = supabase
     .channel(`items-${communityId}`)
     .on(
-      "postgres_changes",
+      'postgres_changes',
       {
-        event: "*",
-        schema: "public",
-        table: "items",
-        filter: inFilter("owner", communityMembers),
+        event: '*',
+        schema: 'public',
+        table: 'items',
+        filter: inFilter('owner', communityMembers),
       },
       (payload) => {
-        console.log("🔄 Community Items change:", payload);
+        console.log('🔄 Community Items change:', payload);
         onChange(payload);
       }
     )
     .on(
-      "postgres_changes",
+      'postgres_changes',
       {
-        event: "*",
-        schema: "public",
-        table: "item_reservations",
-        filter: inFilter("user_id", communityMembers),
+        event: '*',
+        schema: 'public',
+        table: 'item_reservations',
+        filter: inFilter('user_id', communityMembers),
       },
       (payload) => {
-        console.log("🔄 Community Item Reservations change:", payload);
+        console.log('🔄 Community Item Reservations change:', payload);
         onChange(payload);
       }
     )

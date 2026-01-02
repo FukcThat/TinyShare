@@ -1,22 +1,21 @@
-import { useItemContext } from "../../context/item_context/useItemContext";
-import { useSession } from "../../context/session_context/useSession";
-import Button from "../ui/Button";
-import useCancelItemReservation from "../../hooks/tanstack_mutations/useCancelItemReservation";
-import useApproveItemReservation from "../../hooks/tanstack_mutations/useApproveItemReservation";
+import { useSession } from '../../context/session_context/useSession';
+import Button from '../ui/Button';
+import useCancelItemReservation from '../../hooks/tanstack_mutations/useCancelItemReservation';
+import useApproveItemReservation from '../../hooks/tanstack_mutations/useApproveItemReservation';
 
 export default function EventContent({
   arg,
   OnSubmitReservation,
   setStartTime,
   setEndTime,
+  item,
 }) {
   const { session } = useSession();
-  const { itemToRequest } = useItemContext();
   const CancelItemReservation = useCancelItemReservation();
   const ApproveItemReservation = useApproveItemReservation();
 
   const HandleApproveBtnClick = async (e) => {
-    if (arg.event._def.extendedProps.status == "preview") {
+    if (arg.event._def.extendedProps.status == 'preview') {
       OnSubmitReservation(e, true);
     } else {
       ApproveItemReservation.mutate({
@@ -26,9 +25,9 @@ export default function EventContent({
   };
 
   const HandleDenyBtnClick = async () => {
-    if (arg.event._def.extendedProps.status == "preview") {
-      setStartTime("");
-      setEndTime("");
+    if (arg.event._def.extendedProps.status == 'preview') {
+      setStartTime('');
+      setEndTime('');
     } else {
       HandleCancelBtnClick();
     }
@@ -46,11 +45,11 @@ export default function EventContent({
 
   // Component Helpers
   const IsOwnerAndNotBooked = () =>
-    itemToRequest.owner.id === session.user.id &&
-    arg.event._def.extendedProps.status !== "booking";
+    item.owner.id === session.user.id &&
+    arg.event._def.extendedProps.status !== 'booking';
   const IsOwnerAndIsBooked = () =>
-    itemToRequest.owner.id === session.user.id &&
-    arg.event._def.extendedProps.status === "booking";
+    item.owner.id === session.user.id &&
+    arg.event._def.extendedProps.status === 'booking';
 
   const IsOurBooking = () =>
     arg.event._def.extendedProps.userId == session.user.id && arg.timeText;

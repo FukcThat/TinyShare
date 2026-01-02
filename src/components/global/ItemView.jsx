@@ -1,7 +1,9 @@
-import { Link } from "react-router";
+import { Link } from 'react-router';
+import useActiveBooking from '../../hooks/useActiveBooking';
 
 export default function ItemView({ item, isOwner = false }) {
-  const isBooked = true;
+  const { isBooked } = useActiveBooking(item);
+
   return (
     <Link
       to={`/items/${item.id}`}
@@ -14,21 +16,18 @@ export default function ItemView({ item, isOwner = false }) {
         />
       </div>
       <div className="flex flex-col grow">
-        <div className="flex justify-between">
-          <div
-            className={` text-sm rounded-md ${
-              isBooked ? "bg-text-warning/80" : "bg-green-500"
-            }`}
-          >
-            {isBooked ? "Booked" : "Available"}
-          </div>
-          <div className="text-sm px-2 rounded-md bg-black/40">
-            item.category
-          </div>
-        </div>
         <div className=" text-lg">{item.name}</div>
         <div className="">item.description</div>
         {!isOwner && <div className="text-sm">Owner: {item.owner.name}</div>}
+      </div>
+      <div className="flex justify-end p-2 h-fit">
+        <div
+          className={` text-sm rounded-md px-2 ${
+            isBooked ? 'bg-warning/80' : 'bg-emerald-700'
+          }`}
+        >
+          {isBooked ? 'Booked' : 'Available'}
+        </div>
       </div>
     </Link>
   );
