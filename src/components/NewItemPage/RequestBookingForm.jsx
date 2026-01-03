@@ -1,6 +1,7 @@
 import BgPanel from '../global/BgPanel';
 import Button from '../ui/Button';
 import useActiveBooking from '../../hooks/useActiveBooking';
+import { useSession } from '../../context/session_context/useSession';
 
 export default function RequestBookingForm({
   OnSubmitReservation,
@@ -10,6 +11,7 @@ export default function RequestBookingForm({
   item,
 }) {
   const { isBooked, end: activeBookingEnd, ownerName } = useActiveBooking(item);
+  const { session } = useSession();
 
   return (
     <BgPanel>
@@ -20,7 +22,12 @@ export default function RequestBookingForm({
           <p>Available after {activeBookingEnd}</p>
         </div>
       )}
-      <form onSubmit={OnSubmitReservation} className="flex flex-col gap-2">
+      <form
+        onSubmit={(e) =>
+          OnSubmitReservation(e, item.owner.id === session.user.id)
+        }
+        className="flex flex-col gap-2"
+      >
         <div>Start time: {start}</div>
         <div>End time: {end}</div>
         <Button

@@ -7,7 +7,6 @@ import BookingCalendar from '../components/NewItemPage/BookingCalendar';
 import { useSession } from '../context/session_context/useSession';
 import RequestBookingForm from '../components/NewItemPage/RequestBookingForm';
 import useSubmitItemReservation from '../hooks/tanstack_mutations/useSubmitItemReservation';
-import BookingHistory from '../components/NewItemPage/BookingHistory';
 
 export default function ItemPage() {
   const { id } = useParams();
@@ -30,6 +29,12 @@ export default function ItemPage() {
 
   const OnSubmitReservation = async (e, selfBooking = false) => {
     e.preventDefault();
+    // make sure that the reservation start time is in the future
+    let curTime = new Date().getTime();
+    if (curTime > new Date(start).getTime()) {
+      window.alert('Start of booking must be in the future!');
+      return;
+    }
     if (start === '' || end === '') return;
     SubmitItemReservation.mutate(
       {
@@ -47,10 +52,10 @@ export default function ItemPage() {
     );
   };
 
-  if (!data) return <Loading />;
+  if (!data || !item) return <Loading />;
 
   return (
-    <div className="flex flex-col justify-center items-center gap-8 py-10">
+    <div className="flex flex-col justify-center items-center gap-8 my-6">
       <ItemInfoPanel item={item} />
       {/* Edit Item Form */}
       <BookingCalendar

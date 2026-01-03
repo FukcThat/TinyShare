@@ -53,8 +53,10 @@ export default function UserCommunitiesPanel() {
 
   return (
     <BgPanel>
-      <div className="flex w-full justify-between">
-        <div className="text-start w-full text-2xl">My Communities</div>
+      <div className=" flex flex-col gap-4 items-center md:flex-row w-full justify-between">
+        <div className="text-center md:text-start w-full text-2xl">
+          My Communities
+        </div>
 
         <div>
           <Button
@@ -74,12 +76,12 @@ export default function UserCommunitiesPanel() {
         >
           <Input
             withLabel
-            outerStyles="w-full grid grid-cols-2"
+            outerStyles="w-full flex flex-col md:grid md:grid-cols-2"
             labelText="Community Name"
-            labelStyles="ml-4"
+            labelStyles="m-0 md:ml-4"
             type="text"
             id="community_name"
-            inputStyles="border"
+            inputStyles="border w-[90%]"
             value={nameInput}
             onChange={(e) => {
               setNameInput(e.target.value);

@@ -15,6 +15,10 @@ export default function EventContent({
   const ApproveItemReservation = useApproveItemReservation();
 
   const HandleApproveBtnClick = async (e) => {
+    if (new Date().getTime() > arg.event.end.getTime()) {
+      window.alert('Event is in the past!');
+      return;
+    }
     if (arg.event._def.extendedProps.status == 'preview') {
       OnSubmitReservation(e, true);
     } else {
@@ -25,6 +29,10 @@ export default function EventContent({
   };
 
   const HandleDenyBtnClick = async () => {
+    if (new Date().getTime() > arg.event.end.getTime()) {
+      window.alert('Event is in the past!');
+      return;
+    }
     if (arg.event._def.extendedProps.status == 'preview') {
       setStartTime('');
       setEndTime('');

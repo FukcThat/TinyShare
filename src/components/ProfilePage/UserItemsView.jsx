@@ -14,7 +14,7 @@ export default function UserItemsView({ items }) {
   return (
     <BgPanel>
       <div className="flex flex-col justify-between w-full gap-4">
-        <div className="flex justify-between w-full items-center">
+        <div className="flex flex-col md:flex-row gap-4 justify-between w-full items-center">
           <h3 className="text-2xl">My Items</h3>
           <Button
             text="+ Add Item"

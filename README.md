@@ -3,23 +3,25 @@
 Todos:
 
 -[x] Item is Currently booked function returns true or false and can be used on profile page, item page 
--[e] Item Edit Delete, Calendar Design/Legend [3.Jan]
--[c] Image CRUD [4.Jan]
--[d] Community Page, info, edit, delete, members with role toggle, admin panel invite/settings [5.Jan]
--[s] Homepage invites, item list view of active community with search and filters [6.Jan]
--[r] General Refactor of code [7-9.Jan]
--[l] Loading States / Typescript Migration [10.Jan]
+-[x] Item Edit Delete
+-[c] Item Description CRUD, Image CRUD, Calendar Design/Legend [4.Jan-5.Jan]
+--[] Final Panel in item view different for owner/non owner (owner manages bookings, non owner can just request bookings here)
+--[] Calendar event hover doesnt work for mobile, change it to toggle on click maybe, style it a bit [30 min]
+-[d] Community Page, info, edit, delete, members with role toggle, admin panel invite/settings [6.Jan]
+-[s] Homepage invites, item list view of active community with search and filters [7.Jan]
+-[r] General Refactor of code  [8-9.Jan]
+-[l] Icons, Style Consistency / Loading States [10.Jan]
 -[t] Hosting [11.Jan]
 
 -[x] Profile Page
 --[x] Show if items are currently booked or not with small badge
 -[] Item Page
 --[c] Image CRUD
---[e] Edit/Delete Item if owner
+--[x] Edit/Delete Item if owner
 --[x] Currently booked badge
---[e] Calendar design update
---[e] Calendar legend 
---[x] Currently Booked Status in the booking form
+--[c] Calendar design update
+--[c] Calendar legend 
+--[c] Currently Booked Status in the booking form
 -[s] Home Page
 --[s] Invites
 --[i] Active Bookings

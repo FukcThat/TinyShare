@@ -1,25 +1,25 @@
-import { twMerge } from "tailwind-merge";
+import { twMerge } from 'tailwind-merge';
 
 export default function Input({
-  id = "",
+  id = '',
   withLabel = false,
-  labelText = "",
-  type = "text",
-  placeholder = "",
+  labelText = '',
+  type = 'text',
+  placeholder = '',
   value = null,
   onChange = () => {},
-  outerStyles = "",
-  labelStyles = "",
-  inputStyles = "",
+  outerStyles = '',
+  labelStyles = '',
+  inputStyles = '',
   disabled = false,
   required = false,
 }) {
   return (
-    <div className={twMerge(["flex gap-2 items-center text-lg ", outerStyles])}>
+    <div className={twMerge(['flex gap-2 items-center text-lg ', outerStyles])}>
       {withLabel && (
         <label
           htmlFor={id}
-          className={twMerge([, `hover:cursor-pointer`, labelStyles])}
+          className={twMerge([`hover:cursor-pointer`, labelStyles])}
         >
           {labelText}
         </label>
@@ -31,9 +31,10 @@ export default function Input({
         type={type}
         placeholder={placeholder}
         value={value}
+        checked={value}
         onChange={onChange}
         className={twMerge([
-          "outline-none p-2 border-white/40 border-b text-center rounded-md text-lg",
+          'outline-none p-2 border-white/40 border-b text-center rounded-md text-lg',
           inputStyles,
         ])}
       ></input>

@@ -1,18 +1,18 @@
-import { twMerge } from "tailwind-merge";
+import { twMerge } from 'tailwind-merge';
 
 export default function Checkbox({
-  id = "checkbox",
-  withLabel = true,
-  labelText = "Checkbox Label",
+  id = 'checkbox',
+  labelText = 'Checkbox Label',
   value = false,
   onChange = () => {},
-  styles = "",
+  styles = '',
   disabled = false,
 }) {
   return (
-    <div className={twMerge(["flex gap-4", styles])}>
+    <div className={twMerge(['flex gap-4', styles])}>
       <label htmlFor={id}>{labelText}</label>
       <input
+        className="w-6 h-6 justify-self-center"
         disabled={disabled}
         type="checkbox"
         checked={value}
