@@ -63,11 +63,11 @@ export default function EventContent({
     arg.event._def.extendedProps.userId == session.user.id && arg.timeText;
 
   return (
-    <div className="flex flex-col opacity-0 hover:opacity-100 h-full  ">
+    <div className="flex flex-col h-full w-full items-center justify-center gap-4">
       <div> {arg.event.title}</div>
-      <div>{displayTime}</div>
+      <div className="text-center w-full">Booking Starts At {displayTime}</div>
       {IsOwnerAndNotBooked() && (
-        <div className="flex">
+        <div className="flex gap-4">
           <Button
             disabled={
               ApproveItemReservation.isPending ||

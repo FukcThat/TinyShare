@@ -7,22 +7,25 @@ export default function ItemView({ item, isOwner = false }) {
   return (
     <Link
       to={`/items/${item.id}`}
-      className="bg-primary hover:bg-primary/75 rounded-xl gap-2 w-full flex flex-row"
+      className="bg-primary hover:bg-primary/75 rounded-xl gap-2 w-full flex flex-row p-2 max-h-28 relative"
     >
       <div className="w-24 h-24">
         <img
-          src=""
-          className=" w-full h-full border-2 border-black rounded-md"
+          src={item.image_url}
+          className=" w-full h-full rounded-md"
+          alt="No Image Available"
         />
       </div>
 
-      <div className="flex flex-col grow">
-        <div className=" text-lg">{item.name}</div>
-        <div className="">item.description</div>
+      <div className="flex flex-col w-[calc(100%-6rem)]">
+        <div className=" text-lg py-1 truncate w-[calc(100%-80px)]">
+          {item.name}
+        </div>
+        <div className="text-sm truncate ">{item.description}</div>
         {!isOwner && <div className="text-sm">Owner: {item.owner.name}</div>}
       </div>
 
-      <div className="flex justify-end p-2 h-fit">
+      <div className="absolute right-1 top-1 p-2 h-fit">
         <div
           className={` text-sm rounded-md px-2 ${
             !item.is_available || isBooked ? 'bg-warning/80' : 'bg-emerald-700'

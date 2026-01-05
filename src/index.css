@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 @theme {
   --color-primary: #222831;
   --color-secondary: #31363f;
@@ -7,6 +7,18 @@
   --color-text-secondary: #76abae;
   --color-disabled: #f0f0f0;
   --color-warning: rgb(202, 0, 27);
+}
+
+.fc-header-toolbar {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+@media (min-width: 640px) {
+  .fc-header-toolbar {
+    display: flex;
+    flex-direction: row;
+  }
 }
 
 body {

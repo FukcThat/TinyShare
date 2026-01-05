@@ -13,6 +13,7 @@ export default function Input({
   inputStyles = '',
   disabled = false,
   required = false,
+  maxLength = 25,
 }) {
   return (
     <div className={twMerge(['flex gap-2 items-center text-lg ', outerStyles])}>
@@ -24,20 +25,29 @@ export default function Input({
           {labelText}
         </label>
       )}
-      <input
-        required={required}
-        disabled={disabled}
-        id={id}
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        checked={value}
-        onChange={onChange}
-        className={twMerge([
-          'outline-none p-2 border-white/40 border-b text-center rounded-md text-lg',
-          inputStyles,
-        ])}
-      ></input>
+      <div className={twMerge(['relative w-full rounded-md   ', inputStyles])}>
+        <input
+          required={required}
+          disabled={disabled}
+          id={id}
+          type={type}
+          placeholder={placeholder}
+          value={value}
+          maxLength={maxLength}
+          checked={value}
+          onChange={onChange}
+          className={twMerge([
+            ' outline-none text-center w-full text-lg border border-white/40 py-2 focus:border-accent rounded-md',
+          ])}
+        />
+        <div
+          className={`absolute right-1 bottom-1 text-sm text-text-primary/80  ${
+            value.length === maxLength && 'text-warning'
+          }`}
+        >
+          {value.length} / {maxLength}
+        </div>
+      </div>
     </div>
   );
 }

@@ -10,9 +10,11 @@ export default function Checkbox({
 }) {
   return (
     <div className={twMerge(['flex gap-4', styles])}>
-      <label htmlFor={id}>{labelText}</label>
+      <label className="cursor-pointer" htmlFor={id}>
+        {labelText}
+      </label>
       <input
-        className="w-6 h-6 justify-self-center"
+        className="w-6 h-6 justify-self-center accent-accent"
         disabled={disabled}
         type="checkbox"
         checked={value}

@@ -6,6 +6,8 @@ import Button from '../ui/Button';
 import useDeleteItem from '../../hooks/tanstack_mutations/useDeleteItem';
 import useUpdateItem from '../../hooks/tanstack_mutations/useUpdateItem';
 import { useNavigate } from 'react-router';
+import TextArea from '../ui/TextArea';
+import Checkbox from '../ui/Checkbox';
 
 export default function ItemInfoPanel({ item }) {
   const { isBooked } = useActiveBooking(item);
@@ -16,20 +18,42 @@ export default function ItemInfoPanel({ item }) {
   const [formData, setFormData] = useState({
     name: item.name,
     isAvailable: item.is_available,
+    description: item.description,
+    imgFile: null,
+    imgPreview: item.image_url,
   });
+
+  const ResetFormState = (data) => {
+    setFormData({
+      name: data.name,
+      isAvailable: data.is_available,
+      description: data.description,
+      imgFile: null,
+      imgPreview: data.image_url,
+    });
+    setIsEditing(false);
+  };
 
   const HandleUpdateItem = async (e) => {
     e.preventDefault();
-
+    console.log('clicked');
     if (formData.name === '') return;
-
+    console.log(item.image_url);
     UpdateItem.mutate(
       {
         item_id: item.id,
         name: formData.name,
         is_available: formData.isAvailable,
+        description: formData.description,
+        newFile: formData.imgFile,
+        oldImageUrl: item.image_url,
+        owner: item.owner.id,
       },
-      { onSuccess: () => setIsEditing(false) }
+      {
+        onSuccess: (data) => {
+          ResetFormState(data);
+        },
+      }
     );
   };
 
@@ -37,6 +61,7 @@ export default function ItemInfoPanel({ item }) {
     DeleteItem.mutate(
       {
         item_id: item.id,
+        image_url: item.image_url,
       },
       {
         onSuccess: () => {
@@ -50,10 +75,33 @@ export default function ItemInfoPanel({ item }) {
     <BgPanel>
       <div className="flex flex-col-reverse gap-4 md:flex-row w-full md:justify-between ">
         {isEditing ? (
-          <div className="flex flex-col lg:flex-row gap-4 items-center">
-            <div className="h-24 w-24 border rounded-md border-green-400">
-              <img src="" className="cover" alt="item-img" />
-            </div>
+          <div className="flex flex-col lg:flex-row gap-4 items-center  w-full">
+            <input
+              id="img-picker"
+              type="file"
+              multiple={false}
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                setFormData((prev) => ({
+                  ...prev,
+                  imgFile: file,
+                  imgPreview: URL.createObjectURL(file),
+                }));
+              }}
+            />
+            <label
+              className="h-24 w-24 border rounded-md border-green-400 cursor-pointer overflow-hidden"
+              htmlFor="img-picker"
+            >
+              <img
+                src={formData.imgPreview}
+                className="h-full w-auto object-cover"
+                alt="item-img"
+              />{' '}
+            </label>
             <Input
               disabled={UpdateItem.isPending || DeleteItem.isPending}
               onChange={(e) =>
@@ -62,28 +110,29 @@ export default function ItemInfoPanel({ item }) {
               inputStyles="border text-start text-2xl focus:border-accent"
               value={formData.name}
             />
-            <Input
-              withLabel
-              id="is_available_item"
-              type="checkbox"
-              labelText="Available"
-              labelStyles={`${
-                formData.isAvailable ? 'text-white' : 'text-warning'
-              }`}
-              inputStyles="h-6 w-6 accent-accent"
+            <Checkbox
               disabled={UpdateItem.isPending || DeleteItem.isPending}
+              id="is_available_item"
+              labelText="Available"
               onChange={() =>
-                setFormData({ ...formData, isAvailable: !formData.isAvailable })
+                setFormData({
+                  ...formData,
+                  isAvailable: !formData.isAvailable,
+                })
               }
               value={formData.isAvailable}
             />
           </div>
         ) : (
-          <div className="flex gap-4 items-center">
-            <div className="h-24 w-24 border rounded-md">
-              <img src="" className="cover" alt="item-img" />
+          <div className="flex gap-4 items-center w-full  ">
+            <div className="h-24 w-24 rounded-md overflow-hidden">
+              <img
+                src={item.image_url}
+                className="h-full w-auto object-cover"
+                alt="item-img"
+              />
             </div>
-            <div className="text-2xl border border-transparent px-2">
+            <div className="text-2xl border border-transparent px-2 w-[calc(100%-6rem)]">
               {item.name}
             </div>
           </div>
@@ -112,13 +161,7 @@ export default function ItemInfoPanel({ item }) {
               />
               <Button
                 disabled={UpdateItem.isPending || DeleteItem.isPending}
-                onClick={() => {
-                  setFormData({
-                    name: item.name,
-                    isAvailable: item.is_available,
-                  });
-                  setIsEditing(false);
-                }}
+                onClick={() => ResetFormState(item)}
                 text="❌"
                 styles="h-10"
               />
@@ -142,9 +185,17 @@ export default function ItemInfoPanel({ item }) {
       </div>
       <div className="text-start w-full text-lg font-bold">Description</div>
       <div className="w-full text-wrap border-b border-b-accent pb-4">
-        This is an item that does this and that and its the best! This is an
-        item that does this and that and its the best! This is an item that does
-        this and that and its the best!
+        {isEditing ? (
+          <TextArea
+            disabled={UpdateItem.isPending || DeleteItem.isPending}
+            value={formData.description}
+            onChange={(e) =>
+              setFormData({ ...formData, description: e.target.value })
+            }
+          />
+        ) : (
+          <div>{item.description}</div>
+        )}
       </div>
       <div>Owner: {item.owner.name}</div>
     </BgPanel>

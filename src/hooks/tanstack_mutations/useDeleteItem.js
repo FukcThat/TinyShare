@@ -2,8 +2,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../lib/supabaseClient";
 import { useGlobal } from "../../context/useGlobal";
 import { useMemo } from "react";
+import DeleteImageByUrl from "../../lib/DeleteImageByUrl";
 
-const deleteItem = async ({ item_id }) => {
+const deleteItem = async ({ item_id , image_url}) => {
+  if(image_url){
+    await DeleteImageByUrl(image_url, supabase)
+  }
   const { error } = await supabase.from("items").delete().eq("id", item_id);
   if (error) throw new Error("Issue deleting item");
   return { item_id };

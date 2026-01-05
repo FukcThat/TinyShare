@@ -25,7 +25,7 @@ export default function BookingCalendar({
         title: 'Your Reservation',
         start,
         end,
-        backgroundColor: 'green',
+        backgroundColor: '#76abae',
         status: 'preview',
       });
     } else {
@@ -39,16 +39,15 @@ export default function BookingCalendar({
     return item.item_reservations.map((res) => {
       return {
         title:
-          'user: ' + (res.user_id === session.user.id ? 'You' : res.user_id),
+          'Booked By: ' +
+          (res.user_id === session.user.id ? 'You' : res.user_id),
         start: res.start,
         end: res.end,
         resId: res.id,
         status: res.status,
         userId: res.user_id,
         backgroundColor:
-          res.status === 'booking'
-            ? 'hsla(357, 100%, 64%, 1)'
-            : 'hsla(40, 100%, 50%, 1)',
+          res.status === 'booking' ? 'green' : 'hsla(30, 100%, 50%, 1)',
       };
     });
   }, [item, session]);
@@ -85,7 +84,9 @@ export default function BookingCalendar({
 
   return (
     <BgPanel>
-      <h3 className="w-full text-xl">📆 Booking Calendar</h3>
+      <h3 className="w-full text-2xl border-b pb-4 border-accent">
+        📆 Booking Calendar
+      </h3>
 
       <div className="w-full h-[600px]">
         <FullCalendar
@@ -95,19 +96,23 @@ export default function BookingCalendar({
           events={
             reservation ? [...itemReservations, reservation] : itemReservations
           }
+          scrollTime={new Date().toTimeString()}
           editable={true}
           eventOverlap={false}
           allDaySlot={false}
           headerToolbar={{
-            left: 'prev',
-            center: 'title,timeGridWeek,timeGridDay',
-            right: 'next', // user can switch between the two
+            left: 'prev,next',
+            center: 'title',
+            right: 'timeGridWeek,timeGridDay', // user can switch between the two
           }}
           height={'100%'}
           selectable={true}
           eventAllow={(_newInfo, obj) => {
             return obj._def.extendedProps.status === 'preview';
           }}
+          nowIndicator={true}
+          buttonText={{ week: 'Week', day: 'Day' }}
+          titleFormat={{ year: '2-digit', month: 'short', day: 'numeric' }}
           eventResize={(e) => {
             setStart(e.event.start.toISOString());
             setEnd(e.event.end.toISOString());
@@ -119,6 +124,20 @@ export default function BookingCalendar({
           dateClick={(e) => SetTime(e.dateStr)}
           firstDay={1}
         />
+      </div>
+      <div className="flex items-center justify-center flex-col sm:flex-row w-full gap-2 p-2">
+        <div className="flex gap-1 items-center">
+          <div className="h-4 w-4 bg-accent rounded-md"></div>
+          <div>Current Booking</div>
+        </div>
+        <div className="flex gap-1 items-center">
+          <div className="h-4 w-4 bg-orange-400 rounded-md"></div>
+          <div>Requested Booking</div>
+        </div>
+        <div className="flex gap-1 items-center">
+          <div className="h-4 w-4 bg-green-600 rounded-md"></div>
+          <div>Confirmed Booking</div>
+        </div>
       </div>
     </BgPanel>
   );

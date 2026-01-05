@@ -20,7 +20,9 @@ const fetchCommunityItems = async (
 
   const { data, error } = await supabase
     .from('items')
-    .select('id, name, is_available, owner(*), item_reservations(*)')
+    .select(
+      'id, name, description, is_available, owner(*), item_reservations(*), image_url'
+    )
     .in(
       'owner',
       members.map((m) => m.user_id)

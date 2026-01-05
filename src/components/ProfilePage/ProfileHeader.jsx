@@ -89,7 +89,7 @@ export default function ProfileHeader({ yourItems }) {
       {/* PROFILE DETAILS */}
       <div className="flex flex-col gap-4 md:flex-row justify-between w-full ">
         {[
-          ['Account Age: ', accountAge + 'Days'],
+          ['Account Age: ', accountAge + ' Days'],
           ['Total Items: ', totalItems],
           ['Available Items: ', availableItems],
         ].map((e) => {
