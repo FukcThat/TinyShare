@@ -1,19 +1,19 @@
-import { useState } from "react";
-import Input from "../ui/Input";
-import Button from "../ui/Button";
-import useCreateInvitation from "../../hooks/tanstack_mutations/useCreateInvitation";
-import { useSession } from "../../context/session_context/useSession";
-import { useGlobal } from "../../context/useGlobal";
+import { useState } from 'react';
+import Input from '../ui/Input';
+import Button from '../ui/Button';
+import useCreateInvitation from '../../hooks/tanstack_mutations/useCreateInvitation';
+import { useSession } from '../../context/session_context/useSession';
+import { useGlobal } from '../../context/useGlobal';
 
 export default function InviteForm() {
   const { session } = useSession();
   const { activeCommunity } = useGlobal();
-  const [inviteeEmail, setInviteeEmail] = useState("anton.harbers23@gmail.com");
+  const [inviteeEmail, setInviteeEmail] = useState('anton.harbers23@gmail.com');
   const CreateInvitation = useCreateInvitation();
 
   const submitInvitation = async (e) => {
     e.preventDefault();
-    if (inviteeEmail == "") return;
+    if (inviteeEmail == '') return;
 
     CreateInvitation.mutate(
       {
@@ -21,14 +21,14 @@ export default function InviteForm() {
         inviteeEmail,
         activeCommunityId: activeCommunity.id,
       },
-      { onSuccess: () => setInviteeEmail("") }
+      { onSuccess: () => setInviteeEmail('') }
     );
   };
 
   return (
     <form
       onSubmit={submitInvitation}
-      className="flex w-[80%] justify-center gap-5 mx-auto"
+      className="flex flex-col md:flex-row w-full justify-center gap-5 my-4"
     >
       <Input
         value={inviteeEmail}
@@ -43,7 +43,7 @@ export default function InviteForm() {
       <Button
         type="submit"
         disabled={CreateInvitation.isPending}
-        text="Invite New Member"
+        text="Send Invitation"
       />
     </form>
   );

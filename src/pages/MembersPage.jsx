@@ -1,13 +1,13 @@
-import { useNavigate } from "react-router";
-import MembershipPanel from "../components/membership/MembershipPanel";
-import Button from "../components/ui/Button";
-import { useGlobal } from "../context/useGlobal";
-import { useEffect } from "react";
-import { useSession } from "../context/session_context/useSession";
-import InviteForm from "../components/membership/InviteForm";
-import useKickMember from "../hooks/tanstack_mutations/useKickMember";
-import useCommunityInvitations from "../hooks/tanstack_queries/useCommunityInvitations";
-import useDeclineInvitation from "../hooks/tanstack_mutations/useDeclineInvitation";
+import { useNavigate } from 'react-router';
+import MembershipPanel from '../components/membership/MembershipPanel';
+import Button from '../components/ui/Button';
+import { useGlobal } from '../context/useGlobal';
+import { useEffect } from 'react';
+import { useSession } from '../context/session_context/useSession';
+import useKickMember from '../hooks/tanstack_mutations/useKickMember';
+import useCommunityInvitations from '../hooks/tanstack_queries/useCommunityInvitations';
+import useDeclineInvitation from '../hooks/tanstack_mutations/useDeclineInvitation';
+import InviteForm from '../components/CommunityPage/InviteForm';
 
 export default function MembersPage() {
   const { session } = useSession();
@@ -19,8 +19,8 @@ export default function MembersPage() {
 
   useEffect(() => {
     if (!activeCommunity) return;
-    if (activeCommunity.id === -1) nav("/");
-  }, [activeCommunity]);
+    if (activeCommunity.id === -1) nav('/');
+  }, [activeCommunity, nav]);
 
   const HandleKickMemberBtnClick = (memberId) => {
     kickMember.mutate({
@@ -40,7 +40,7 @@ export default function MembersPage() {
         isKickLoading={kickMember.isPending}
       />
       <InviteForm />
-      {activeCommunity && activeCommunity.role == "admin" && (
+      {activeCommunity && activeCommunity.role == 'admin' && (
         <div className="flex flex-col gap-10 justify-center items-center">
           <div className="text-3xl">Community Invitations</div>
           <div>

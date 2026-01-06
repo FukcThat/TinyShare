@@ -47,7 +47,7 @@ export default function ProfileHeader({ yourItems }) {
 
   return (
     <BgPanel>
-      <div className="flex justify-between w-full border-b border-accent/50 py-4">
+      <div className="flex justify-between w-full border-b border-accent/50 ">
         {userProfile && userProfile.name != '' ? (
           <div className="flex flex-col">
             <div className="flex items-center gap-2">

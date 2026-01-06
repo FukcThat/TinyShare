@@ -4,14 +4,14 @@ Todos:
 
 -[x] Item is Currently booked function returns true or false and can be used on profile page, item page 
 -[x] Item Edit Delete
--[c] Item Description CRUD, Image CRUD
+-[x] Item Description CRUD, Image CRUD
 --[x] Item Desc CRUD
 --[x] Max Length on Input validation frontend and backend? [30 min]
 -[x] Calendar Day 
 --[x] Image CRUD 
 --[x] Calendar Legend [30 min]
+-[x] Community Page, info, edit, delete, members with role toggle, admin panel invite/settings 
 
--[d] Community Page, info, edit, delete, members with role toggle, admin panel invite/settings [6.Jan]
 -[s] Homepage invites, item list view of active community with search and filters [7.Jan]
 -[r] General Refactor of code, light mode  [8-9.Jan]
 -[l] Icons, Style Consistency / Loading States [10.Jan]
@@ -31,12 +31,12 @@ Todos:
 --[i] Active Bookings
 --[i] My Booked Items
 --[s] Item List View of active community
--[d] Community Page
---[d] Community Info
---[d] Community Info Edit if admin
---[d] Community Members List / role toggle and kicks for admin
---[d] Admin Panel Invites
---[d] Admin Panel Settings\
+-[x] Community Page
+--[x] Community Info
+--[x] Community Info Edit if admin
+--[x] Community Members List / role toggle and kicks for admin
+--[x] Admin Panel Invites
+--[x] Admin Panel Settings
 
 ### Issues
 

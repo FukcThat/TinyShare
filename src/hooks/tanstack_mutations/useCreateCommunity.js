@@ -1,17 +1,22 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "../../lib/supabaseClient";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '../../lib/supabaseClient';
 
-const createCommunity = async ({ nameInput, user_id, role = "admin" }) => {
+const createCommunity = async ({
+  nameInput,
+  descriptionInput,
+  user_id,
+  role = 'admin',
+}) => {
   const { data: communityData, error: communityError } = await supabase
-    .from("communities")
-    .insert([{ name: nameInput }])
+    .from('communities')
+    .insert([{ name: nameInput, description: descriptionInput }])
     .select()
     .single();
 
-  if (communityError) throw new Error("Issue Creating Community!");
+  if (communityError) throw new Error('Issue Creating Community!');
 
   const { data: membershipData, error: membershipError } = await supabase
-    .from("memberships")
+    .from('memberships')
     .insert([
       {
         user_id,
@@ -23,7 +28,7 @@ const createCommunity = async ({ nameInput, user_id, role = "admin" }) => {
     .single();
 
   if (membershipError)
-    throw new Error("Issue creating new community membership: ");
+    throw new Error('Issue creating new community membership: ');
 
   return { communityData, membershipData };
 };
@@ -34,7 +39,7 @@ export default function useCreateCommunity() {
   return useMutation({
     mutationFn: createCommunity,
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries("UserCommunities", variables.user_id);
+      queryClient.invalidateQueries('UserCommunities', variables.user_id);
     },
   });
 }

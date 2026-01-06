@@ -1,9 +1,9 @@
-import { useGlobal } from "../../context/useGlobal";
-import Button from "../ui/Button";
-import Loading from "../global/Loading";
-import { useSession } from "../../context/session_context/useSession";
-import useUserCommunities from "../../hooks/tanstack_queries/useUserCommunities";
-import useToggleMemberRole from "../../hooks/tanstack_mutations/useToggleMemberRole";
+import { useGlobal } from '../../context/useGlobal';
+import Button from '../ui/Button';
+import Loading from '../global/Loading';
+import { useSession } from '../../context/session_context/useSession';
+import useUserCommunities from '../../hooks/tanstack_queries/useUserCommunities';
+import useToggleMemberRole from '../../hooks/tanstack_mutations/useToggleMemberRole';
 
 export default function MembershipPanel({
   HandleKickMemberBtnClick,
@@ -16,7 +16,7 @@ export default function MembershipPanel({
   const ToggleMemberRole = useToggleMemberRole();
 
   const HandleRoleToggleBtnClick = async (userToToggleId, userToToggleRole) => {
-    let newRole = userToToggleRole == "admin" ? "member" : "admin";
+    let newRole = userToToggleRole == 'admin' ? 'member' : 'admin';
     ToggleMemberRole.mutate({
       userToToggleId,
       newRole,
@@ -27,44 +27,64 @@ export default function MembershipPanel({
   if (!session || !userCommunities || !communityMembers) return <Loading />;
 
   return (
-    <div className="flex flex-col items-center justify-center text-3xl">
-      Community Members
+    <div className="flex flex-col items-center justify-center w-full gap-4 py-4">
       {/* List of Members */}
-      <div>
-        {communityMembers.map((member) => {
-          return (
-            <div
-              key={member.profiles.id}
-              className="flex gap-4 text-lg items-center m-10 bg-white/10 p-4 rounded-md justify-around"
-            >
-              <div>Email: {member.profiles.email}</div>
-              {activeCommunity.role == "admin" &&
-                session.user.id !== member.profiles.id && (
-                  <>
-                    <Button
-                      disabled={ToggleMemberRole.isPending}
-                      text={member.role == "admin" ? "admin" : "member"}
-                      onClick={() => {
-                        HandleRoleToggleBtnClick(
-                          member.profiles.id,
-                          member.role
-                        );
-                      }}
-                    />
-
-                    <Button
-                      disabled={isKickLoading}
-                      text="Kick Member out"
-                      onClick={() => {
-                        HandleKickMemberBtnClick(member.profiles.id);
-                      }}
-                    />
-                  </>
-                )}
+      {communityMembers.map((member) => {
+        return (
+          <div
+            key={member.profiles.id}
+            className={`flex flex-col sm:flex-row items-center gap-2 border ${
+              member.profiles.id === session.user.id
+                ? 'border-amber-400'
+                : 'border-white/10'
+            } p-4 rounded-md justify-between w-full`}
+          >
+            <div className="flex flex-col items-start">
+              <h4>{member.profiles.name}</h4>
+              <h4 className="text-sm text-text-primary/80">
+                {member.profiles.email}
+              </h4>
+              <h4 className="text-xs text-text-primary/60">
+                Joined {new Date(member.profiles.created_at).toDateString()}
+              </h4>
             </div>
-          );
-        })}
-      </div>
+            {session.user.id === member.profiles.id ? (
+              <Button
+                styles=" bg-warning/50 hover:bg-warning/80"
+                disabled={false}
+                onClick={() => HandleKickMemberBtnClick(session.user.id)}
+                text="Leave Community🚶‍♀️‍➡️"
+              />
+            ) : (
+              activeCommunity.role == 'admin' && (
+                <div className="flex gap-2">
+                  <Button
+                    disabled={ToggleMemberRole.isPending}
+                    text={member.role == 'admin' ? 'Admin' : 'Member'}
+                    styles={`${
+                      member.role == 'admin'
+                        ? 'bg-accent hover:bg-accent/80'
+                        : 'bg-accent/20 hover:bg-accent/40'
+                    }`}
+                    onClick={() => {
+                      HandleRoleToggleBtnClick(member.profiles.id, member.role);
+                    }}
+                  />
+
+                  <Button
+                    disabled={isKickLoading}
+                    text="Remove"
+                    styles="bg-warning/50 hover:bg-warning/80"
+                    onClick={() => {
+                      HandleKickMemberBtnClick(member.profiles.id);
+                    }}
+                  />
+                </div>
+              )
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

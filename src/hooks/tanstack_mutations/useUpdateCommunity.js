@@ -1,16 +1,20 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useSession } from "../../context/session_context/useSession";
-import { supabase } from "../../lib/supabaseClient";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useSession } from '../../context/session_context/useSession';
+import { supabase } from '../../lib/supabaseClient';
 
-const updateCommunity = async ({ communityToEditId, editNameInput }) => {
+const updateCommunity = async ({
+  communityToEditId,
+  editNameInput,
+  editDescInput,
+}) => {
   const { data, error } = await supabase
-    .from("communities")
-    .update({ name: editNameInput })
-    .eq("id", communityToEditId)
+    .from('communities')
+    .update({ name: editNameInput, description: editDescInput })
+    .eq('id', communityToEditId)
     .select()
     .single();
 
-  if (error) throw new Error("Issue updating community!");
+  if (error) throw new Error('Issue updating community!');
 
   return data;
 };
@@ -22,7 +26,7 @@ export default function useUpdateCommunity() {
   return useMutation({
     mutationFn: updateCommunity,
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries(["UserCommunities", session.user.id]);
+      queryClient.invalidateQueries(['UserCommunities', session.user.id]);
     },
   });
 }

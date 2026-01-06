@@ -36,9 +36,8 @@ export default function ItemInfoPanel({ item }) {
 
   const HandleUpdateItem = async (e) => {
     e.preventDefault();
-    console.log('clicked');
     if (formData.name === '') return;
-    console.log(item.image_url);
+    
     UpdateItem.mutate(
       {
         item_id: item.id,

@@ -7,6 +7,7 @@ import useUserCommunities from '../../hooks/tanstack_queries/useUserCommunities'
 import { useGlobal } from '../../context/useGlobal';
 import InvitationPanel from '../membership/InvitationPanel';
 import BgPanel from '../global/BgPanel';
+import TextArea from '../ui/TextArea';
 
 export default function UserCommunitiesPanel() {
   const { session } = useSession();
@@ -15,6 +16,8 @@ export default function UserCommunitiesPanel() {
   const { data: userCommunities } = useUserCommunities();
   const [showForm, setShowForm] = useState(false);
   const [nameInput, setNameInput] = useState('');
+  const [descriptionInput, setDescriptionInput] = useState('');
+
   const CreateCommunity = useCreateCommunity();
 
   const createNewCommunity = (e) => {
@@ -28,12 +31,14 @@ export default function UserCommunitiesPanel() {
     CreateCommunity.mutate(
       {
         nameInput,
+        descriptionInput,
         user_id: session.user.id,
         role: 'admin',
       },
       {
         onSuccess: () => {
           setNameInput('');
+          setDescriptionInput('');
           setShowForm(false);
         },
       }
@@ -77,16 +82,29 @@ export default function UserCommunitiesPanel() {
           <Input
             withLabel
             outerStyles="w-full flex flex-col md:grid md:grid-cols-2"
-            labelText="Community Name"
+            labelText="Name"
             labelStyles="m-0 md:ml-4"
             type="text"
             id="community_name"
-            inputStyles="border w-[90%]"
             value={nameInput}
             onChange={(e) => {
               setNameInput(e.target.value);
             }}
           />
+          <div className="w-full flex flex-col md:grid md:grid-cols-2">
+            <label
+              htmlFor="item-description"
+              className="m-0 md:ml-4 text-lg cursor-pointer"
+            >
+              Description
+            </label>
+            <TextArea
+              id="item-description"
+              value={descriptionInput}
+              onChange={(e) => setDescriptionInput(e.target.value)}
+            />
+          </div>
+
           <div className="flex w-full justify-around">
             <Button
               disabled={CreateCommunity.isPending}

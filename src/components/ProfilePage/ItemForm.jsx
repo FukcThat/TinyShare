@@ -48,7 +48,7 @@ export default function ItemForm({ setIsOpen }) {
   return (
     <form
       onSubmit={HandleCreateItem}
-      className="flex flex-col w-full items-center gap-4 bg-primary p-2 rounded-xl"
+      className="flex flex-col w-full items-center gap-4 bg-primary p-2 rounded-md"
     >
       {formData.imgPreview && (
         <div className="w-24 h-24">
