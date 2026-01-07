@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ItemContext } from "./ItemContext";
+import { useState } from 'react';
+import { ItemContext } from './ItemContext';
 
 export default function ItemContextProvider({ children }) {
   const [isOpen, setIsOpen] = useState(false);

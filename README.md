@@ -13,6 +13,9 @@ Todos:
 -[x] Community Page, info, edit, delete, members with role toggle, admin panel invite/settings 
 
 -[s] Homepage invites, item list view of active community with search and filters [7.Jan]
+--[x] item list view search (name, desc, owner name), availability filter [90 min]
+--[] Seperate Data hooks for users items and for users item reservations [90 min]
+
 -[r] General Refactor of code, light mode  [8-9.Jan]
 -[l] Icons, Style Consistency / Loading States [10.Jan]
 -[t] Hosting [11.Jan]

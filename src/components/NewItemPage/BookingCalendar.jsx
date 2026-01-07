@@ -37,15 +37,17 @@ export default function BookingCalendar({
     if (!item) return [];
 
     return item.item_reservations.map((res) => {
+      console.log(res);
+
       return {
         title:
-          'Booked By: ' +
-          (res.user_id === session.user.id ? 'You' : res.user_id),
+          (res.status === 'request' ? 'Requested by: ' : 'Booked by: ') +
+          (res.user_id.id === session.user.id ? 'You' : res.user_id.name),
         start: res.start,
         end: res.end,
         resId: res.id,
         status: res.status,
-        userId: res.user_id,
+        userId: res.user_id.id,
         backgroundColor:
           res.status === 'booking' ? 'green' : 'hsla(30, 100%, 50%, 1)',
       };

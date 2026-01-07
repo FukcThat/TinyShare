@@ -1,93 +1,114 @@
-import { useState } from "react";
-import Button from "../ui/Button";
-import Input from "../ui/Input";
-import { GetDateObjFromDateTimeString } from "../../lib/GetDateObjectFromDateTimeString";
-import { useItemContext } from "../../context/item_context/useItemContext";
+import { useEffect, useState } from 'react';
+import Button from '../ui/Button';
+import Input from '../ui/Input';
+import { GetDateObjFromDateTimeString } from '../../lib/GetDateObjectFromDateTimeString';
+import { useItemContext } from '../../context/item_context/useItemContext';
 
 export default function AvailabilityCheck() {
-  const [startDate, setStartDate] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [endTime, setEndTime] = useState("");
-  const [showForm, setShowForm] = useState(false);
+  const [startDate, setStartDate] = useState(
+    new Date().toISOString().substring(0, 10)
+  );
+  const [startTime, setStartTime] = useState('11:00:00');
+  const [endDate, setEndDate] = useState(
+    new Date().toISOString().substring(0, 10)
+  );
+  const [endTime, setEndTime] = useState('16:00:00');
 
   const { setAvailabilityFilterDates } = useItemContext();
 
-  // Submit Form handler
-  const onSubmit = (e) => {
-    e.preventDefault();
+  const [applyFilter, setApplyFilter] = useState(false);
 
-    if (startDate == "" || startTime == "" || endDate == "" || endTime == "") {
-      window.alert(
-        "You're missing something. Please check that all inputs are set."
-      );
+  useEffect(() => {
+    if (!applyFilter) {
+      setAvailabilityFilterDates(null);
+      return;
+    }
+
+    if (!startTime || !startDate || !endTime || !endDate) {
+      setAvailabilityFilterDates(null);
+      return;
     }
 
     const startDateObj = GetDateObjFromDateTimeString(startDate, startTime);
     const endDateObj = GetDateObjFromDateTimeString(endDate, endTime);
     setAvailabilityFilterDates({ start: startDateObj, end: endDateObj });
-  };
+  }, [
+    startDate,
+    startTime,
+    endDate,
+    endTime,
+    applyFilter,
+    setAvailabilityFilterDates,
+  ]);
 
   return (
-    <div>
+    <div className="flex flex-col-reverse lg:flex-row w-full gap-4 min-h-12  items-center">
       <Button
-        text="Check Availability"
-        onClick={() => setShowForm(!showForm)}
+        styles={`h-fit ${
+          applyFilter ? 'bg-accent/60 hover:bg-accent/80' : 'opacity-50'
+        } `}
+        text={
+          applyFilter ? 'Availability Filter On' : 'Availability Filter Off'
+        }
+        onClick={() => {
+          setApplyFilter(!applyFilter);
+        }}
       />
-      {showForm && (
-        <form onSubmit={onSubmit} className="flex flex-col">
-          <Input
-            type="date"
-            id="startDate"
-            withLabel
-            labelText="Start Date"
-            value={startDate}
-            onChange={(e) => {
-              setStartDate(e.target.value);
-            }}
-          />
-          <Input
-            type="time"
-            id="startTime"
-            withLabel
-            labelText="Start Time"
-            value={startTime}
-            onChange={(e) => {
-              setStartTime(e.target.value);
-            }}
-          />
-          <Input
-            type="date"
-            id="endDate"
-            withLabel
-            labelText="End Date"
-            value={endDate}
-            onChange={(e) => {
-              setEndDate(e.target.value);
-            }}
-          />
-          <Input
-            type="time"
-            id="endTime"
-            withLabel
-            labelText="End Time"
-            value={endTime}
-            onChange={(e) => {
-              setEndTime(e.target.value);
-            }}
-          />
-          <Button text="submit" type="submit" />
+      {applyFilter && (
+        <div className="flex gap-2 md:gap-0 flex-col md:flex-row w-full lg:w-auto lg:grow items-center justify-around   ">
+          <div className="flex flex-col sm:flex-row">
+            <Input
+              type="date"
+              id="startDate"
+              withLabel
+              labelText="Start"
+              value={startDate}
+              outerStyles="flex-col sm:flex-row"
+              onChange={(e) => {
+                console.log(startDate);
+                console.log(e.target.value);
+                setStartDate(e.target.value);
+              }}
+            />
+            <Input
+              type="time"
+              value={startTime}
+              onChange={(e) => {
+                setStartTime(e.target.value);
+              }}
+            />
+          </div>
+          <div className="flex flex-col sm:flex-row">
+            <Input
+              outerStyles="flex-col sm:flex-row"
+              type="date"
+              id="endDate"
+              withLabel
+              labelText="End"
+              value={endDate}
+              onChange={(e) => {
+                setEndDate(e.target.value);
+              }}
+            />
+            <Input
+              type="time"
+              value={endTime}
+              onChange={(e) => {
+                setEndTime(e.target.value);
+              }}
+            />
+          </div>
           <Button
-            text="clear"
+            text="Reset"
             onClick={() => {
               setAvailabilityFilterDates(null);
-              setEndDate("");
-              setEndTime("");
-              setStartDate("");
-              setStartTime("");
+              setEndDate(new Date().toISOString().substring(0, 10));
+              setEndTime('16:00:00');
+              setStartDate(new Date().toISOString().substring(0, 10));
+              setStartTime('11:00:00');
             }}
           />
-        </form>
+        </div>
       )}
     </div>
   );

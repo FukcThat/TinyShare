@@ -35,7 +35,7 @@ const updateItem = async ({
     .update({ name, is_available, description, image_url })
     .eq('id', item_id)
     .select(
-      'id, name,description, is_available, owner(*), item_reservations(*), image_url'
+      'id, name,description, is_available, owner(*), item_reservations(*, user_id(*)), image_url'
     )
     .single();
 
@@ -43,6 +43,7 @@ const updateItem = async ({
 
   return data;
 };
+
 
 export default function useUpdateItem() {
   const queryClient = useQueryClient();

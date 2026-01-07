@@ -122,6 +122,7 @@ export default function UserCommunitiesPanel() {
           </div>
         </form>
       )}
+      <InvitationPanel />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-2">
         {userCommunities?.map((e) => {
           return (
@@ -139,9 +140,6 @@ export default function UserCommunitiesPanel() {
             </div>
           );
         })}
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-2">
-        <InvitationPanel />
       </div>
     </BgPanel>
   );

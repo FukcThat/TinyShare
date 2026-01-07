@@ -1,10 +1,9 @@
-import { useState } from "react";
-import Loading from "../global/Loading";
-import Button from "../ui/Button";
-import { useSession } from "../../context/session_context/useSession";
-import useAcceptInvitation from "../../hooks/tanstack_mutations/useAcceptInvitation";
-import useUserInvitations from "../../hooks/tanstack_queries/useUserInvitations";
-import useDeclineInvitation from "../../hooks/tanstack_mutations/useDeclineInvitation";
+import Loading from '../global/Loading';
+import Button from '../ui/Button';
+import { useSession } from '../../context/session_context/useSession';
+import useAcceptInvitation from '../../hooks/tanstack_mutations/useAcceptInvitation';
+import useUserInvitations from '../../hooks/tanstack_queries/useUserInvitations';
+import useDeclineInvitation from '../../hooks/tanstack_mutations/useDeclineInvitation';
 
 export default function InvitationPanel() {
   const { session } = useSession();
@@ -36,7 +35,7 @@ export default function InvitationPanel() {
       { inviteId },
       {
         onSuccess: () => {
-          console.log("s");
+          console.log('s');
         },
       }
     );
@@ -45,20 +44,34 @@ export default function InvitationPanel() {
   return !userInvitations ? (
     <Loading />
   ) : (
-    <div>
+    <div
+      className={`${
+        userInvitations.length != 0 &&
+        'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+      } border-t border-b py-2 border-accent w-full gap-2`}
+    >
+      {userInvitations.length === 0 && (
+        <div className="w-full text-center text-sm text-text-primary/80">
+          No pending invites
+        </div>
+      )}
       {userInvitations.map((invite) => (
         <div
           key={invite.id}
-          className="flex flex-col gap-4 bg-white/20 border border-transparent hover:border-white rounded-md p-4"
+          className="flex flex-col bg-primary border border-accent  rounded-md p-4"
         >
-          <div> Invitation to {invite.communities.name}</div>
-          <div className="flex gap-4">
+          <div className="text-lg">
+            {' '}
+            Invite to Community: {invite.communities.name}
+          </div>
+          <div> From {invite.inviter_id.name}</div>
+          <div className="flex gap-4 my-2">
             <Button
               disabled={
                 DeclineInvitation.isPending || acceptInvitation.isPending
               }
-              styles="w-[50%]"
-              text="✔️"
+              styles="w-[50%] bg-accent/80 hover:bg-accent/60"
+              text="✔️ Accept"
               onClick={() =>
                 HandleAcceptInviteBtnClick(
                   invite.id,
@@ -71,8 +84,8 @@ export default function InvitationPanel() {
               disabled={
                 DeclineInvitation.isPending || acceptInvitation.isPending
               }
-              styles="w-[50%]"
-              text="❌"
+              styles="w-[50%] bg-warning/60 hover:bg-warning/80"
+              text="❌ Decline"
               onClick={() => HandleDeclineInviteBtnClick(invite.id)}
             />
           </div>

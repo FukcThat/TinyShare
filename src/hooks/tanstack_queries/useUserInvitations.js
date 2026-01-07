@@ -1,15 +1,15 @@
-import { useEffect, useMemo, useState } from "react";
-import { supabase } from "../../lib/supabaseClient";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSession } from "../../context/session_context/useSession";
+import { useEffect, useMemo } from 'react';
+import { supabase } from '../../lib/supabaseClient';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useSession } from '../../context/session_context/useSession';
 
 const fetchUserInvitation = async (userId) => {
   const { data, error } = await supabase
-    .from("invitations")
-    .select("*, communities (*)")
-    .eq("invitee_id", userId);
+    .from('invitations')
+    .select('*, communities (*), inviter_id(*)')
+    .eq('invitee_id', userId);
 
-  if (error) throw new Error("Issue fetching user invitations!");
+  if (error) throw new Error('Issue fetching user invitations!');
 
   return data;
 };
@@ -21,7 +21,7 @@ export default function useUserInvitations() {
   const userId = useMemo(() => session?.user?.id, [session]);
 
   const query = useQuery({
-    queryKey: ["UserInvitations", userId],
+    queryKey: ['UserInvitations', userId],
     queryFn: () => fetchUserInvitation(userId),
     enabled: !!userId,
     staleTime: Infinity,
@@ -29,12 +29,12 @@ export default function useUserInvitations() {
 
   useEffect(() => {
     if (!userId) return;
-    const channel = listenForUserInviteChanges(userId, (payload) =>
-      queryClient.invalidateQueries(["UserInvitations", userId])
+    const channel = listenForUserInviteChanges(userId, () =>
+      queryClient.invalidateQueries(['UserInvitations', userId])
     );
 
     return () => supabase.removeChannel(channel);
-  }, [userId]);
+  }, [userId, queryClient]);
 
   return query;
 }
@@ -43,15 +43,15 @@ function listenForUserInviteChanges(userId, onChange) {
   const channel = supabase
     .channel(`userInvitations-${userId}`)
     .on(
-      "postgres_changes",
+      'postgres_changes',
       {
-        event: "*", // can be 'INSERT', 'UPDATE', 'DELETE'
-        schema: "public",
-        table: "invitations",
+        event: '*', // can be 'INSERT', 'UPDATE', 'DELETE'
+        schema: 'public',
+        table: 'invitations',
         filter: `invitee_id=eq.${userId}`,
       },
       (payload) => {
-        console.log("🔄 User Invitations change:", payload);
+        console.log('🔄 User Invitations change:', payload);
         onChange(payload);
       }
     )

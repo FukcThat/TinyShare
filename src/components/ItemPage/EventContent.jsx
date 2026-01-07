@@ -2,6 +2,7 @@ import { useSession } from '../../context/session_context/useSession';
 import Button from '../ui/Button';
 import useCancelItemReservation from '../../hooks/tanstack_mutations/useCancelItemReservation';
 import useApproveItemReservation from '../../hooks/tanstack_mutations/useApproveItemReservation';
+import { useMemo } from 'react';
 
 export default function EventContent({
   arg,
@@ -20,7 +21,7 @@ export default function EventContent({
       return;
     }
     if (arg.event._def.extendedProps.status == 'preview') {
-      OnSubmitReservation(e, true);
+      OnSubmitReservation(e, session.user.id === item.owner.id);
     } else {
       ApproveItemReservation.mutate({
         reservationId: arg.event._def.extendedProps.resId,
@@ -47,26 +48,32 @@ export default function EventContent({
     });
   };
 
+  const bookingStatus = useMemo(
+    () => arg.event._def.extendedProps.status,
+    [arg]
+  );
+
   // Sets Display Time even on days where its not passed in
   const displayTime =
     arg.event.timeText || arg.view.calendar.formatIso(arg.event.start);
 
   // Component Helpers
   const IsOwnerAndNotBooked = () =>
-    item.owner.id === session.user.id &&
-    arg.event._def.extendedProps.status !== 'booking';
+    item.owner.id === session.user.id && bookingStatus !== 'booking';
   const IsOwnerAndIsBooked = () =>
-    item.owner.id === session.user.id &&
-    arg.event._def.extendedProps.status === 'booking';
+    item.owner.id === session.user.id && bookingStatus === 'booking';
 
   const IsOurBooking = () =>
     arg.event._def.extendedProps.userId == session.user.id && arg.timeText;
 
   return (
-    <div className="flex flex-col h-full w-full items-center justify-center gap-4">
-      <div> {arg.event.title}</div>
-      <div className="text-center w-full">Booking Starts At {displayTime}</div>
-      {IsOwnerAndNotBooked() && (
+    <div className="flex flex-col h-full w-full items-center justify-center">
+      <div className="w-full text-start"> {arg.event.title}</div>
+      <div className="text-start w-full">
+        Starts At {new Date(displayTime).toLocaleTimeString()}
+      </div>
+
+      {(bookingStatus === 'preview' || IsOwnerAndNotBooked()) && (
         <div className="flex gap-4">
           <Button
             disabled={
@@ -87,7 +94,7 @@ export default function EventContent({
         </div>
       )}
       {(IsOurBooking() || IsOwnerAndIsBooked()) && (
-        <div>
+        <div className="flex gap-4">
           <Button
             disabled={
               ApproveItemReservation.isPending ||

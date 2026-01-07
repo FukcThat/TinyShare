@@ -1,29 +1,24 @@
-import { useState } from "react";
-import ItemView from "./ItemView";
-import Loading from "../global/Loading";
+import Loading from '../global/Loading';
+import ItemView from '../global/ItemView';
+import { useSession } from '../../context/session_context/useSession';
 
-export default function ItemListView({ items, headerLabel }) {
-  const [minimized, setMinimized] = useState(false);
+export default function ItemListView({ items }) {
+  const { session } = useSession();
 
   return (
-    <div className="flex flex-col gap-10">
-      <div className="flex">
-        <div className="text-xl">{headerLabel}</div>
-        <div onClick={() => setMinimized(!minimized)}>
-          {minimized ? "🔺" : "🔻"}
-        </div>
-      </div>
-
-      {!minimized && (
-        <div className="flex flex-wrap gap-2 w-full min-h-60">
-          {!items ? (
-            <Loading />
-          ) : (
-            items.map((item) => {
-              return <ItemView key={item.id} item={item} />;
-            })
-          )}
-        </div>
+    <div className="grid grid-flow-row lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 w-full">
+      {!items ? (
+        <Loading />
+      ) : (
+        items.map((item) => {
+          return (
+            <ItemView
+              key={item.id}
+              item={item}
+              isOwne={session.user.id === item.owner.id}
+            />
+          );
+        })
       )}
     </div>
   );

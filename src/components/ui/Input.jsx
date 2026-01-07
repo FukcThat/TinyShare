@@ -40,13 +40,15 @@ export default function Input({
             ' outline-none text-center w-full text-lg border border-white/40 py-2 focus:border-accent rounded-md',
           ])}
         />
-        <div
-          className={`absolute right-1 bottom-1 text-sm text-text-primary/80  ${
-            value.length === maxLength && 'text-warning'
-          }`}
-        >
-          {value.length} / {maxLength}
-        </div>
+        {type != 'time' && type != 'date' && (
+          <div
+            className={`absolute right-1 bottom-1 text-sm text-text-primary/80  ${
+              value.length === maxLength && 'text-warning'
+            }`}
+          >
+            {value.length} / {maxLength}
+          </div>
+        )}
       </div>
     </div>
   );

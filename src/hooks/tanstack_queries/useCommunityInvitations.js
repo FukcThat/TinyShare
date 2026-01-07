@@ -1,19 +1,19 @@
-import { useEffect, useMemo } from "react";
-import { supabase } from "../../lib/supabaseClient";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useGlobal } from "../../context/useGlobal";
+import { useEffect, useMemo } from 'react';
+import { supabase } from '../../lib/supabaseClient';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useGlobal } from '../../context/useGlobal';
 
 const fetchCommunityInvitations = async (activeId) => {
   const { data, error } = await supabase
-    .from("invitations")
+    .from('invitations')
     .select(
       `*,
       profiles!invitations_invitee_id_fkey(*)
       `
     )
-    .eq("community_id", activeId);
+    .eq('community_id', activeId);
 
-  if (error) throw new Error("Issue fetching community invitations!");
+  if (error) throw new Error('Issue fetching community invitations!');
 
   return data;
 };
@@ -24,7 +24,7 @@ export default function useCommunityInvitations() {
 
   const activeId = useMemo(() => activeCommunity?.id, [activeCommunity]);
   const query = useQuery({
-    queryKey: ["CommunityInvitations", activeId],
+    queryKey: ['CommunityInvitations', activeId],
     queryFn: () => fetchCommunityInvitations(activeId),
     enabled: !!activeId && activeId != -1,
     staleTime: Infinity,
@@ -33,12 +33,12 @@ export default function useCommunityInvitations() {
   useEffect(() => {
     if (!activeId || activeId === -1) return;
 
-    const channel = listenForCommunityInvitationChanges(activeId, (payload) => {
-      queryClient.invalidateQueries(["CommunityInvitations", activeId]);
+    const channel = listenForCommunityInvitationChanges(activeId, () => {
+      queryClient.invalidateQueries(['CommunityInvitations', activeId]);
     });
 
     return () => supabase.removeChannel(channel);
-  }, [activeId]);
+  }, [activeId, queryClient]);
 
   return query;
 }
@@ -47,15 +47,15 @@ function listenForCommunityInvitationChanges(communityId, onChange) {
   const channel = supabase
     .channel(`communityInvitations-${communityId}`)
     .on(
-      "postgres_changes",
+      'postgres_changes',
       {
-        event: "*", // can be 'INSERT', 'UPDATE', 'DELETE'
-        schema: "public",
-        table: "invitations",
+        event: '*', // can be 'INSERT', 'UPDATE', 'DELETE'
+        schema: 'public',
+        table: 'invitations',
         filter: `community_id=eq.${communityId}`,
       },
       (payload) => {
-        console.log("🔄 Community Invitations change:", payload);
+        console.log('🔄 Community Invitations change:', payload);
         onChange(payload);
       }
     )

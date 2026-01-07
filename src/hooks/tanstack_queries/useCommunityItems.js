@@ -21,7 +21,7 @@ const fetchCommunityItems = async (
   const { data, error } = await supabase
     .from('items')
     .select(
-      'id, name, description, is_available, owner(*), item_reservations(*), image_url'
+      'id, name, description, is_available, owner(*), item_reservations(*, user_id(*)), image_url'
     )
     .in(
       'owner',

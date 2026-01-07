@@ -5,7 +5,6 @@ import { GlobalProvider } from './context/GlobalProvider.jsx';
 import { BrowserRouter, Route, Routes } from 'react-router';
 import Layout from './components/global/Layout.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
-import MembersPage from './pages/MembersPage.jsx';
 import ItemsPage from './pages/ItemsPage.jsx';
 import ItemContextProvider from './context/item_context/ItemContextProvider.jsx';
 import ErrorPage from './pages/ErrorPage.jsx';
@@ -29,6 +28,7 @@ createRoot(document.getElementById('root')).render(
                 <Route path="/" element={<Layout />}>
                   <Route index element={<ProfilePage />}></Route>
                   <Route path="/community" element={<CommunityPage />}></Route>
+                  <Route path="/items" element={<ItemsPage />}></Route>
                   <Route path="/items/:id" element={<ItemPage />}></Route>
                   <Route path="*" element={<ErrorPage />}></Route>
                 </Route>

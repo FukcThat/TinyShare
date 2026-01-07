@@ -3,6 +3,7 @@ import { useItemContext } from "../../context/item_context/useItemContext";
 import { useGlobal } from "../../context/useGlobal";
 import { supabase } from "../../lib/supabaseClient";
 
+
 const ApproveItemReservation = async ({ reservationId }) => {
   const { data, error } = await supabase
     .from("item_reservations")
@@ -26,7 +27,7 @@ export default function useApproveItemReservation() {
 
   return useMutation({
     mutationFn: ApproveItemReservation,
-    onSuccess: (data, variables) => {
+    onSuccess: (data) => {
       queryClient.setQueryData(["CommunityItems", activeId], (old) =>
         old.map((item) => {
           if (item.id === itemId) {
