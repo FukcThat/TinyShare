@@ -1,33 +1,48 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useItemContext } from "../../context/item_context/useItemContext";
-import { useGlobal } from "../../context/useGlobal";
-import { supabase } from "../../lib/supabaseClient";
-
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useGlobal } from '../../context/useGlobal';
+import { supabase } from '../../lib/supabaseClient';
+import { useSession } from '../../context/session_context/useSession';
 
 const CancelItemReservation = async ({ reservationId }) => {
   const { error } = await supabase
-    .from("item_reservations")
+    .from('item_reservations')
     .delete()
-    .eq("id", reservationId);
+    .eq('id', reservationId);
 
-  if (error) throw new Error("Issue with cancelling item reservation!");
+  if (error) throw new Error('Issue with cancelling item reservation!');
 
   return { ok: true };
 };
 
-export default function useCancelItemReservation() {
+export default function useCancelItemReservation(itemId) {
   const queryClient = useQueryClient();
-  const { itemToRequest } = useItemContext();
   const { activeCommunity } = useGlobal();
+  const { session } = useSession();
 
   const activeId = activeCommunity?.id;
-  const itemId = itemToRequest?.id;
+  const userId = session?.user.id;
 
   return useMutation({
     mutationFn: CancelItemReservation,
     onSuccess: (data, variables) => {
-      queryClient.setQueryData(["CommunityItems", activeId], (old) =>
-        old.map((item) => {
+      queryClient.setQueryData(['CommunityItems', activeId], (old) =>
+        !old
+          ? old
+          : old.map((item) => {
+              if (item.id === itemId) {
+                return {
+                  ...item,
+                  item_reservations: item.item_reservations.filter(
+                    (res) => res.id != variables.reservationId
+                  ),
+                };
+              }
+              return item;
+            })
+      );
+      queryClient.setQueryData(['UserItems', userId], (old) => {
+        if (!old) return old;
+        const newOld = old.map((item) => {
           if (item.id === itemId) {
             return {
               ...item,
@@ -37,8 +52,11 @@ export default function useCancelItemReservation() {
             };
           }
           return item;
-        })
-      );
+        });
+        console.log(newOld, variables);
+
+        return newOld;
+      });
     },
   });
 }

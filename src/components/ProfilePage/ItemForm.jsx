@@ -33,14 +33,19 @@ export default function ItemForm({ setIsOpen }) {
         file: formData.imgFile,
       },
       {
-        onSuccess: () =>
+        onError: (err) => {
+          console.log(err);
+        },
+        onSuccess: () => {
           setFormData({
             isAvailable: true,
             name: '',
             description: '',
             imgFile: null,
             imgPreview: null,
-          }),
+          });
+          setIsOpen(false);
+        },
       }
     );
   };
@@ -50,15 +55,6 @@ export default function ItemForm({ setIsOpen }) {
       onSubmit={HandleCreateItem}
       className="flex flex-col w-full items-center gap-4 bg-primary p-2 rounded-md"
     >
-      {formData.imgPreview && (
-        <div className="w-24 h-24">
-          <img
-            className="h-full w-full object-cover rounded-md"
-            src={formData.imgPreview}
-            alt="preview"
-          />
-        </div>
-      )}
       <div className="w-full flex flex-col md:grid md:grid-cols-2 my-2">
         <label
           htmlFor="img-picker"
@@ -66,23 +62,41 @@ export default function ItemForm({ setIsOpen }) {
         >
           Image
         </label>
-        <input
-          id="img-picker"
-          type="file"
-          multiple={false}
-          accept="image/*"
-          className="w-full  text-center rounded-md cursor-pointer"
-          onChange={(e) => {
-            const file = e.target.files[0];
-            if (!file) return;
+        <label
+          htmlFor="img-picker"
+          className="flex flex-col items-center cursor-pointer"
+        >
+          {formData.imgPreview ? (
+            <div className="w-24 h-24">
+              <img
+                className="h-full w-full object-cover rounded-md"
+                src={formData.imgPreview}
+                alt="preview"
+              />
+            </div>
+          ) : (
+            <div className="p-2 bg-accent/60 hover:bg-accent/80 rounded-md">
+              Browse Images
+            </div>
+          )}
+          <input
+            id="img-picker"
+            type="file"
+            multiple={false}
+            accept="image/*"
+            className="w-full hidden text-center rounded-md cursor-pointer"
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (!file) return;
 
-            setFormData((prev) => ({
-              ...prev,
-              imgFile: file,
-              imgPreview: URL.createObjectURL(file),
-            }));
-          }}
-        />
+              setFormData((prev) => ({
+                ...prev,
+                imgFile: file,
+                imgPreview: URL.createObjectURL(file),
+              }));
+            }}
+          />
+        </label>
       </div>
 
       <Input

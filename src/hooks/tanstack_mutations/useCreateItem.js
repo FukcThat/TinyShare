@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useGlobal } from '../../context/useGlobal';
 import { supabase } from '../../lib/supabaseClient';
 import { useMemo } from 'react';
+import { useSession } from '../../context/session_context/useSession';
 
 const createItem = async ({ owner, name, is_available, description, file }) => {
   let image_url = null;
@@ -51,16 +52,19 @@ const createItem = async ({ owner, name, is_available, description, file }) => {
 export default function useCreateItem() {
   const queryClient = useQueryClient();
   const { activeCommunity } = useGlobal();
+  const { session } = useSession();
 
+  const userId = useMemo(() => session?.user.id, [session]);
   const activeId = useMemo(() => activeCommunity?.id, [activeCommunity]);
 
   return useMutation({
     mutationFn: createItem,
     onSuccess: (data) => {
-      queryClient.setQueryData(['CommunityItems', activeId], (old) => [
-        ...old,
-        data,
-      ]);
+      queryClient.setQueryData(['CommunityItems', activeId], (old) =>
+        old ? [...old, data] : null
+      );
+
+      queryClient.setQueryData(['UserItems', userId], (old) => [...old, data]);
     },
   });
 }

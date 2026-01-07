@@ -14,9 +14,10 @@ Todos:
 
 -[s] Homepage invites, item list view of active community with search and filters [7.Jan]
 --[x] item list view search (name, desc, owner name), availability filter [90 min]
---[] Seperate Data hooks for users items and for users item reservations [90 min]
+--[] Seperate Data hooks for users items including cache invalidations on item and reservation crud [90 min]
 
 -[r] General Refactor of code, light mode  [8-9.Jan]
+--[] Seperate Data hook for user item reservations (including cache invalidations whenever reservations change or when items get deleted)
 -[l] Icons, Style Consistency / Loading States [10.Jan]
 -[t] Hosting [11.Jan]
 

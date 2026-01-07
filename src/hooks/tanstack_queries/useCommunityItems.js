@@ -53,7 +53,7 @@ export default function useCommunityItems() {
     queryKey: ['CommunityItems', activeId],
     queryFn: () =>
       fetchCommunityItems(activeId, itemToRequest, setItemToRequest),
-    enabled: !!activeId,
+    enabled: !!activeId && activeId != -1,
     staleTime: Infinity,
   });
 

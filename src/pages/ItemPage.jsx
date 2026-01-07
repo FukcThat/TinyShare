@@ -7,18 +7,25 @@ import BookingCalendar from '../components/NewItemPage/BookingCalendar';
 import { useSession } from '../context/session_context/useSession';
 import RequestBookingForm from '../components/NewItemPage/RequestBookingForm';
 import useSubmitItemReservation from '../hooks/tanstack_mutations/useSubmitItemReservation';
+import useUserItems from '../hooks/tanstack_queries/useUserItems';
 
 export default function ItemPage() {
   const { id } = useParams();
   const { session } = useSession();
-  const { data } = useCommunityItems();
+  const { data: communityItemData } = useCommunityItems();
+  const { data: userItemData } = useUserItems();
 
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
 
   const item = useMemo(() => {
-    return data?.find((item) => item.id === id) || null;
-  }, [data, id]);
+    if (!communityItemData && !userItemData) return null;
+    return (
+      communityItemData?.find((item) => item.id === id) ||
+      userItemData?.find((item) => item.id === id) ||
+      null
+    );
+  }, [communityItemData, id, userItemData]);
 
   const resetTimeState = () => {
     setStart('');
@@ -52,7 +59,7 @@ export default function ItemPage() {
     );
   };
 
-  if (!data || !item) return <Loading />;
+  if (!item) return <Loading />;
 
   return (
     <div className="flex flex-col justify-center items-center gap-8 my-6">

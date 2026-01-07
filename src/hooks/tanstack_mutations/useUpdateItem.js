@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import { useGlobal } from '../../context/useGlobal';
 import DeleteImageByUrl from '../../lib/DeleteImageByUrl';
+import { useSession } from '../../context/session_context/useSession';
 
 const updateItem = async ({
   item_id,
@@ -13,11 +14,11 @@ const updateItem = async ({
   owner,
 }) => {
   let image_url = oldImageUrl;
-  if (oldImageUrl) {
-    await DeleteImageByUrl(oldImageUrl, supabase);
-  }
 
   if (newFile) {
+    if (oldImageUrl) {
+      await DeleteImageByUrl(oldImageUrl, supabase);
+    }
     const newFilePath = `${owner}/${crypto.randomUUID()}`;
 
     const { error: uploadError } = await supabase.storage
@@ -44,16 +45,24 @@ const updateItem = async ({
   return data;
 };
 
-
 export default function useUpdateItem() {
   const queryClient = useQueryClient();
   const { activeCommunity } = useGlobal();
+  const { session } = useSession();
+  const userId = session?.user.id;
   const activeId = activeCommunity?.id;
-
   return useMutation({
     mutationFn: updateItem,
     onSuccess: (data) => {
       queryClient.setQueryData(['CommunityItems', activeId], (old) =>
+        !old
+          ? null
+          : old.map((item) => {
+              if (item.id === data.id) return data;
+              return item;
+            })
+      );
+      queryClient.setQueryData(['UserItems', userId], (old) =>
         old.map((item) => {
           if (item.id === data.id) return data;
           return item;

@@ -37,7 +37,7 @@ export default function ItemInfoPanel({ item }) {
   const HandleUpdateItem = async (e) => {
     e.preventDefault();
     if (formData.name === '') return;
-    
+
     UpdateItem.mutate(
       {
         item_id: item.id,
@@ -49,6 +49,7 @@ export default function ItemInfoPanel({ item }) {
         owner: item.owner.id,
       },
       {
+        onError: (msg) => console.log(msg),
         onSuccess: (data) => {
           ResetFormState(data);
         },

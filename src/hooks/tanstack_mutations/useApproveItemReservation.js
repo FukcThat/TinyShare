@@ -1,18 +1,18 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useItemContext } from "../../context/item_context/useItemContext";
-import { useGlobal } from "../../context/useGlobal";
-import { supabase } from "../../lib/supabaseClient";
-
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useItemContext } from '../../context/item_context/useItemContext';
+import { useGlobal } from '../../context/useGlobal';
+import { supabase } from '../../lib/supabaseClient';
+import { useSession } from '../../context/session_context/useSession';
 
 const ApproveItemReservation = async ({ reservationId }) => {
   const { data, error } = await supabase
-    .from("item_reservations")
-    .update({ status: "booking" })
-    .eq("id", reservationId)
+    .from('item_reservations')
+    .update({ status: 'booking' })
+    .eq('id', reservationId)
     .select()
     .single();
 
-  if (error) throw new Error("Issue with approving item reservation!");
+  if (error) throw new Error('Issue with approving item reservation!');
 
   return data;
 };
@@ -21,16 +21,34 @@ export default function useApproveItemReservation() {
   const queryClient = useQueryClient();
   const { itemToRequest } = useItemContext();
   const { activeCommunity } = useGlobal();
+  const { session } = useSession();
 
+  const userId = session?.user.id;
   const activeId = activeCommunity?.id;
   const itemId = itemToRequest?.id;
 
   return useMutation({
     mutationFn: ApproveItemReservation,
     onSuccess: (data) => {
-      queryClient.setQueryData(["CommunityItems", activeId], (old) =>
-        old.map((item) => {
-          if (item.id === itemId) {
+      queryClient.setQueryData(['CommunityItems', activeId], (old) =>
+        !old
+          ? old
+          : old.map((item) => {
+              if (item.id === itemId) {
+                return {
+                  ...item,
+                  item_reservations: item.item_reservations.map((res) =>
+                    res.id === data.id ? data : res
+                  ),
+                };
+              }
+              return item;
+            })
+      );
+      queryClient.setQueryData(['UserItems', userId], (old) => {
+        if (!old) return old;
+        const newOld = old.map((item) => {
+          if (item.id === data.item_id) {
             return {
               ...item,
               item_reservations: item.item_reservations.map((res) =>
@@ -39,8 +57,9 @@ export default function useApproveItemReservation() {
             };
           }
           return item;
-        })
-      );
+        });
+        return newOld;
+      });
     },
   });
 }
