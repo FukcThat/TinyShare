@@ -57,6 +57,13 @@ export default function useCancelItemReservation(itemId) {
 
         return newOld;
       });
+      queryClient.setQueryData(['UserReservations', userId], (old) => {
+        if (!old) return old;
+        const newOld = old.filter((res) => {
+          res.id != variables.reservationId;
+        });
+        return newOld;
+      });
     },
   });
 }

@@ -11,15 +11,26 @@ Todos:
 --[x] Image CRUD 
 --[x] Calendar Legend [30 min]
 -[x] Community Page, info, edit, delete, members with role toggle, admin panel invite/settings 
+-[x] Homepage invites, item list view of active community with search and filters
+--[x] item list view search (name, desc, owner name), availability filter 
+--[x] Seperate Data hooks for users items including cache invalidations on item and reservation crud 
+--[x] Seperate Data hook for user item reservations (including cache invalidations whenever reservations change or when items get deleted) 
+--[x] Panels for your items that are currently booked (sorted by closest end time) and your future/active bookings 
 
--[s] Homepage invites, item list view of active community with search and filters [7.Jan]
---[x] item list view search (name, desc, owner name), availability filter [90 min]
---[] Seperate Data hooks for users items including cache invalidations on item and reservation crud [90 min]
-
--[r] General Refactor of code, light mode  [8-9.Jan]
---[] Seperate Data hook for user item reservations (including cache invalidations whenever reservations change or when items get deleted)
--[l] Icons, Style Consistency / Loading States [10.Jan]
+-[r] General Refactor of code, light mode  [9.Jan]
+--[] General Refactor [120 min]
+---[] Remove unused/deprecated code
+---[] Folder structure
+---[] Refactor components where needed
+---[] Create UI components for smaller things like cards, headertext, subheader text etc.
+---[] Cleanup magic string and numbers with enums
+--[] Light mode integrations [30 min]
+-[l] Icons, Style/Color Consistency / Loading States [10.Jan]
+--[] Get Icons
+--[] Update Color Palette and check for style/color consistency
+--[] Check loading state consistency and loading behaviours
 -[t] Hosting [11.Jan]
+--[] Netlify for now
 
 -[x] Profile Page
 --[x] Show if items are currently booked or not with small badge
@@ -30,11 +41,11 @@ Todos:
 --[x] Currently booked badge
 --[x] Calendar legend 
 --[x] Currently Booked Status in the booking form
--[s] Home Page
---[s] Invites
---[i] Active Bookings
---[i] My Booked Items
---[s] Item List View of active community
+-[x] Home Page
+--[x] Invites
+--[x] Active Bookings
+--[x] My Booked Items
+--[x] Item List View of active community
 -[x] Community Page
 --[x] Community Info
 --[x] Community Info Edit if admin
@@ -54,13 +65,11 @@ Current Commit: TanStack Query Integration
 - [x] Community Item Data
 - [x] Realtime Issue with Community Items
 
-### Reservation and Booking System [70%]
+### Reservation and Booking System [x]
 
-[66%] Request a new booking by clicking start and end on the calander
+[x] Request a new booking by clicking start and end on the calander
 -- [x] check that no reservations lie between those dates
 -- [x] intuitively set start & end time by clicking the calendar
--- [later] && by setting start & end time by input
--- [later] Datetime picker library integration
 -- [x] creating reservation
 -- [x] Cancel Booking from requester view
 [x] Owners side of booking

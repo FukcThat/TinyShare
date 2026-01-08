@@ -60,6 +60,19 @@ export default function useApproveItemReservation() {
         });
         return newOld;
       });
+      queryClient.setQueryData(['UserReservations', userId], (old) => {
+        if (!old) return old;
+        const newOld = old.map((res) => {
+          if (res.item.id === data.item_id) {
+            return {
+              ...res,
+              status: 'booking',
+            };
+          }
+          return res;
+        });
+        return newOld;
+      });
     },
   });
 }
