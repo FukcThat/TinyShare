@@ -1,6 +1,6 @@
 # TinyShare Roadmap
 
-Todos:
+### Todos:
 
 -[x] Item is Currently booked function returns true or false and can be used on profile page, item page 
 -[x] Item Edit Delete
@@ -17,19 +17,17 @@ Todos:
 --[x] Seperate Data hook for user item reservations (including cache invalidations whenever reservations change or when items get deleted) 
 --[x] Panels for your items that are currently booked (sorted by closest end time) and your future/active bookings 
 
--[r] General Refactor of code, light mode  [9.Jan]
---[] General Refactor [120 min]
----[] Remove unused/deprecated code
----[] Folder structure
----[] Refactor components where needed
----[] Create UI components for smaller things like cards, headertext, subheader text etc.
----[] Cleanup magic string and numbers with enums
---[] Light mode integrations [30 min]
--[l] Icons, Style/Color Consistency / Loading States [10.Jan]
+-[r] General Refactor of code, light mode  [10-11.Jan]
+--[] Cleanup magic string and numbers with enums [30 min]
+--[] Create UI components for smaller things like cards, headertext, subheader text etc. [60 min]
+--[] Refactor components where needed [60 min]
+--[] Light mode integrations [30 min] 
+
+-[l] Icons, Style/Color Consistency / Loading States [11-12.Jan]
 --[] Get Icons
 --[] Update Color Palette and check for style/color consistency
 --[] Check loading state consistency and loading behaviours
--[t] Hosting [11.Jan]
+-[t] Hosting [13.Jan]
 --[] Netlify for now
 
 -[x] Profile Page
@@ -55,15 +53,7 @@ Todos:
 
 ### Issues
 
-Current Commit: TanStack Query Integration
 
-- [x] User Profile Data
-- [x] User Communities Data
-- [x] User Invitation Data (invalidate when accepting invitation)
-- [x] Community Member Data (invalidate when member kicked that isnt you)
-- [x] Community Invite Data
-- [x] Community Item Data
-- [x] Realtime Issue with Community Items
 
 ### Reservation and Booking System [x]
 
@@ -155,9 +145,6 @@ Current Commit: TanStack Query Integration
 ----[x] create custom hook for realtime and db call
 [x] Integrate React Query into server state hooks for caching
 
-### Styling [0%]
-
-### Finishing Touches [0%]
 
 #### Handle Errors
 

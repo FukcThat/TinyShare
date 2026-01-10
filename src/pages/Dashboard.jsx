@@ -3,17 +3,16 @@ import ItemListView from '../components/ItemPage/ItemListView';
 import { useGlobal } from '../context/useGlobal';
 import AvailabilityCheck from '../components/ItemPage/AvailabilityCheck';
 import { HasReservationConflict } from '../lib/HasReservationConflict';
-import { useItemContext } from '../context/item_context/useItemContext';
 import { useNavigate } from 'react-router';
-import useCommunityItems from '../hooks/tanstack_queries/useCommunityItems';
 import BgPanel from '../components/global/BgPanel';
 import Input from '../components/ui/Input';
+import ActiveAndUpcomingReservationsPanel from '../components/ProfilePage/ActiveAndUpcomingReservationsPanel';
+import CurrentlyBookedUserItemsPanel from '../components/ProfilePage/CurrentlyBookedUserItemsPanel';
 
-export default function ItemsPage() {
-  const { activeCommunity } = useGlobal();
-  const { data: communityItems } = useCommunityItems();
+export default function Dashboard() {
+  const { activeCommunity, communityItems } = useGlobal();
 
-  const { availabilityFilterDates } = useItemContext();
+  const [availabilityFilterDates, setAvailabilityFilterDates] = useState('');
   const nav = useNavigate();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -54,6 +53,8 @@ export default function ItemsPage() {
 
   return (
     <div className="flex flex-col justify-center items-center gap-4 ">
+      <ActiveAndUpcomingReservationsPanel />
+      <CurrentlyBookedUserItemsPanel />
       <BgPanel>
         <h2 className=" text-2xl w-full text-start">
           {activeCommunity.name} - Available Items
@@ -69,7 +70,9 @@ export default function ItemsPage() {
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search by name, description or owner..."
         />
-        <AvailabilityCheck />
+        <AvailabilityCheck
+          setAvailabilityFilterDates={setAvailabilityFilterDates}
+        />
         <ItemListView items={itemsToRender} />
       </BgPanel>
     </div>

@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import { GetDateObjFromDateTimeString } from '../../lib/GetDateObjectFromDateTimeString';
-import { useItemContext } from '../../context/item_context/useItemContext';
 
-export default function AvailabilityCheck() {
+export default function AvailabilityCheck({ setAvailabilityFilterDates }) {
   const [startDate, setStartDate] = useState(
     new Date().toISOString().substring(0, 10)
   );
@@ -13,8 +12,6 @@ export default function AvailabilityCheck() {
     new Date().toISOString().substring(0, 10)
   );
   const [endTime, setEndTime] = useState('16:00:00');
-
-  const { setAvailabilityFilterDates } = useItemContext();
 
   const [applyFilter, setApplyFilter] = useState(false);
 

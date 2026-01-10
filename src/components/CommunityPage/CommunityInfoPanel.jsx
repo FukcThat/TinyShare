@@ -1,11 +1,9 @@
 import { useGlobal } from '../../context/useGlobal';
-import useCommunityMembers from '../../hooks/tanstack_queries/useCommunityMembers';
 import BgPanel from '../global/BgPanel';
 import Loading from '../global/Loading';
 
 export default function CommunityInfoPanel() {
-  const { activeCommunity } = useGlobal();
-  const { data: communityMembers } = useCommunityMembers(activeCommunity);
+  const { activeCommunity, communityMembers } = useGlobal();
 
   if (!activeCommunity || !communityMembers) return <Loading />;
 

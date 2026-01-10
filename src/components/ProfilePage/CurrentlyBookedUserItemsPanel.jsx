@@ -1,8 +1,10 @@
 import { useMemo } from 'react';
 import BgPanel from '../global/BgPanel';
 import { Link } from 'react-router';
+import { useGlobal } from '../../context/useGlobal';
 
-export default function CurrentlyBookedUserItemsPanel({ userItems }) {
+export default function CurrentlyBookedUserItemsPanel() {
+  const { userItems } = useGlobal();
   const currentlyBookedItems = useMemo(() => {
     if (!userItems) return [];
 

@@ -2,14 +2,12 @@ import { useState } from 'react';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import Checkbox from '../ui/Checkbox';
-import { useItemContext } from '../../context/item_context/useItemContext';
 import useCreateItem from '../../hooks/tanstack_mutations/useCreateItem';
 import { useSession } from '../../context/session_context/useSession';
 import TextArea from '../ui/TextArea';
 
 export default function ItemForm({ setIsOpen }) {
   const { session } = useSession();
-  const { itemToEdit } = useItemContext();
   const [formData, setFormData] = useState({
     name: '',
     isAvailable: true,
@@ -138,7 +136,7 @@ export default function ItemForm({ setIsOpen }) {
       <div className="flex w-full justify-around">
         <Button
           disabled={CreateItem.isPending}
-          text={itemToEdit === null ? 'Submit' : 'Update'}
+          text={'Submit'}
           type="submit"
           styles="bg-accent/80 hover:bg-accent"
         />

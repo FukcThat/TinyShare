@@ -4,9 +4,9 @@ import { useGlobal } from '../context/useGlobal';
 import useKickMember from '../hooks/tanstack_mutations/useKickMember';
 import { useEffect } from 'react';
 import BgPanel from '../components/global/BgPanel';
-import MembershipPanel from '../components/membership/MembershipPanel';
 import CommunityAdminPanel from '../components/CommunityPage/CommunityAdminPanel';
 import Loading from '../components/global/Loading';
+import MembershipPanel from '../components/ProfilePage/MembershipPanel';
 
 export default function CommunityPage() {
   const { activeCommunity } = useGlobal();

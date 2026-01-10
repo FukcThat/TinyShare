@@ -5,9 +5,9 @@ import Button from '../ui/Button';
 import Input from '../ui/Input';
 import useUserCommunities from '../../hooks/tanstack_queries/useUserCommunities';
 import { useGlobal } from '../../context/useGlobal';
-import InvitationPanel from '../membership/InvitationPanel';
 import BgPanel from '../global/BgPanel';
 import TextArea from '../ui/TextArea';
+import InvitationPanel from './InvitationPanel';
 
 export default function UserCommunitiesPanel() {
   const { session } = useSession();

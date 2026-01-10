@@ -2,14 +2,8 @@ import { useEffect, useMemo } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import inFilter from '../../lib/inFilter';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useGlobal } from '../../context/useGlobal';
-import { useItemContext } from '../../context/item_context/useItemContext';
 
-const fetchCommunityItems = async (
-  communityId,
-  itemToRequest,
-  setItemToRequest
-) => {
+const fetchCommunityItems = async (communityId) => {
   const { data: members, error: membersErr } = await supabase
     .from('memberships')
     .select('user_id')
@@ -29,21 +23,11 @@ const fetchCommunityItems = async (
     );
   if (error) throw new Error('Issue fetching community items.');
 
-  if (itemToRequest) {
-    for (let item of data) {
-      if (item.id === itemToRequest.id) {
-        setItemToRequest(item);
-      }
-    }
-  }
-
   return data;
 };
 
-export default function useCommunityItems() {
+export default function useCommunityItems(activeCommunity, communityMembers) {
   const queryClient = useQueryClient();
-  const { activeCommunity, communityMembers } = useGlobal();
-  const { itemToRequest, setItemToRequest } = useItemContext();
   const activeId = activeCommunity?.id;
   const communityMemberIds = useMemo(() => {
     return communityMembers ? communityMembers.map((m) => m.profiles.id) : [];
@@ -51,8 +35,7 @@ export default function useCommunityItems() {
 
   const query = useQuery({
     queryKey: ['CommunityItems', activeId],
-    queryFn: () =>
-      fetchCommunityItems(activeId, itemToRequest, setItemToRequest),
+    queryFn: () => fetchCommunityItems(activeId),
     enabled: !!activeId && activeId != -1,
     staleTime: Infinity,
   });
@@ -69,7 +52,7 @@ export default function useCommunityItems() {
     );
 
     return () => supabase.removeChannel(channel);
-  }, [communityMemberIds, activeId]);
+  }, [communityMemberIds, activeId, queryClient]);
 
   return query;
 }

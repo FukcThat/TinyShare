@@ -1,31 +1,29 @@
 import { useParams } from 'react-router';
-import useCommunityItems from '../hooks/tanstack_queries/useCommunityItems';
 import { useMemo, useState } from 'react';
 import Loading from '../components/global/Loading';
-import ItemInfoPanel from '../components/NewItemPage/ItemInfoPanel';
-import BookingCalendar from '../components/NewItemPage/BookingCalendar';
+import ItemInfoPanel from '../components/DashboardPage/ItemInfoPanel';
+import BookingCalendar from '../components/DashboardPage/BookingCalendar';
 import { useSession } from '../context/session_context/useSession';
-import RequestBookingForm from '../components/NewItemPage/RequestBookingForm';
+import RequestBookingForm from '../components/DashboardPage/RequestBookingForm';
 import useSubmitItemReservation from '../hooks/tanstack_mutations/useSubmitItemReservation';
-import useUserItems from '../hooks/tanstack_queries/useUserItems';
+import { useGlobal } from '../context/useGlobal';
 
 export default function ItemPage() {
   const { id } = useParams();
   const { session } = useSession();
-  const { data: communityItemData } = useCommunityItems();
-  const { data: userItemData } = useUserItems();
+  const { userItemData, communityItems } = useGlobal();
 
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
 
   const item = useMemo(() => {
-    if (!communityItemData && !userItemData) return null;
+    if (!communityItems && !userItemData) return null;
     return (
-      communityItemData?.find((item) => item.id === id) ||
+      communityItems?.find((item) => item.id === id) ||
       userItemData?.find((item) => item.id === id) ||
       null
     );
-  }, [communityItemData, id, userItemData]);
+  }, [communityItems, id, userItemData]);
 
   const resetTimeState = () => {
     setStart('');

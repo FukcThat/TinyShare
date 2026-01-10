@@ -2,12 +2,12 @@ import Loading from '../global/Loading';
 import Button from '../ui/Button';
 import { useSession } from '../../context/session_context/useSession';
 import useAcceptInvitation from '../../hooks/tanstack_mutations/useAcceptInvitation';
-import useUserInvitations from '../../hooks/tanstack_queries/useUserInvitations';
 import useDeclineInvitation from '../../hooks/tanstack_mutations/useDeclineInvitation';
+import { useGlobal } from '../../context/useGlobal';
 
 export default function InvitationPanel() {
   const { session } = useSession();
-  const { data: userInvitations } = useUserInvitations();
+  const { userInvitations } = useGlobal();
   const acceptInvitation = useAcceptInvitation();
   const DeclineInvitation = useDeclineInvitation();
 

@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useItemContext } from '../../context/item_context/useItemContext';
 import { useGlobal } from '../../context/useGlobal';
 import { supabase } from '../../lib/supabaseClient';
 import { useSession } from '../../context/session_context/useSession';
@@ -17,15 +16,13 @@ const ApproveItemReservation = async ({ reservationId }) => {
   return data;
 };
 
-export default function useApproveItemReservation() {
+export default function useApproveItemReservation({ itemId }) {
   const queryClient = useQueryClient();
-  const { itemToRequest } = useItemContext();
   const { activeCommunity } = useGlobal();
   const { session } = useSession();
 
   const userId = session?.user.id;
   const activeId = activeCommunity?.id;
-  const itemId = itemToRequest?.id;
 
   return useMutation({
     mutationFn: ApproveItemReservation,

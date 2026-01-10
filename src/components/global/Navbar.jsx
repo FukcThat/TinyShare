@@ -1,21 +1,19 @@
 import { Link, useLocation } from 'react-router';
 import { useGlobal } from '../../context/useGlobal';
-import useUserInvitations from '../../hooks/tanstack_queries/useUserInvitations';
 
 const NavElements = [
-  { path: '/items', name: 'Items', needCommunity: true },
+  { path: '/dashboard', name: 'Dashboard', needCommunity: true },
   { path: '/community', name: 'Community', needCommunity: true },
   { path: '/', name: 'Profile', needCommunity: false, badge: true },
 ];
 
 export default function Navbar() {
   const location = useLocation();
-  const { data: userInvitations } = useUserInvitations();
-  const { activeCommunity } = useGlobal();
+  const { activeCommunity, userInvitations } = useGlobal();
 
   return (
     <div className="flex my-6 px-10 w-full justify-between items-center flex-col md:flex-row">
-      <div className="flex gap-4 items-center justify-center">
+      <div className="flex gap-4 items-center justify-center w-full">
         {NavElements.map((element) => {
           if (
             !element.needCommunity ||

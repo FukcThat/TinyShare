@@ -1,10 +1,10 @@
-import React, { useMemo } from 'react';
-import useUserReservations from '../../hooks/tanstack_queries/useUserReservations';
+import { useMemo } from 'react';
 import BgPanel from '../global/BgPanel';
 import { Link } from 'react-router';
+import { useGlobal } from '../../context/useGlobal';
 
 export default function ActiveAndUpcomingReservationsPanel() {
-  const { data: userReservations } = useUserReservations();
+  const { userReservations } = useGlobal();
 
   const activeReservations = useMemo(() => {
     if (!userReservations) return [];

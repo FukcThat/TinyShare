@@ -13,7 +13,7 @@ export default function EventContent({
 }) {
   const { session } = useSession();
   const CancelItemReservation = useCancelItemReservation(item.id);
-  const ApproveItemReservation = useApproveItemReservation();
+  const ApproveItemReservation = useApproveItemReservation(item.id);
 
   const HandleApproveBtnClick = async (e) => {
     if (new Date().getTime() > arg.event.end.getTime()) {
