@@ -4,6 +4,9 @@ import { useSession } from '../../context/session_context/useSession';
 import useAcceptInvitation from '../../hooks/tanstack_mutations/useAcceptInvitation';
 import useDeclineInvitation from '../../hooks/tanstack_mutations/useDeclineInvitation';
 import { useGlobal } from '../../context/useGlobal';
+import FadedText from '../ui/Text/FadedText';
+import ContentText from '../ui/Text/ContentText';
+import SubContentText from '../ui/Text/SubContentText';
 
 export default function InvitationPanel() {
   const { session } = useSession();
@@ -51,20 +54,17 @@ export default function InvitationPanel() {
       } border-t border-b py-2 border-accent w-full gap-2`}
     >
       {userInvitations.length === 0 && (
-        <div className="w-full text-center text-sm text-text-primary/80">
-          No pending invites
-        </div>
+        <FadedText text="No pending invites" styles="text-center" />
       )}
       {userInvitations.map((invite) => (
         <div
           key={invite.id}
           className="flex flex-col bg-primary border border-accent  rounded-md p-4"
         >
-          <div className="text-lg">
-            {' '}
-            Invite to Community: {invite.communities.name}
-          </div>
-          <div> From {invite.inviter_id.name}</div>
+          <ContentText
+            text={`Invite to Community: ${invite.communities.name}`}
+          />
+          <SubContentText text={`From ${invite.inviter_id.name}`} />
           <div className="flex gap-4 my-2">
             <Button
               disabled={

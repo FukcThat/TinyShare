@@ -1,19 +1,21 @@
 import { useEffect, useMemo, useState } from 'react';
 import Button from '../ui/Button';
 import EditProfileForm from './EditProfileForm';
-import useUserProfile from '../../hooks/tanstack_queries/useUserProfile';
-import { useSession } from '../../context/session_context/useSession';
 import Loading from '../global/Loading';
-import { supabase } from '@supabase/auth-ui-shared';
 import BgPanel from '../global/BgPanel';
+import HeaderText from '../ui/Text/HeaderText';
+import FadedText from '../ui/Text/FadedText';
+import SubContentText from '../ui/Text/SubContentText';
+import ContentText from '../ui/Text/ContentText';
+import { useGlobal } from '../../context/useGlobal';
+import { supabase } from '../../lib/supabaseClient';
 
 const oneDay = 24 * 60 * 60 * 1000;
 
 export default function ProfileHeader({ yourItems }) {
-  const { session } = useSession();
+  const { userProfile } = useGlobal();
   const [showForm, setShowForm] = useState(false);
   const [nameInput, setNameInput] = useState('');
-  const { data: userProfile } = useUserProfile(session);
 
   useEffect(() => {
     if (!userProfile) return;
@@ -58,9 +60,7 @@ export default function ProfileHeader({ yourItems }) {
                   setNameInput={setNameInput}
                 />
               ) : (
-                <div className="text-text-primary flex gap-2 text-2xl">
-                  {userProfile.name}
-                </div>
+                <HeaderText text={userProfile.name} />
               )}
               <Button
                 onClick={() => {
@@ -71,13 +71,10 @@ export default function ProfileHeader({ yourItems }) {
                 text={showForm ? '❌' : '✏️'}
               />
             </div>
-
-            <div className="text-sm text-text-primary/90 font-light">
-              {session.user.email}
-            </div>
+            <FadedText text={userProfile.email} />
           </div>
         ) : (
-          <div>{session.user.email}</div>
+          <SubContentText text={userProfile.email} />
         )}
         <Button
           styles="bg-warning/60 hover:bg-warning"
@@ -86,7 +83,6 @@ export default function ProfileHeader({ yourItems }) {
         />
       </div>
 
-      {/* PROFILE DETAILS */}
       <div className="flex flex-col gap-4 md:flex-row justify-between w-full ">
         {[
           ['Account Age: ', accountAge + ' Days'],
@@ -95,8 +91,8 @@ export default function ProfileHeader({ yourItems }) {
         ].map((e) => {
           return (
             <div key={e[0]}>
-              <div className="text-sm text-text-primary/80">{e[0]}</div>
-              <div className="text-lg text-text-primary">{e[1]}</div>
+              <FadedText text={e[0]} />
+              <ContentText text={e[1]} />
             </div>
           );
         })}

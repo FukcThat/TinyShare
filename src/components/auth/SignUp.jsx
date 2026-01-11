@@ -1,40 +1,42 @@
-import { useState } from "react";
-import Button from "../ui/Button";
-import Input from "../ui/Input";
-import { supabase } from "../../lib/supabaseClient";
+import { useState } from 'react';
+import Button from '../ui/Button';
+import Input from '../ui/Input';
+import { supabase } from '../../lib/supabaseClient';
+import SubContentText from '../ui/Text/SubContentText';
+import FadedText from '../ui/Text/FadedText';
 
 export default function SignUp({ setCurState }) {
-  const [emailInput, setEmailInput] = useState("");
-  const [passInput, setPassInput] = useState("");
-  const [err, setErr] = useState("");
+  const [emailInput, setEmailInput] = useState('');
+  const [passInput, setPassInput] = useState('');
+  const [err, setErr] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
   const HandleSignUp = async (e) => {
     e.preventDefault();
 
-    if (emailInput === "" || passInput === "") {
-      setErr("Please provide an email AND a password");
+    if (emailInput === '' || passInput === '') {
+      setErr('Please provide an email AND a password');
       return;
     }
 
     try {
       setIsLoading(true);
       console.log(passInput);
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email: emailInput,
         password: passInput,
       });
 
       if (error) {
-        throw new Error("Issue Signing Up", error);
+        throw new Error('Issue Signing Up', error);
       }
 
       setSuccess(true);
-      setEmailInput("");
-      setPassInput("");
+      setEmailInput('');
+      setPassInput('');
     } catch (error) {
-      setErr("Issue Signing In");
+      setErr('Issue Signing In');
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -45,8 +47,8 @@ export default function SignUp({ setCurState }) {
     <div className="flex flex-col gap-4 bg-slate-900/60 p-10 rounded-lg m-10">
       {success ? (
         <div className="flex flex-col items-center gap-2">
-          <div>Please check your email to complete the sign up!</div>
-          <div className="text-sm">You can close this page</div>
+          <SubContentText text="Please check your email to complete the sign up!" />
+          <FadedText text="You can close this page" />
         </div>
       ) : (
         <>
@@ -77,7 +79,7 @@ export default function SignUp({ setCurState }) {
               value={passInput}
               onChange={(e) => setPassInput(e.target.value)}
             />
-            <div className="text-sm text-red-500/90 h-6">{err && err}</div>
+            <SubContentText text={err && err} styles="h-6 text-text-warning" />
             <Button
               type="submit"
               text="Sign Up"

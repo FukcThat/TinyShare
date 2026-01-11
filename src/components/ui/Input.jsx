@@ -1,4 +1,5 @@
 import { twMerge } from 'tailwind-merge';
+import ContentText from './Text/ContentText';
 
 export default function Input({
   id = '',
@@ -22,7 +23,7 @@ export default function Input({
           htmlFor={id}
           className={twMerge([`hover:cursor-pointer`, labelStyles])}
         >
-          {labelText}
+          <ContentText text={labelText} />
         </label>
       )}
       <div className={twMerge(['relative w-full rounded-md   ', inputStyles])}>

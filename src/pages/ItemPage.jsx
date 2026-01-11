@@ -1,12 +1,11 @@
 import { useParams } from 'react-router';
 import { useMemo, useState } from 'react';
 import Loading from '../components/global/Loading';
-import ItemInfoPanel from '../components/DashboardPage/ItemInfoPanel';
-import BookingCalendar from '../components/DashboardPage/BookingCalendar';
 import { useSession } from '../context/session_context/useSession';
-import RequestBookingForm from '../components/DashboardPage/RequestBookingForm';
-import useSubmitItemReservation from '../hooks/tanstack_mutations/useSubmitItemReservation';
 import { useGlobal } from '../context/useGlobal';
+import ItemInfoPanel from '../components/ItemPage/ItemInfoPanel';
+import BookingCalendar from '../components/ItemPage/BookingCalendar';
+import RequestBookingForm from '../components/ItemPage/RequestBookingForm';
 
 export default function ItemPage() {
   const { id } = useParams();
@@ -25,62 +24,19 @@ export default function ItemPage() {
     );
   }, [communityItems, id, userItemData]);
 
-  const resetTimeState = () => {
-    setStart('');
-    setEnd('');
-  };
-
-  const SubmitItemReservation = useSubmitItemReservation();
-
-  const OnSubmitReservation = async (e, selfBooking = false) => {
-    e.preventDefault();
-    // make sure that the reservation start time is in the future
-    let curTime = new Date().getTime();
-    if (curTime > new Date(start).getTime()) {
-      window.alert('Start of booking must be in the future!');
-      return;
-    }
-    if (start === '' || end === '') return;
-    SubmitItemReservation.mutate(
-      {
-        user_id: session.user.id,
-        item_id: item.id,
-        start,
-        end,
-        status: selfBooking ? 'booking' : 'request', // turn this into global enums
-      },
-      {
-        onSuccess: () => {
-          resetTimeState();
-        },
-      }
-    );
-  };
-
   if (!item) return <Loading />;
 
   return (
     <div className="flex flex-col justify-center items-center gap-8 my-6">
       <ItemInfoPanel item={item} />
-      {/* Edit Item Form */}
       <BookingCalendar
         item={item}
         start={start}
         end={end}
         setEnd={setEnd}
         setStart={setStart}
-        OnSubmitReservation={OnSubmitReservation}
       />
-      {/* <BookingHistory /> */}
-      {item.owner !== session.user.id && (
-        <RequestBookingForm
-          start={start}
-          end={end}
-          OnSubmitReservation={OnSubmitReservation}
-          SubmitItemReservation={SubmitItemReservation}
-          item={item}
-        />
-      )}
+      {item.owner.id !== session.user.id && <RequestBookingForm item={item} />}
     </div>
   );
 }

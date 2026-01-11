@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import inFilter from '../../lib/inFilter';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { InvalidCommunityId } from '../../lib/InvalidCommunityId';
 
 const fetchCommunityItems = async (communityId) => {
   const { data: members, error: membersErr } = await supabase
@@ -36,7 +37,7 @@ export default function useCommunityItems(activeCommunity, communityMembers) {
   const query = useQuery({
     queryKey: ['CommunityItems', activeId],
     queryFn: () => fetchCommunityItems(activeId),
-    enabled: !!activeId && activeId != -1,
+    enabled: !!activeId && activeId != InvalidCommunityId,
     staleTime: Infinity,
   });
 

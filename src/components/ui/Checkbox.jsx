@@ -1,4 +1,6 @@
 import { twMerge } from 'tailwind-merge';
+import SubContentText from './Text/SubContentText';
+import ContentText from './Text/ContentText';
 
 export default function Checkbox({
   id = 'checkbox',
@@ -11,7 +13,7 @@ export default function Checkbox({
   return (
     <div className={twMerge(['flex gap-4', styles])}>
       <label className="cursor-pointer" htmlFor={id}>
-        {labelText}
+        <ContentText text={labelText} />
       </label>
       <input
         className="w-6 h-6 justify-self-center accent-accent"

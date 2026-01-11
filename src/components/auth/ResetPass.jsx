@@ -1,10 +1,12 @@
-import { useState } from "react";
-import Button from "../ui/Button";
-import Input from "../ui/Input";
-import { supabase } from "../../lib/supabaseClient";
+import { useState } from 'react';
+import Button from '../ui/Button';
+import Input from '../ui/Input';
+import { supabase } from '../../lib/supabaseClient';
+import SubContentText from '../ui/Text/SubContentText';
+import FadedText from '../ui/Text/FadedText';
 
 export default function ResetPass({ setCurState }) {
-  const [emailInput, setEmailInput] = useState("");
+  const [emailInput, setEmailInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [err, setErr] = useState(null);
@@ -12,8 +14,8 @@ export default function ResetPass({ setCurState }) {
   const HandleResetPassword = async (e) => {
     e.preventDefault();
 
-    if (emailInput === "") {
-      setErr("Please provide an email");
+    if (emailInput === '') {
+      setErr('Please provide an email');
       return;
     }
 
@@ -22,24 +24,23 @@ export default function ResetPass({ setCurState }) {
       setErr(null);
 
       const res = await supabase.auth.resetPasswordForEmail(emailInput);
-      console.log(res);
-      if (res.error) throw new Error("Issue sending reset email!");
+      if (res.error) throw new Error('Issue sending reset email!');
       setSuccess(true);
-      setEmailInput("");
+      setEmailInput('');
     } catch (error) {
       console.error(error);
-      setErr("Issue sending reset email!");
+      setErr('Issue sending reset email!');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col gap-4 bg-slate-900/60 p-10 rounded-lg m-10">
+    <div className="flex flex-col gap-4 bg-primary p-10 rounded-lg m-10">
       {success ? (
         <div className="flex flex-col gap-4 items-center">
-          <div>Please check your email for further steps!</div>
-          <div className="text-sm">You can close this window</div>
+          <SubContentText text="Please check your email for further steps!" />
+          <FadedText text="You can close this window" />
         </div>
       ) : (
         <>
@@ -65,9 +66,10 @@ export default function ResetPass({ setCurState }) {
               styles="hover:bg-green-400/50"
             />
             {err && (
-              <div className=" text-sm text-red-600">
-                Issue with recovery process, try again later.
-              </div>
+              <SubContentText
+                text="Issue with recovery process, try again later."
+                styles="text-text-warning"
+              />
             )}
           </form>
           <Button

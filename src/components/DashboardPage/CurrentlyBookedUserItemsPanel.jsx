@@ -2,6 +2,10 @@ import { useMemo } from 'react';
 import BgPanel from '../global/BgPanel';
 import { Link } from 'react-router';
 import { useGlobal } from '../../context/useGlobal';
+import HeaderText from '../ui/Text/HeaderText';
+import ContentText from '../ui/Text/ContentText';
+import FadedText from '../ui/Text/FadedText';
+import SubContentText from '../ui/Text/SubContentText';
 
 export default function CurrentlyBookedUserItemsPanel() {
   const { userItems } = useGlobal();
@@ -36,7 +40,7 @@ export default function CurrentlyBookedUserItemsPanel() {
   }, [userItems]);
   return (
     <BgPanel>
-      <h3 className="text-2xl">My Booked Items</h3>
+      <HeaderText text="My Booked Items" />
       <div className="w-full">
         {currentlyBookedItems.map((item) => (
           <Link
@@ -44,23 +48,21 @@ export default function CurrentlyBookedUserItemsPanel() {
             key={item.id}
             className="border border-accent/40 hover:border-accent/60 p-2 rounded-md flex flex-col w-full"
           >
-            <div className="text-lg">{item.name}</div>
-            <div className="text-sm text-text-primary/80">
-              {item.description}
-            </div>
-            <div>Booked by: {item.booked_by}</div>
+            <ContentText text={item.name} />
+            <FadedText text={item.description} styles="truncate" />
+            <SubContentText text={`Booked by: ${item.booked_by}`} />
             {new Date(item.booked_until).toLocaleDateString() ===
             new Date().toLocaleDateString() ? (
-              <div>
-                Booking Ends Today at{' '}
-                {new Date(item.booked_until).toLocaleTimeString()}
-              </div>
+              <SubContentText
+                text={`Booking Ends Today at 
+                ${new Date(item.booked_until).toLocaleTimeString()}`}
+              />
             ) : (
-              <div>
-                Booking Ends at{' '}
-                {new Date(item.booked_until).toLocaleTimeString()} on the{' '}
-                {new Date(item.booked_until).toLocaleDateString()}
-              </div>
+              <SubContentText
+                text={`Booking Ends at 
+                ${new Date(item.booked_until).toLocaleTimeString()} on the{' '}
+                ${new Date(item.booked_until).toLocaleDateString()}`}
+              />
             )}
           </Link>
         ))}

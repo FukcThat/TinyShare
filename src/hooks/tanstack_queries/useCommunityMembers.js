@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { InvalidCommunityId } from '../../lib/InvalidCommunityId';
 
 const fetchCommunityMembers = async (communityId) => {
   const { data, error } = await supabase
@@ -21,12 +22,12 @@ export default function useCommunityMembers(activeCommunity) {
   const query = useQuery({
     queryKey: ['CommunityMembers', activeCommunityId],
     queryFn: () => fetchCommunityMembers(activeCommunityId),
-    enabled: !!activeCommunityId && activeCommunityId != -1,
+    enabled: !!activeCommunityId && activeCommunityId != InvalidCommunityId,
     staleTime: Infinity,
   });
 
   useEffect(() => {
-    if (!activeCommunityId || activeCommunityId === -1) return;
+    if (!activeCommunityId || activeCommunityId === InvalidCommunityId) return;
 
     const channel = listenForCommunityMembershipChanges(
       activeCommunityId,

@@ -4,6 +4,9 @@ import Loading from '../global/Loading';
 import { useSession } from '../../context/session_context/useSession';
 import useUserCommunities from '../../hooks/tanstack_queries/useUserCommunities';
 import useToggleMemberRole from '../../hooks/tanstack_mutations/useToggleMemberRole';
+import SubContentText from '../ui/Text/SubContentText';
+import FadedText from '../ui/Text/FadedText';
+import SubFadedText from '../ui/Text/SubFadedText';
 
 export default function MembershipPanel({
   HandleKickMemberBtnClick,
@@ -40,13 +43,13 @@ export default function MembershipPanel({
             } p-4 rounded-md justify-between w-full`}
           >
             <div className="flex flex-col items-start">
-              <h4>{member.profiles.name}</h4>
-              <h4 className="text-sm text-text-primary/80">
-                {member.profiles.email}
-              </h4>
-              <h4 className="text-xs text-text-primary/60">
-                Joined {new Date(member.profiles.created_at).toDateString()}
-              </h4>
+              <SubContentText text={member.profiles.name} />
+              <FadedText text={member.profiles.email} />
+              <SubFadedText
+                text={`Joined ${new Date(
+                  member.profiles.created_at
+                ).toDateString()}`}
+              />
             </div>
             {session.user.id === member.profiles.id ? (
               <Button

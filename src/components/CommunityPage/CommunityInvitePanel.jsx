@@ -5,6 +5,9 @@ import BgPanel from '../global/BgPanel';
 import Button from '../ui/Button';
 import InviteForm from './InviteForm';
 import Loading from '../global/Loading';
+import SubHeaderText from '../ui/Text/SubHeaderText';
+import SubContentText from '../ui/Text/SubContentText';
+import ContentText from '../ui/Text/ContentText';
 
 export default function CommunityInvitePanel() {
   const DeclineInvitation = useDeclineInvitation();
@@ -13,6 +16,7 @@ export default function CommunityInvitePanel() {
   const [isEditing, setIsEditing] = useState();
 
   if (!communityInvitations) return <Loading />;
+
   return (
     <BgPanel styles="w-full">
       <div className="absolute top-4 right-4 flex gap-2">
@@ -25,25 +29,31 @@ export default function CommunityInvitePanel() {
           disabled={false}
         />
       </div>
-      <h2 className="text-xl text-start w-full">✉️ Invites</h2>
+      <SubHeaderText text="✉️ Invites" />
       {isEditing ? (
         <InviteForm />
       ) : (
-        <h5>Send email invitations to new members.</h5>
+        <SubContentText
+          text="Send email invitations to new members."
+          styles="text-center"
+        />
       )}
 
       <div className="flex flex-col gap-2 w-full justify-center items-center">
-        <div className="text-lg text-center py-2 border-b border-b-accent w-full">
-          Pending Invitations
-        </div>
-        {communityInvitations.length === 0 && <div>No Invitations Pending</div>}
+        <ContentText
+          text="Pending Invitations"
+          styles="text-center py-2 border-b border-b-accent"
+        />
+        {communityInvitations.length === 0 && (
+          <SubContentText text="No Pending Invites" styles="text-center" />
+        )}
         {communityInvitations?.map((invite) => {
           return (
             <div
               key={invite.id}
               className="flex gap-4 justify-between items-center w-full border rounded-md border-accent/40 p-2"
             >
-              <div>{invite.profiles.email}</div>
+              <ContentText text={invite.profiles.email} />
               <Button
                 onClick={() =>
                   DeclineInvitation.mutate({ inviteId: invite.id })

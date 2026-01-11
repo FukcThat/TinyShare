@@ -6,7 +6,7 @@ import useCreateItem from '../../hooks/tanstack_mutations/useCreateItem';
 import { useSession } from '../../context/session_context/useSession';
 import TextArea from '../ui/TextArea';
 
-export default function ItemForm({ setIsOpen }) {
+export default function NewItemForm({ setIsOpen }) {
   const { session } = useSession();
   const [formData, setFormData] = useState({
     name: '',

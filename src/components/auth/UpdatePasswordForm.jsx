@@ -1,12 +1,14 @@
-import { useState } from "react";
-import { useNavigate } from "react-router";
-import { supabase } from "../../lib/supabaseClient";
-import Button from "../ui/Button";
-import Input from "../ui/Input";
+import { useState } from 'react';
+import { useNavigate } from 'react-router';
+import { supabase } from '../../lib/supabaseClient';
+import Button from '../ui/Button';
+import Input from '../ui/Input';
+import HeaderText from '../ui/Text/HeaderText';
+import SubContentText from '../ui/Text/SubContentText';
 
 export default function UpdatePasswordForm({ onComplete }) {
-  const [passInput, setPassInput] = useState("");
-  const [confirmPassInput, setconfirmPassInput] = useState("");
+  const [passInput, setPassInput] = useState('');
+  const [confirmPassInput, setconfirmPassInput] = useState('');
   const nav = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [err, setErr] = useState(null);
@@ -15,8 +17,8 @@ export default function UpdatePasswordForm({ onComplete }) {
     e.preventDefault();
 
     if (
-      passInput === "" ||
-      confirmPassInput === "" ||
+      passInput === '' ||
+      confirmPassInput === '' ||
       passInput != confirmPassInput
     )
       return;
@@ -36,7 +38,7 @@ export default function UpdatePasswordForm({ onComplete }) {
   };
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center gap-10">
-      <div className="text-3xl">Set Up Password</div>
+      <HeaderText text="Set Up Password" />
       <form onSubmit={SetNewPassword} className="flex flex-col gap-5 ">
         <Input
           id="password"
@@ -63,7 +65,7 @@ export default function UpdatePasswordForm({ onComplete }) {
           onChange={(e) => setconfirmPassInput(e.target.value)}
         />
         <Button type="submit" text="Update Password" disabled={isLoading} />
-        {err && <div className="text-sm text-red-600">{err}</div>}
+        {err && <SubContentText text={err} styles="text-text-warning" />}
       </form>
     </div>
   );

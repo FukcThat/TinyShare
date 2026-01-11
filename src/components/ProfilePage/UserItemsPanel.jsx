@@ -1,10 +1,11 @@
 import Button from '../ui/Button';
 import ItemView from '../global/ItemView';
-import ItemForm from './ItemForm';
 import { useState } from 'react';
 import BgPanel from '../global/BgPanel';
+import HeaderText from '../ui/Text/HeaderText';
+import NewItemForm from './NewItemForm';
 
-export default function UserItemsView({ items }) {
+export default function UserItemsPanel({ items }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const ToggleItemForm = () => {
@@ -15,14 +16,14 @@ export default function UserItemsView({ items }) {
     <BgPanel>
       <div className="flex flex-col justify-between w-full gap-4">
         <div className="flex flex-col md:flex-row gap-4 justify-between w-full items-center">
-          <h3 className="text-2xl">My Items</h3>
+          <HeaderText text="My Items" styles="w-fit" />
           <Button
             text="+ Add Item"
             styles="bg-primary"
             onClick={ToggleItemForm}
           />
         </div>
-        {isOpen && <ItemForm setIsOpen={setIsOpen} />}
+        {isOpen && <NewItemForm setIsOpen={setIsOpen} />}
         <div className="grid grid-flow-row lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
           {items?.map((item) => (
             <ItemView key={item.id} item={item} isOwner />

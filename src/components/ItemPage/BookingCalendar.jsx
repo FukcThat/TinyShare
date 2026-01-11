@@ -7,6 +7,16 @@ import EventContent from '../ItemPage/EventContent';
 import interactionPlugin from '@fullcalendar/interaction'; // for selectable
 import timeGridPlugin from '@fullcalendar/timegrid';
 import FullCalendar from '@fullcalendar/react';
+import { BookingStatus } from '../../lib/BookingStatus';
+import HeaderText from '../ui/Text/HeaderText';
+import SubContentText from '../ui/Text/SubContentText';
+import useSubmitItemReservation from '../../hooks/tanstack_mutations/useSubmitItemReservation';
+
+const LegendData = [
+  { text: 'Current Booking', color: 'bg-accent' },
+  { text: 'Requested Booking', color: 'bg-orange-600' },
+  { text: 'Confirmed Booking', color: 'bg-green-600' },
+];
 
 export default function BookingCalendar({
   item,
@@ -14,10 +24,38 @@ export default function BookingCalendar({
   end,
   setStart,
   setEnd,
-  OnSubmitReservation,
 }) {
   const { session } = useSession();
   const [reservation, setReservation] = useState(null);
+  const SubmitItemReservation = useSubmitItemReservation();
+  const resetTimeState = () => {
+    setStart('');
+    setEnd('');
+  };
+  const OnSubmitReservation = async (e, selfBooking = false) => {
+    e.preventDefault();
+    let curTime = new Date().getTime();
+    if (curTime > new Date(start).getTime()) {
+      window.alert('Start of booking must be in the future!');
+      return;
+    }
+    if (start === '' || end === '') return;
+
+    SubmitItemReservation.mutate(
+      {
+        user_id: session.user.id,
+        item_id: item.id,
+        start,
+        end,
+        status: selfBooking ? BookingStatus.booking : BookingStatus.request,
+      },
+      {
+        onSuccess: () => {
+          resetTimeState();
+        },
+      }
+    );
+  };
 
   useEffect(() => {
     if (start != '' && end != '') {
@@ -26,7 +64,7 @@ export default function BookingCalendar({
         start,
         end,
         backgroundColor: '#76abae',
-        status: 'preview',
+        status: BookingStatus.preview,
       });
     } else {
       setReservation(null);
@@ -41,7 +79,9 @@ export default function BookingCalendar({
 
       return {
         title:
-          (res.status === 'request' ? 'Requested by: ' : 'Booked by: ') +
+          (res.status === BookingStatus.request
+            ? 'Requested by: '
+            : 'Booked by: ') +
           (res.user_id.id === session.user.id ? 'You' : res.user_id.name),
         start: res.start,
         end: res.end,
@@ -49,7 +89,9 @@ export default function BookingCalendar({
         status: res.status,
         userId: res.user_id.id,
         backgroundColor:
-          res.status === 'booking' ? 'green' : 'hsla(30, 100%, 50%, 1)',
+          res.status === BookingStatus.booking
+            ? 'green'
+            : 'hsla(30, 100%, 50%, 1)',
       };
     });
   }, [item, session]);
@@ -78,7 +120,7 @@ export default function BookingCalendar({
         OnSubmitReservation={OnSubmitReservation}
         setStartTime={setStart}
         setEndTime={setEnd}
-        editable={arg.event._def.extendedProps.status === 'preview'}
+        editable={arg.event._def.extendedProps.status === BookingStatus.preview}
         item={item}
       />
     );
@@ -86,10 +128,10 @@ export default function BookingCalendar({
 
   return (
     <BgPanel>
-      <h3 className="w-full text-2xl border-b pb-4 border-accent">
-        📆 Booking Calendar
-      </h3>
-
+      <HeaderText
+        text="📆 Booking Calendar"
+        styles="border-b border-accent pb-4"
+      />
       <div className="w-full h-[600px]">
         <FullCalendar
           plugins={[interactionPlugin, timeGridPlugin]}
@@ -110,7 +152,7 @@ export default function BookingCalendar({
           height={'100%'}
           selectable={true}
           eventAllow={(_newInfo, obj) => {
-            return obj._def.extendedProps.status === 'preview';
+            return obj._def.extendedProps.status === BookingStatus.preview;
           }}
           nowIndicator={true}
           buttonText={{ week: 'Week', day: 'Day' }}
@@ -127,19 +169,14 @@ export default function BookingCalendar({
           firstDay={1}
         />
       </div>
+
       <div className="flex items-center justify-center flex-col sm:flex-row w-full gap-2 p-2">
-        <div className="flex gap-1 items-center">
-          <div className="h-4 w-4 bg-accent rounded-md"></div>
-          <div>Current Booking</div>
-        </div>
-        <div className="flex gap-1 items-center">
-          <div className="h-4 w-4 bg-orange-400 rounded-md"></div>
-          <div>Requested Booking</div>
-        </div>
-        <div className="flex gap-1 items-center">
-          <div className="h-4 w-4 bg-green-600 rounded-md"></div>
-          <div>Confirmed Booking</div>
-        </div>
+        {LegendData.map(({ text, color }) => (
+          <div className="flex gap-1 items-center">
+            <div className={`h-4 w-4 rounded-md ${color}`}></div>
+            <SubContentText text={text} />
+          </div>
+        ))}
       </div>
     </BgPanel>
   );

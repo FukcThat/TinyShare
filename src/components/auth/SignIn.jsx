@@ -1,38 +1,39 @@
-import { useState } from "react";
-import Button from "../ui/Button";
-import Input from "../ui/Input";
-import { supabase } from "../../lib/supabaseClient";
+import { useState } from 'react';
+import Button from '../ui/Button';
+import Input from '../ui/Input';
+import { supabase } from '../../lib/supabaseClient';
+import SubContentText from '../ui/Text/SubContentText';
 
 export default function SignIn({ setCurState }) {
-  const [emailInput, setEmailInput] = useState("");
-  const [passInput, setPassInput] = useState("");
-  const [err, setErr] = useState("");
+  const [emailInput, setEmailInput] = useState('');
+  const [passInput, setPassInput] = useState('');
+  const [err, setErr] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const HandleSignIn = async (e) => {
     e.preventDefault();
 
-    if (emailInput === "" || passInput === "") {
-      setErr("Please provide an email AND a password");
+    if (emailInput === '' || passInput === '') {
+      setErr('Please provide an email AND a password');
       return;
     }
 
     try {
       setIsLoading(true);
 
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email: emailInput,
         password: passInput,
       });
 
       if (error) {
-        throw new Error("Issue Signing In", error);
+        throw new Error('Issue Signing In', error);
       }
 
-      setEmailInput("");
-      setPassInput("");
+      setEmailInput('');
+      setPassInput('');
     } catch (error) {
-      setErr("Issue Signing In");
+      setErr('Issue Signing In');
       console.log(error);
     } finally {
       setIsLoading(false);
@@ -68,8 +69,7 @@ export default function SignIn({ setCurState }) {
           value={passInput}
           onChange={(e) => setPassInput(e.target.value)}
         />
-        <div className="text-sm text-red-500/90 h-6">{err && err}</div>
-
+        <SubContentText text={err && err} styles="text-text-warning h-6" />
         <Button
           type="submit"
           text="Sign In"

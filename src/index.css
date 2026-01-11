@@ -5,6 +5,7 @@
   --color-accent: #76abae;
   --color-text-primary: #eeeeee;
   --color-text-secondary: #76abae;
+  --color-text-warning: rgb(202, 0, 27);
   --color-disabled: #f0f0f0;
   --color-warning: rgb(202, 0, 27);
 }

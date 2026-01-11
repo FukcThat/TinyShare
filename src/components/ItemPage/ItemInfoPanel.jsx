@@ -8,6 +8,9 @@ import useUpdateItem from '../../hooks/tanstack_mutations/useUpdateItem';
 import { useNavigate } from 'react-router';
 import TextArea from '../ui/TextArea';
 import Checkbox from '../ui/Checkbox';
+import HeaderText from '../ui/Text/HeaderText';
+import ContentText from '../ui/Text/ContentText';
+import SubContentText from '../ui/Text/SubContentText';
 
 export default function ItemInfoPanel({ item }) {
   const { isBooked } = useActiveBooking(item);
@@ -125,16 +128,17 @@ export default function ItemInfoPanel({ item }) {
           </div>
         ) : (
           <div className="flex gap-4 items-center w-full  ">
-            <div className="h-24 w-24 rounded-md overflow-hidden">
+            <div className="h-24 w-24 rounded-md overflow-hidden ">
               <img
                 src={item.image_url}
-                className="h-full w-auto object-cover"
+                className="h-full w-auto object-cover "
                 alt="item-img"
               />
             </div>
-            <div className="text-2xl border border-transparent px-2 w-[calc(100%-6rem)]">
-              {item.name}
-            </div>
+            <HeaderText
+              text={item.name}
+              styles="border border-transparent px-2 w-[calc(100%-6rem)]"
+            />
           </div>
         )}
         <div className="flex gap-4 w-full justify-center md:justify-end">
@@ -183,7 +187,7 @@ export default function ItemInfoPanel({ item }) {
           </div>
         </div>
       </div>
-      <div className="text-start w-full text-lg font-bold">Description</div>
+      <ContentText text="Description" styles="font-bold" />
       <div className="w-full text-wrap border-b border-b-accent pb-4">
         {isEditing ? (
           <TextArea
@@ -194,10 +198,10 @@ export default function ItemInfoPanel({ item }) {
             }
           />
         ) : (
-          <div>{item.description}</div>
+          <SubContentText text={item.description} />
         )}
       </div>
-      <div>Owner: {item.owner.name}</div>
+      <SubContentText text={`Owner: ${item.owner.name}`} styles="text-center" />
     </BgPanel>
   );
 }

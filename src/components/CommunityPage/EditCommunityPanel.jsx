@@ -4,6 +4,9 @@ import { useState } from 'react';
 import TextArea from '../ui/TextArea';
 import Input from '../ui/Input';
 import useUpdateCommunity from '../../hooks/tanstack_mutations/useUpdateCommunity';
+import SubHeaderText from '../ui/Text/SubHeaderText';
+import ContentText from '../ui/Text/ContentText';
+import SubContentText from '../ui/Text/SubContentText';
 
 export default function EditCommunityPanel({ activeCommunity }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -52,9 +55,9 @@ export default function EditCommunityPanel({ activeCommunity }) {
         />
       </div>
 
-      <h2 className="text-xl my-2">⚙️ Settings</h2>
+      <SubHeaderText text={'⚙️ Settings'} />
       <div className="flex flex-col w-full">
-        <h3>Community Name:</h3>
+        <SubContentText text="Community Name:" />
         {isEditing ? (
           <Input
             outerStyles="w-full"
@@ -65,11 +68,11 @@ export default function EditCommunityPanel({ activeCommunity }) {
             }}
           />
         ) : (
-          <h3>{activeCommunity.name}</h3>
+          <SubContentText text={activeCommunity.name} />
         )}
       </div>
       <div className="flex flex-col w-full">
-        <h3>Description:</h3>
+        <SubContentText text="Description:" />
         {isEditing ? (
           <TextArea
             id="item-description"
@@ -77,11 +80,7 @@ export default function EditCommunityPanel({ activeCommunity }) {
             onChange={(e) => setDescInput(e.target.value)}
           />
         ) : (
-          <h3>
-            {activeCommunity.description === ''
-              ? '-'
-              : activeCommunity.description}
-          </h3>
+          <SubContentText text={activeCommunity.description || '-'} />
         )}
       </div>
     </BgPanel>

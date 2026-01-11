@@ -6,10 +6,14 @@ import useUserItems from '../hooks/tanstack_queries/useUserItems';
 import useUserReservations from '../hooks/tanstack_queries/useUserReservations';
 import useUserInvitations from '../hooks/tanstack_queries/useUserInvitations';
 import useCommunityItems from '../hooks/tanstack_queries/useCommunityItems';
+import useUserProfile from '../hooks/tanstack_queries/useUserProfile';
+import { useSession } from './session_context/useSession';
 
 export function GlobalProvider({ children }) {
   const [activeCommunity, setActiveCommunity] = useState(null);
+  const { session } = useSession();
 
+  const { data: userProfile } = useUserProfile(session);
   const { data: userCommunities } = useUserCommunities();
   const { data: communityMembers } = useCommunityMembers(activeCommunity);
   const { data: userItems } = useUserItems();
@@ -49,6 +53,7 @@ export function GlobalProvider({ children }) {
         userReservations,
         userInvitations,
         communityItems,
+        userProfile,
       }}
     >
       {children}

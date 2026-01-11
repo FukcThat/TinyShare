@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router';
 import { useGlobal } from '../../context/useGlobal';
+import { InvalidCommunityId } from '../../lib/InvalidCommunityId';
 
 const NavElements = [
   { path: '/dashboard', name: 'Dashboard', needCommunity: true },
@@ -17,7 +18,7 @@ export default function Navbar() {
         {NavElements.map((element) => {
           if (
             !element.needCommunity ||
-            (activeCommunity && activeCommunity.id !== -1)
+            (activeCommunity && activeCommunity.id !== InvalidCommunityId)
           )
             return (
               <div className="flex relative" key={element.path}>

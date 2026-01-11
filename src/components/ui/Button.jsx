@@ -1,10 +1,11 @@
-import { twMerge } from "tailwind-merge";
+import { twMerge } from 'tailwind-merge';
+import SubContentText from './Text/SubContentText';
 
 export default function Button({
-  text = "Button TEST",
+  text = 'Button TEST',
   onClick = () => {},
-  type = "button",
-  styles = "",
+  type = 'button',
+  styles = '',
   disabled = false,
 }) {
   return (
@@ -17,7 +18,7 @@ export default function Button({
       ])}
       type={type}
     >
-      {text}
+      <SubContentText text={text} />
     </button>
   );
 }
