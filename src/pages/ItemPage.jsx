@@ -27,7 +27,7 @@ export default function ItemPage() {
   if (!item) return <Loading />;
 
   return (
-    <div className="flex flex-col justify-center items-center gap-8 my-6">
+    <div className="flex flex-col justify-center items-center gap-8 my-6 ">
       <ItemInfoPanel item={item} />
       <BookingCalendar
         item={item}

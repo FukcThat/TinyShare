@@ -2,6 +2,7 @@ import useUpdateUserProfile from '../../hooks/tanstack_mutations/useUpdateUserPr
 import { useSession } from '../../context/session_context/useSession';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
+import { ConfirmIcon } from '../ui/Icons/Icons';
 
 export default function EditProfileForm({
   nameInput,
@@ -40,7 +41,8 @@ export default function EditProfileForm({
       <Button
         disabled={updateProfile.isPending}
         type="submit"
-        text="✔️"
+        text=""
+        icon={<ConfirmIcon styles={'w-6'} />}
         styles="p-1 bg-primary"
       />
     </form>

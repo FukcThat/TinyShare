@@ -7,6 +7,7 @@ import InvitationPanel from './InvitationPanel';
 import HeaderText from '../ui/Text/HeaderText';
 import SubContentText from '../ui/Text/SubContentText';
 import NewCommunityForm from './NewCommunityForm';
+import { ActiveCommunityIcon, InactiveCommunityIcon } from '../ui/Icons/Icons';
 
 export default function UserCommunitiesPanel() {
   const { activeCommunity, setActiveCommunity } = useGlobal();
@@ -46,15 +47,16 @@ export default function UserCommunitiesPanel() {
             <div
               onClick={() => HandleSelectActiveCommunity(e)}
               key={e.id}
-              className={`cursor-pointer grid grid-cols-2 items-center bg-primary border  hover:border-white w-full h-20 rounded-md ${
+              className={`cursor-pointer justify-around flex gap-10 items-center bg-primary border  hover:border-white w-full h-20 rounded-md ${
                 e.role == 'admin' ? ' border-accent' : 'border-transparent'
               }`}
             >
-              <SubContentText text={e.name} styles="text-center" />
-              <SubContentText
-                text={activeCommunity?.id === e.id ? '✔️' : '❌'}
-                styles="text-center"
-              />
+              <SubContentText text={e.name} styles="w-fit" />
+              {activeCommunity?.id === e.id ? (
+                <ActiveCommunityIcon styles={'text-accent'} />
+              ) : (
+                <InactiveCommunityIcon styles={'text-warning/40'} />
+              )}
             </div>
           );
         })}

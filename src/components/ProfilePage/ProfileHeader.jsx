@@ -9,6 +9,7 @@ import SubContentText from '../ui/Text/SubContentText';
 import ContentText from '../ui/Text/ContentText';
 import { useGlobal } from '../../context/useGlobal';
 import { supabase } from '../../lib/supabaseClient';
+import { CancelIcon, EditIcon, LogoutIcon } from '../ui/Icons/Icons';
 
 const oneDay = 24 * 60 * 60 * 1000;
 
@@ -60,7 +61,7 @@ export default function ProfileHeader({ yourItems }) {
                   setNameInput={setNameInput}
                 />
               ) : (
-                <HeaderText text={userProfile.name} />
+                <HeaderText styles="w-fit" text={userProfile.name} />
               )}
               <Button
                 onClick={() => {
@@ -68,7 +69,14 @@ export default function ProfileHeader({ yourItems }) {
                   setNameInput(userProfile.name);
                 }}
                 styles="bg-primary p-1"
-                text={showForm ? '❌' : '✏️'}
+                text={showForm ? '' : ''}
+                icon={
+                  showForm ? (
+                    <CancelIcon styles={'w-6'} />
+                  ) : (
+                    <EditIcon styles={'w-6'} />
+                  )
+                }
               />
             </div>
             <FadedText text={userProfile.email} />
@@ -77,9 +85,11 @@ export default function ProfileHeader({ yourItems }) {
           <SubContentText text={userProfile.email} />
         )}
         <Button
-          styles="bg-warning/60 hover:bg-warning"
+          styles="bg-warning/60 hover:bg-warning/80 items-center h-fit"
           onClick={HandleLogOut}
           text="Logout"
+          icon={<LogoutIcon />}
+          iconPos="right"
         />
       </div>
 

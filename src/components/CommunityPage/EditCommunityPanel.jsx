@@ -5,8 +5,13 @@ import TextArea from '../ui/TextArea';
 import Input from '../ui/Input';
 import useUpdateCommunity from '../../hooks/tanstack_mutations/useUpdateCommunity';
 import SubHeaderText from '../ui/Text/SubHeaderText';
-import ContentText from '../ui/Text/ContentText';
 import SubContentText from '../ui/Text/SubContentText';
+import {
+  CancelIcon,
+  ConfirmIcon,
+  EditIcon,
+  SettingsIcon,
+} from '../ui/Icons/Icons';
 
 export default function EditCommunityPanel({ activeCommunity }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -39,14 +44,22 @@ export default function EditCommunityPanel({ activeCommunity }) {
       <div className="absolute top-4 right-4 flex gap-2">
         {isEditing && (
           <Button
-            text={'Submit'}
+            text={''}
+            icon={<ConfirmIcon styles={'hover:scale-100 w-6'} />}
             styles="bg-accent/60 hover:bg-accent/80"
             onClick={HandleSubmitUpdate}
             disabled={UpdateCommunity.isPending}
           />
         )}
         <Button
-          text={isEditing ? 'Cancel' : '✏️ Edit'}
+          text={''}
+          icon={
+            isEditing ? (
+              <CancelIcon styles={'hover:scale-100 w-6'} />
+            ) : (
+              <EditIcon styles={'hover:scale-100 w-6'} />
+            )
+          }
           onClick={() => {
             setIsEditing(!isEditing);
           }}
@@ -54,8 +67,10 @@ export default function EditCommunityPanel({ activeCommunity }) {
           disabled={UpdateCommunity.isPending}
         />
       </div>
-
-      <SubHeaderText text={'⚙️ Settings'} />
+      <div className="flex gap-2 w-full items-center">
+        <SettingsIcon styles={'w-6'} />
+        <SubHeaderText text={'Settings'} />
+      </div>
       <div className="flex flex-col w-full">
         <SubContentText text="Community Name:" />
         {isEditing ? (

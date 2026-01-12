@@ -33,7 +33,7 @@ export default function CommunityPage() {
       >
         <div className="lg:col-span-2">
           <BgPanel styles="w-full">
-            <HeaderText text=" 👥 Community Members" />
+            <HeaderText text={'Community Members'} />
             <MembershipPanel
               HandleKickMemberBtnClick={HandleKickMemberBtnClick}
               isKickLoading={kickMember.isPending}

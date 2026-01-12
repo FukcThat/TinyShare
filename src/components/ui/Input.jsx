@@ -1,5 +1,7 @@
 import { twMerge } from 'tailwind-merge';
 import ContentText from './Text/ContentText';
+import { SearchIcon } from './Icons/Icons';
+import { useState } from 'react';
 
 export default function Input({
   id = '',
@@ -15,7 +17,10 @@ export default function Input({
   disabled = false,
   required = false,
   maxLength = 25,
+  isSearch = false,
 }) {
+  const [isFocused, setIsFocused] = useState(false);
+
   return (
     <div className={twMerge(['flex gap-2 items-center text-lg ', outerStyles])}>
       {withLabel && (
@@ -28,6 +33,8 @@ export default function Input({
       )}
       <div className={twMerge(['relative w-full rounded-md   ', inputStyles])}>
         <input
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
           required={required}
           disabled={disabled}
           id={id}
@@ -41,6 +48,13 @@ export default function Input({
             ' outline-none text-center w-full text-lg border border-white/40 py-2 focus:border-accent rounded-md',
           ])}
         />
+        {isSearch && (
+          <SearchIcon
+            styles={`absolute left-1 bottom-1 text-sm text-text-primary/80 ${
+              isFocused && 'text-text-primary'
+            }`}
+          />
+        )}
         {type != 'time' && type != 'date' && (
           <div
             className={`absolute right-1 bottom-1 text-sm text-text-primary/80  ${

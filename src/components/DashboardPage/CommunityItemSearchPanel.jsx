@@ -43,11 +43,10 @@ export default function CommunityItemSearchPanel() {
     <BgPanel>
       <HeaderText text={`${activeCommunity.name} - Available Items`} />
       <Input
+        isSearch
         outerStyles="flex-col w-full"
         labelStyles="text-start text-sm w-full"
         id="search-query-input"
-        withLabel
-        labelText="Search available items"
         maxLength={50}
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}

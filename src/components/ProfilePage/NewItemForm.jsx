@@ -5,6 +5,7 @@ import Checkbox from '../ui/Checkbox';
 import useCreateItem from '../../hooks/tanstack_mutations/useCreateItem';
 import { useSession } from '../../context/session_context/useSession';
 import TextArea from '../ui/TextArea';
+import { ImageBrowseIcon } from '../ui/Icons/Icons';
 
 export default function NewItemForm({ setIsOpen }) {
   const { session } = useSession();
@@ -73,8 +74,8 @@ export default function NewItemForm({ setIsOpen }) {
               />
             </div>
           ) : (
-            <div className="p-2 bg-accent/60 hover:bg-accent/80 rounded-md">
-              Browse Images
+            <div className="p-2 bg-accent/60 hover:bg-accent/80 rounded-md flex gap-2">
+              <ImageBrowseIcon />
             </div>
           )}
           <input

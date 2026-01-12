@@ -7,6 +7,7 @@ import useToggleMemberRole from '../../hooks/tanstack_mutations/useToggleMemberR
 import SubContentText from '../ui/Text/SubContentText';
 import FadedText from '../ui/Text/FadedText';
 import SubFadedText from '../ui/Text/SubFadedText';
+import { LeaveIcon } from '../ui/Icons/Icons';
 
 export default function MembershipPanel({
   HandleKickMemberBtnClick,
@@ -53,10 +54,12 @@ export default function MembershipPanel({
             </div>
             {session.user.id === member.profiles.id ? (
               <Button
-                styles=" bg-warning/50 hover:bg-warning/80"
+                styles=" bg-warning/60 hover:bg-warning/80"
                 disabled={false}
                 onClick={() => HandleKickMemberBtnClick(session.user.id)}
-                text="Leave Community🚶‍♀️‍➡️"
+                text={'Leave Community'}
+                icon={<LeaveIcon styles={'hover:scale-100'} />}
+                iconPos="right"
               />
             ) : (
               activeCommunity.role == 'admin' && (
@@ -65,9 +68,8 @@ export default function MembershipPanel({
                     disabled={ToggleMemberRole.isPending}
                     text={member.role == 'admin' ? 'Admin' : 'Member'}
                     styles={`${
-                      member.role == 'admin'
-                        ? 'bg-accent hover:bg-accent/80'
-                        : 'bg-accent/20 hover:bg-accent/40'
+                      member.role == 'admin' &&
+                      'bg-accent/60 hover:bg-accent/80'
                     }`}
                     onClick={() => {
                       HandleRoleToggleBtnClick(member.profiles.id, member.role);
@@ -77,7 +79,7 @@ export default function MembershipPanel({
                   <Button
                     disabled={isKickLoading}
                     text="Remove"
-                    styles="bg-warning/50 hover:bg-warning/80"
+                    styles="bg-warning/60 hover:bg-warning/80"
                     onClick={() => {
                       HandleKickMemberBtnClick(member.profiles.id);
                     }}

@@ -6,6 +6,7 @@ import HeaderText from '../ui/Text/HeaderText';
 import ContentText from '../ui/Text/ContentText';
 import FadedText from '../ui/Text/FadedText';
 import SubContentText from '../ui/Text/SubContentText';
+import { CurrentlyBookedUserItemsIcon } from '../ui/Icons/Icons';
 
 export default function CurrentlyBookedUserItemsPanel() {
   const { userItems } = useGlobal();
@@ -40,7 +41,10 @@ export default function CurrentlyBookedUserItemsPanel() {
   }, [userItems]);
   return (
     <BgPanel>
-      <HeaderText text="My Booked Items" />
+      <div className="flex items-center gap-2 justify-start w-full">
+        <CurrentlyBookedUserItemsIcon />
+        <HeaderText text="Currently Booked User Items" />
+      </div>
       <div className="w-full">
         {currentlyBookedItems.map((item) => (
           <Link

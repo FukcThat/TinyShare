@@ -3,6 +3,7 @@ import BgPanel from '../global/BgPanel';
 import { useGlobal } from '../../context/useGlobal';
 import HeaderText from '../ui/Text/HeaderText';
 import ReservationView from './ReservationView';
+import { ActiveBookingIcon, UpcomingBookingIcon } from '../ui/Icons/Icons';
 
 export default function ActiveAndUpcomingReservationsPanel() {
   const { userReservations } = useGlobal();
@@ -28,7 +29,10 @@ export default function ActiveAndUpcomingReservationsPanel() {
   return (
     <BgPanel styles="flex flex-col md:grid md:grid-cols-2 ">
       <div className="flex flex-col items-start justify-start h-full w-full gap-2">
-        <HeaderText text="Active Bookings" />
+        <div className="flex items-center gap-2">
+          <ActiveBookingIcon />
+          <HeaderText text="Active Bookings" />
+        </div>
         <div className="flex flex-col gap-2 w-full">
           {activeReservations.map((res) => (
             <ReservationView res={res} isActiveRes />
@@ -36,7 +40,10 @@ export default function ActiveAndUpcomingReservationsPanel() {
         </div>
       </div>
       <div className="flex flex-col items-start justify-start h-full w-full gap-2">
-        <HeaderText text="Upcoming Bookings" />
+        <div className="flex items-center gap-2">
+          <UpcomingBookingIcon />
+          <HeaderText text="Upcoming Reservations" />
+        </div>
         <div className="flex flex-col gap-2 w-full">
           {upcomingReservations.map((res) => (
             <ReservationView res={res} />

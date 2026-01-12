@@ -11,6 +11,7 @@ import { BookingStatus } from '../../lib/BookingStatus';
 import HeaderText from '../ui/Text/HeaderText';
 import SubContentText from '../ui/Text/SubContentText';
 import useSubmitItemReservation from '../../hooks/tanstack_mutations/useSubmitItemReservation';
+import { CalendarIcon } from '../ui/Icons/Icons';
 
 const LegendData = [
   { text: 'Current Booking', color: 'bg-accent' },
@@ -128,11 +129,14 @@ export default function BookingCalendar({
 
   return (
     <BgPanel>
-      <HeaderText
-        text="📆 Booking Calendar"
-        styles="border-b border-accent pb-4"
-      />
-      <div className="w-full h-[600px]">
+      <a
+        className="flex w-full items-center border-b border-accent pb-4 gap-2"
+        href="#booking-calendar"
+      >
+        <CalendarIcon />
+        <HeaderText text="Booking Calendar" />
+      </a>
+      <div id="booking-calendar" className="w-full h-[600px]">
         <FullCalendar
           plugins={[interactionPlugin, timeGridPlugin]}
           initialView="timeGridWeek"

@@ -1,0 +1,103 @@
+import {
+  BiCalendarExclamation,
+  BiCalendarEvent,
+  BiSearchAlt,
+  BiRevision,
+  BiEditAlt,
+  BiX,
+  BiCheckDouble,
+  BiTrash,
+  BiCalendarAlt,
+  BiLogOutCircle,
+  BiLogOut,
+  BiMailSend,
+  BiUserPlus,
+  BiShieldQuarter,
+  BiCog,
+  BiImageAdd,
+  BiUserPin,
+  BiHomeCircle,
+  BiHomeAlt2,
+} from 'react-icons/bi';
+import { twMerge } from 'tailwind-merge';
+
+const defaultIconStyle =
+  'h-auto w-8 text-text-primary transition-all duration-75 hover:scale-105';
+
+export function ActiveCommunityIcon({ styles }) {
+  return <BiHomeCircle className={twMerge([defaultIconStyle, styles])} />;
+}
+
+export function InactiveCommunityIcon({ styles }) {
+  return <BiHomeAlt2 className={twMerge([defaultIconStyle, styles])} />;
+}
+
+export function CurrentlyBookedUserItemsIcon({ styles }) {
+  return <BiUserPin className={twMerge([defaultIconStyle, styles])} />;
+}
+
+export function LeaveIcon({ styles }) {
+  return <BiLogOutCircle className={twMerge([defaultIconStyle, styles])} />;
+}
+
+export function NewInviteIcon({ styles }) {
+  return <BiUserPlus className={twMerge([defaultIconStyle, styles])} />;
+}
+
+export function SendInviteIcon({ styles }) {
+  return <BiMailSend className={twMerge([defaultIconStyle, styles])} />;
+}
+
+export function AdminShieldIcon({ styles }) {
+  return <BiShieldQuarter className={twMerge([defaultIconStyle, styles])} />;
+}
+
+export function SettingsIcon({ styles }) {
+  return <BiCog className={twMerge([defaultIconStyle, styles])} />;
+}
+
+export function LogoutIcon({ styles }) {
+  return <BiLogOut className={twMerge([defaultIconStyle, styles])} />;
+}
+
+export function ImageBrowseIcon({ styles }) {
+  return <BiImageAdd className={twMerge([defaultIconStyle, styles])} />;
+}
+
+export function ResetIcon({ styles }) {
+  return <BiRevision className={twMerge([defaultIconStyle, styles])} />;
+}
+
+export function EditIcon({ styles }) {
+  return <BiEditAlt className={twMerge([defaultIconStyle, styles])} />;
+}
+
+export function CancelIcon({ styles }) {
+  return <BiX className={twMerge([defaultIconStyle, styles])} />;
+}
+
+export function ConfirmIcon({ styles }) {
+  return <BiCheckDouble className={twMerge([defaultIconStyle, styles])} />;
+}
+
+export function DeleteIcon({ styles }) {
+  return <BiTrash className={twMerge([defaultIconStyle, styles])} />;
+}
+
+export function CalendarIcon({ styles }) {
+  return <BiCalendarAlt className={twMerge([defaultIconStyle, styles])} />;
+}
+
+export function ActiveBookingIcon({ styles }) {
+  return (
+    <BiCalendarExclamation className={twMerge([defaultIconStyle, styles])} />
+  );
+}
+
+export function UpcomingBookingIcon({ styles }) {
+  return <BiCalendarEvent className={twMerge([defaultIconStyle, styles])} />;
+}
+
+export function SearchIcon({ styles }) {
+  return <BiSearchAlt className={twMerge([defaultIconStyle, styles])} />;
+}

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import { GetDateObjFromDateTimeString } from '../../lib/GetDateObjectFromDateTimeString';
+import { ResetIcon } from '../ui/Icons/Icons';
 
 export default function AvailabilityCheck({ setAvailabilityFilterDates }) {
   const [startDate, setStartDate] = useState(
@@ -97,6 +98,8 @@ export default function AvailabilityCheck({ setAvailabilityFilterDates }) {
           </div>
           <Button
             text="Reset"
+            iconPos="left"
+            icon={<ResetIcon styles={'hover:scale-100 w-6'} />}
             onClick={() => {
               setAvailabilityFilterDates(null);
               setEndDate(new Date().toISOString().substring(0, 10));

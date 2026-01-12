@@ -8,6 +8,7 @@ import Loading from '../global/Loading';
 import SubHeaderText from '../ui/Text/SubHeaderText';
 import SubContentText from '../ui/Text/SubContentText';
 import ContentText from '../ui/Text/ContentText';
+import { CancelIcon, NewInviteIcon, SendInviteIcon } from '../ui/Icons/Icons';
 
 export default function CommunityInvitePanel() {
   const DeclineInvitation = useDeclineInvitation();
@@ -21,7 +22,9 @@ export default function CommunityInvitePanel() {
     <BgPanel styles="w-full">
       <div className="absolute top-4 right-4 flex gap-2">
         <Button
-          text={isEditing ? 'Cancel' : '+ Invite'}
+          text={isEditing ? 'Cancel' : ''}
+          iconPos={isEditing ? 'left' : 'center'}
+          icon={isEditing ? <CancelIcon /> : <NewInviteIcon styles={'w-6'} />}
           onClick={() => {
             setIsEditing(!isEditing);
           }}
@@ -29,7 +32,10 @@ export default function CommunityInvitePanel() {
           disabled={false}
         />
       </div>
-      <SubHeaderText text="✉️ Invites" />
+      <div className="flex w-full gap-2">
+        <SendInviteIcon styles={'w-6'} />
+        <SubHeaderText text={'Invites'} />
+      </div>
       {isEditing ? (
         <InviteForm />
       ) : (

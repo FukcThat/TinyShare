@@ -4,6 +4,7 @@ import Button from '../ui/Button';
 import useCreateInvitation from '../../hooks/tanstack_mutations/useCreateInvitation';
 import { useSession } from '../../context/session_context/useSession';
 import { useGlobal } from '../../context/useGlobal';
+import { SendInviteIcon } from '../ui/Icons/Icons';
 
 export default function InviteForm() {
   const { session } = useSession();
@@ -43,7 +44,10 @@ export default function InviteForm() {
       <Button
         type="submit"
         disabled={CreateInvitation.isPending}
-        text="Send Invitation"
+        text="Send"
+        icon={<SendInviteIcon />}
+        iconPos="right"
+        styles="hover:bg-accent/80 bg-accent/60"
       />
     </form>
   );

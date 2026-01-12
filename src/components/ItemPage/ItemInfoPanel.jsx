@@ -11,6 +11,12 @@ import Checkbox from '../ui/Checkbox';
 import HeaderText from '../ui/Text/HeaderText';
 import ContentText from '../ui/Text/ContentText';
 import SubContentText from '../ui/Text/SubContentText';
+import {
+  CancelIcon,
+  ConfirmIcon,
+  DeleteIcon,
+  EditIcon,
+} from '../ui/Icons/Icons';
 
 export default function ItemInfoPanel({ item }) {
   const { isBooked } = useActiveBooking(item);
@@ -144,9 +150,10 @@ export default function ItemInfoPanel({ item }) {
         <div className="flex gap-4 w-full justify-center md:justify-end">
           {!isEditing ? (
             <Button
+              text=""
               disabled={UpdateItem.isPending || DeleteItem.isPending}
               onClick={() => setIsEditing(!isEditing)}
-              text="✏️"
+              icon={<EditIcon />}
               styles="h-10"
             />
           ) : (
@@ -154,19 +161,22 @@ export default function ItemInfoPanel({ item }) {
               <Button
                 disabled={UpdateItem.isPending || DeleteItem.isPending}
                 onClick={HandleDeleteItem}
-                text="🗑️"
-                styles="h-10 bg-warning"
+                text=""
+                icon={<DeleteIcon />}
+                styles="h-10 bg-warning/60 hover:bg-warning/80"
               />
               <Button
                 disabled={UpdateItem.isPending || DeleteItem.isPending}
                 onClick={HandleUpdateItem}
-                text="✔️"
+                text=""
+                icon={<ConfirmIcon />}
                 styles="h-10"
               />
               <Button
                 disabled={UpdateItem.isPending || DeleteItem.isPending}
                 onClick={() => ResetFormState(item)}
-                text="❌"
+                text=""
+                icon={<CancelIcon />}
                 styles="h-10"
               />
             </div>
