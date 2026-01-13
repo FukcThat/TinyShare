@@ -6,6 +6,7 @@ import BgPanel from '../global/BgPanel';
 import Input from '../ui/Input';
 import ItemListView from './ItemListView';
 import AvailabilityCheck from './AvailabilityCheck';
+import Loading from '../global/Loading';
 
 export default function CommunityItemSearchPanel() {
   const [availabilityFilterDates, setAvailabilityFilterDates] = useState('');
@@ -13,13 +14,13 @@ export default function CommunityItemSearchPanel() {
   const { activeCommunity, communityItems } = useGlobal();
 
   const itemsToRender = useMemo(() => {
-    if (!communityItems) return [];
+    if (communityItems.isPending) return [];
 
     const q = searchQuery.toLowerCase().trim();
     const hasDates =
       availabilityFilterDates?.start && availabilityFilterDates?.end;
 
-    return communityItems.filter((item) => {
+    return communityItems.data.filter((item) => {
       if (!item.is_available) return false;
 
       if (hasDates) {
@@ -51,11 +52,16 @@ export default function CommunityItemSearchPanel() {
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         placeholder="Search by name, description or owner..."
+        disabled={communityItems.isPending}
       />
       <AvailabilityCheck
         setAvailabilityFilterDates={setAvailabilityFilterDates}
       />
-      <ItemListView items={itemsToRender} />
+      {communityItems.isPending ? (
+        <Loading />
+      ) : (
+        <ItemListView items={itemsToRender} />
+      )}
     </BgPanel>
   );
 }

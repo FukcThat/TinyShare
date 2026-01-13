@@ -1,13 +1,41 @@
 @import 'tailwindcss';
+
+/* enable class-based dark mode */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-  --color-primary: #222831;
-  --color-secondary: #31363f;
-  --color-accent: #76abae;
-  --color-text-primary: #eeeeee;
-  --color-text-secondary: #76abae;
-  --color-text-warning: rgb(202, 0, 27);
-  --color-disabled: #f0f0f0;
-  --color-warning: rgb(202, 0, 27);
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-accent: var(--color-accent);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-warning: var(--color-text-warning);
+  --color-disabled: var(--color-disabled);
+  --color-warning: var(--color-warning);
+}
+
+/* Light theme */
+:root {
+  --color-primary: #f5f7fa; /* main bg */
+  --color-secondary: #e3e8ef; /* cards */
+  --color-accent: #0077b6; /* darker blue for contrast */
+  --color-text-primary: #1a1d21; /* strong contrast */
+  --color-text-secondary: #4a5b68; /* subtle readable grey-blue */
+  --color-text-warning: #c62828; /* clear warning red */
+  --color-disabled: #cbd3dc; /* soft disabled grey */
+  --color-warning: #c62828;
+}
+
+/* Dark theme */
+.dark {
+  --color-primary: #1d232a; /* main bg */
+  --color-secondary: #2b323c; /* surfaces / cards */
+  --color-accent: #4cc9f0; /* brighter, cleaner pop color */
+  --color-text-primary: #e6e6e6; /* high contrast */
+  --color-text-secondary: #9bb6c9; /* subtle but readable */
+  --color-text-warning: #ff5f5f; /* softer red */
+  --color-disabled: #4a4f57; /* muted grey */
+  --color-warning: #ff5f5f; /* match text-warning */
 }
 
 .fc-header-toolbar {

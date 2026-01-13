@@ -18,11 +18,21 @@ import {
   BiUserPin,
   BiHomeCircle,
   BiHomeAlt2,
+  BiMoon,
+  BiSun,
 } from 'react-icons/bi';
 import { twMerge } from 'tailwind-merge';
 
 const defaultIconStyle =
   'h-auto w-8 text-text-primary transition-all duration-75 hover:scale-105';
+
+export function DarkModeIcon({ styles }) {
+  return <BiMoon className={twMerge([defaultIconStyle, styles])} />;
+}
+
+export function LightModeIcon({ styles }) {
+  return <BiSun className={twMerge([defaultIconStyle, styles])} />;
+}
 
 export function ActiveCommunityIcon({ styles }) {
   return <BiHomeCircle className={twMerge([defaultIconStyle, styles])} />;

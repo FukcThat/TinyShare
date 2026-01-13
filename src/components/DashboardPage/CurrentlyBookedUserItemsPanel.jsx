@@ -7,11 +7,13 @@ import ContentText from '../ui/Text/ContentText';
 import FadedText from '../ui/Text/FadedText';
 import SubContentText from '../ui/Text/SubContentText';
 import { CurrentlyBookedUserItemsIcon } from '../ui/Icons/Icons';
+import Loading from '../global/Loading';
 
 export default function CurrentlyBookedUserItemsPanel() {
   const { userItems } = useGlobal();
+
   const currentlyBookedItems = useMemo(() => {
-    if (!userItems) return [];
+    if (userItems.isPending) return [];
 
     const now = Date.now();
 
@@ -21,7 +23,7 @@ export default function CurrentlyBookedUserItemsPanel() {
       return start < now && end > now;
     };
 
-    const result = userItems
+    const result = userItems.data
       .map((item) => {
         const active = item.item_reservations.find(isActive);
         if (!active) return null;
@@ -45,32 +47,36 @@ export default function CurrentlyBookedUserItemsPanel() {
         <CurrentlyBookedUserItemsIcon />
         <HeaderText text="Currently Booked User Items" />
       </div>
-      <div className="w-full">
-        {currentlyBookedItems.map((item) => (
-          <Link
-            to={`items/${item.id}`}
-            key={item.id}
-            className="border border-accent/40 hover:border-accent/60 p-2 rounded-md flex flex-col w-full"
-          >
-            <ContentText text={item.name} />
-            <FadedText text={item.description} styles="truncate" />
-            <SubContentText text={`Booked by: ${item.booked_by}`} />
-            {new Date(item.booked_until).toLocaleDateString() ===
-            new Date().toLocaleDateString() ? (
-              <SubContentText
-                text={`Booking Ends Today at 
+      {userItems.isPending ? (
+        <Loading />
+      ) : (
+        <div className="w-full">
+          {currentlyBookedItems.map((item) => (
+            <Link
+              to={`items/${item.id}`}
+              key={item.id}
+              className="border border-accent/40 hover:border-accent/60 p-2 rounded-md flex flex-col w-full"
+            >
+              <ContentText text={item.name} />
+              <FadedText text={item.description} styles="truncate" />
+              <SubContentText text={`Booked by: ${item.booked_by}`} />
+              {new Date(item.booked_until).toLocaleDateString() ===
+              new Date().toLocaleDateString() ? (
+                <SubContentText
+                  text={`Booking Ends Today at 
                 ${new Date(item.booked_until).toLocaleTimeString()}`}
-              />
-            ) : (
-              <SubContentText
-                text={`Booking Ends at 
+                />
+              ) : (
+                <SubContentText
+                  text={`Booking Ends at 
                 ${new Date(item.booked_until).toLocaleTimeString()} on the{' '}
                 ${new Date(item.booked_until).toLocaleDateString()}`}
-              />
-            )}
-          </Link>
-        ))}
-      </div>
+                />
+              )}
+            </Link>
+          ))}
+        </div>
+      )}
     </BgPanel>
   );
 }

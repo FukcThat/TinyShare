@@ -3,13 +3,9 @@
 ### Todos:
 
 
--[12-15.Jan] Icons, Style/Color Consistency / Loading States 
---[12] Get Icons 
---[13] Update Color Palette and check for style/color consistency
---[14] Check loading state consistency and loading behaviours
---[15] Light mode integrations 
+-[13.Jan] Icons, Style/Color Consistency / Loading States 
+--[13] Err Modal & Err Handling
 -[16-17.Jan] Hosting 
---[] Err Modal
 --[16] Impressum
 --[16] Datenschutz
 --[17] GDPR

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import useDeclineInvitation from '../../hooks/tanstack_mutations/useDeclineInvitation';
-import useCommunityInvitations from '../../hooks/tanstack_queries/useCommunityInvitations';
 import BgPanel from '../global/BgPanel';
 import Button from '../ui/Button';
 import InviteForm from './InviteForm';
@@ -9,14 +8,12 @@ import SubHeaderText from '../ui/Text/SubHeaderText';
 import SubContentText from '../ui/Text/SubContentText';
 import ContentText from '../ui/Text/ContentText';
 import { CancelIcon, NewInviteIcon, SendInviteIcon } from '../ui/Icons/Icons';
+import { useGlobal } from '../../context/useGlobal';
 
 export default function CommunityInvitePanel() {
   const DeclineInvitation = useDeclineInvitation();
-  const { data: communityInvitations } = useCommunityInvitations();
-
+  const { communityInvitations } = useGlobal();
   const [isEditing, setIsEditing] = useState();
-
-  if (!communityInvitations) return <Loading />;
 
   return (
     <BgPanel styles="w-full">
@@ -29,7 +26,7 @@ export default function CommunityInvitePanel() {
             setIsEditing(!isEditing);
           }}
           styles={`${isEditing && 'bg-warning/60 hover:bg-warning/80'}`}
-          disabled={false}
+          disabled={communityInvitations.isPending}
         />
       </div>
       <div className="flex w-full gap-2">
@@ -50,27 +47,32 @@ export default function CommunityInvitePanel() {
           text="Pending Invitations"
           styles="text-center py-2 border-b border-b-accent"
         />
-        {communityInvitations.length === 0 && (
-          <SubContentText text="No Pending Invites" styles="text-center" />
+        {communityInvitations.isPending ? (
+          <Loading />
+        ) : (
+          communityInvitations.data.length === 0 && (
+            <SubContentText text="No Pending Invites" styles="text-center" />
+          )
         )}
-        {communityInvitations?.map((invite) => {
-          return (
-            <div
-              key={invite.id}
-              className="flex gap-4 justify-between items-center w-full border rounded-md border-accent/40 p-2"
-            >
-              <ContentText text={invite.profiles.email} />
-              <Button
-                onClick={() =>
-                  DeclineInvitation.mutate({ inviteId: invite.id })
-                }
-                styles="bg-warning/60 hover:bg-warning/80"
-                disabled={DeclineInvitation.isPending}
-                text="🗑️"
-              />
-            </div>
-          );
-        })}
+        {!communityInvitations.isPending &&
+          communityInvitations.data.map((invite) => {
+            return (
+              <div
+                key={invite.id}
+                className="flex gap-4 justify-between items-center w-full border rounded-md border-accent/40 p-2"
+              >
+                <ContentText text={invite.profiles.email} />
+                <Button
+                  onClick={() =>
+                    DeclineInvitation.mutate({ inviteId: invite.id })
+                  }
+                  styles="bg-warning/60 hover:bg-warning/80"
+                  disabled={DeclineInvitation.isPending}
+                  text="🗑️"
+                />
+              </div>
+            );
+          })}
       </div>
     </BgPanel>
   );

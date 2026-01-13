@@ -31,13 +31,16 @@ export default function useCommunityItems(activeCommunity, communityMembers) {
   const queryClient = useQueryClient();
   const activeId = activeCommunity?.id;
   const communityMemberIds = useMemo(() => {
-    return communityMembers ? communityMembers.map((m) => m.profiles.id) : [];
+    return communityMembers?.data?.map((m) => m.profiles.id) || [];
   }, [communityMembers]);
 
   const query = useQuery({
     queryKey: ['CommunityItems', activeId],
     queryFn: () => fetchCommunityItems(activeId),
-    enabled: !!activeId && activeId != InvalidCommunityId,
+    enabled:
+      !!activeId &&
+      activeId != InvalidCommunityId &&
+      communityMemberIds.length != 0,
     staleTime: Infinity,
   });
 
@@ -71,7 +74,7 @@ function listenForCommunityItemChanges(
         event: '*',
         schema: 'public',
         table: 'items',
-        filter: inFilter('owner', communityMembers),
+        filter: inFilter('owner', communityMembers?.data || []),
       },
       (payload) => {
         console.log('🔄 Community Items change:', payload);
@@ -84,7 +87,7 @@ function listenForCommunityItemChanges(
         event: '*',
         schema: 'public',
         table: 'item_reservations',
-        filter: inFilter('user_id', communityMembers),
+        filter: inFilter('user_id', communityMembers?.data || []),
       },
       (payload) => {
         console.log('🔄 Community Item Reservations change:', payload);

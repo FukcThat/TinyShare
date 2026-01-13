@@ -12,8 +12,11 @@ import {
   EditIcon,
   SettingsIcon,
 } from '../ui/Icons/Icons';
+import { useGlobal } from '../../context/useGlobal';
+import Loading from '../global/Loading';
 
 export default function EditCommunityPanel({ activeCommunity }) {
+  const { userCommunities } = useGlobal();
   const [isEditing, setIsEditing] = useState(false);
   const [nameInput, setNameInput] = useState(activeCommunity.name);
   const [descInput, setDescInput] = useState(activeCommunity.description);
@@ -48,7 +51,7 @@ export default function EditCommunityPanel({ activeCommunity }) {
             icon={<ConfirmIcon styles={'hover:scale-100 w-6'} />}
             styles="bg-accent/60 hover:bg-accent/80"
             onClick={HandleSubmitUpdate}
-            disabled={UpdateCommunity.isPending}
+            disabled={UpdateCommunity.isPending || userCommunities.isPending}
           />
         )}
         <Button
@@ -64,40 +67,47 @@ export default function EditCommunityPanel({ activeCommunity }) {
             setIsEditing(!isEditing);
           }}
           styles={`${isEditing && 'bg-warning/60 hover:bg-warning/80'}`}
-          disabled={UpdateCommunity.isPending}
+          disabled={UpdateCommunity.isPending || userCommunities.isPending}
         />
       </div>
       <div className="flex gap-2 w-full items-center">
         <SettingsIcon styles={'w-6'} />
         <SubHeaderText text={'Settings'} />
       </div>
-      <div className="flex flex-col w-full">
-        <SubContentText text="Community Name:" />
-        {isEditing ? (
-          <Input
-            outerStyles="w-full"
-            type="text"
-            value={nameInput}
-            onChange={(e) => {
-              setNameInput(e.target.value);
-            }}
-          />
-        ) : (
-          <SubContentText text={activeCommunity.name} />
-        )}
-      </div>
-      <div className="flex flex-col w-full">
-        <SubContentText text="Description:" />
-        {isEditing ? (
-          <TextArea
-            id="item-description"
-            value={descInput}
-            onChange={(e) => setDescInput(e.target.value)}
-          />
-        ) : (
-          <SubContentText text={activeCommunity.description || '-'} />
-        )}
-      </div>
+      {userCommunities.isPending ? (
+        <Loading />
+      ) : (
+        <>
+          {' '}
+          <div className="flex flex-col w-full">
+            <SubContentText text="Community Name:" />
+            {isEditing ? (
+              <Input
+                outerStyles="w-full"
+                type="text"
+                value={nameInput}
+                onChange={(e) => {
+                  setNameInput(e.target.value);
+                }}
+              />
+            ) : (
+              <SubContentText text={activeCommunity.name} />
+            )}
+          </div>
+          <div className="flex flex-col w-full">
+            <SubContentText text="Description:" />
+            {isEditing ? (
+              <TextArea
+                id="item-description"
+                value={descInput}
+                onChange={(e) => setDescInput(e.target.value)}
+              />
+            ) : (
+              <SubContentText text={activeCommunity.description || '-'} />
+            )}
+          </div>
+        </>
+      )}
     </BgPanel>
   );
 }

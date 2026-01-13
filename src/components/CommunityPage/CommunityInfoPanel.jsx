@@ -14,26 +14,30 @@ export default function CommunityInfoPanel() {
     [activeCommunity]
   );
 
-  if (!activeCommunity || !communityMembers) return <Loading />;
-
   return (
     <BgPanel>
-      <HeaderText text={activeCommunity.name} />
-      <ContentText text={activeCommunity.description || '-'} />
-      <div className="flex w-full justify-start gap-2 sm:gap-4 md:gap-6">
-        <div
-          className={`${
-            activeCommunity.role === 'admin' ? 'bg-accent' : 'bg-accent/20'
-          } px-2 rounded-md`}
-        >
-          {activeCommunity.role === 'admin' ? 'Admin' : 'Member'}
-        </div>
-        <SubContentText
-          text={`${communityMembers.length} Members`}
-          styles="w-30 text-center"
-        />
-        <SubContentText text={`Created ${createdAtDateString}`} styles="" />
-      </div>
+      {!activeCommunity || communityMembers.isPending ? (
+        <Loading />
+      ) : (
+        <>
+          <HeaderText text={activeCommunity.name} />
+          <ContentText text={activeCommunity.description || '-'} />
+          <div className="flex w-full justify-start gap-2 sm:gap-4 md:gap-6">
+            <div
+              className={`${
+                activeCommunity.role === 'admin' ? 'bg-accent' : 'bg-accent/20'
+              } px-2 rounded-md`}
+            >
+              {activeCommunity.role === 'admin' ? 'Admin' : 'Member'}
+            </div>
+            <SubContentText
+              text={`${communityMembers.data.length} Members`}
+              styles="w-30 text-center"
+            />
+            <SubContentText text={`Created ${createdAtDateString}`} styles="" />
+          </div>
+        </>
+      )}
     </BgPanel>
   );
 }

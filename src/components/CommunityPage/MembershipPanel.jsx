@@ -2,7 +2,6 @@ import { useGlobal } from '../../context/useGlobal';
 import Button from '../ui/Button';
 import Loading from '../global/Loading';
 import { useSession } from '../../context/session_context/useSession';
-import useUserCommunities from '../../hooks/tanstack_queries/useUserCommunities';
 import useToggleMemberRole from '../../hooks/tanstack_mutations/useToggleMemberRole';
 import SubContentText from '../ui/Text/SubContentText';
 import FadedText from '../ui/Text/FadedText';
@@ -13,10 +12,9 @@ export default function MembershipPanel({
   HandleKickMemberBtnClick,
   isKickLoading,
 }) {
-  const { activeCommunity, communityMembers } = useGlobal();
+  const { activeCommunity, communityMembers, userCommunities } = useGlobal();
   const { session } = useSession();
 
-  const { data: userCommunities } = useUserCommunities();
   const ToggleMemberRole = useToggleMemberRole();
 
   const HandleRoleToggleBtnClick = async (userToToggleId, userToToggleRole) => {
@@ -28,18 +26,19 @@ export default function MembershipPanel({
     });
   };
 
-  if (!session || !userCommunities || !communityMembers) return <Loading />;
+  if (!session || userCommunities.isPending || communityMembers.isPending)
+    return <Loading />;
 
   return (
     <div className="flex flex-col items-center justify-center w-full gap-4 py-4">
       {/* List of Members */}
-      {communityMembers.map((member) => {
+      {communityMembers.data.map((member) => {
         return (
           <div
             key={member.profiles.id}
             className={`flex flex-col sm:flex-row items-center gap-2 border ${
               member.profiles.id === session.user.id
-                ? 'border-amber-400'
+                ? 'border-amber-400 dark:bg-primary'
                 : 'border-white/10'
             } p-4 rounded-md justify-between w-full`}
           >

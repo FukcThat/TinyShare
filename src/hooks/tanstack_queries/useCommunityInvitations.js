@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useGlobal } from '../../context/useGlobal';
 import { InvalidCommunityId } from '../../lib/InvalidCommunityId';
 
 const fetchCommunityInvitations = async (activeId) => {
@@ -19,9 +18,8 @@ const fetchCommunityInvitations = async (activeId) => {
   return data;
 };
 
-export default function useCommunityInvitations() {
+export default function useCommunityInvitations(activeCommunity) {
   const queryClient = useQueryClient();
-  const { activeCommunity } = useGlobal();
 
   const activeId = useMemo(() => activeCommunity?.id, [activeCommunity]);
   const query = useQuery({
