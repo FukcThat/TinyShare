@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&display=swap');
 @import 'tailwindcss';
 
 /* enable class-based dark mode */
@@ -59,4 +60,5 @@ body {
   user-select: none;
   transition: all;
   transition-duration: 50ms;
+  font-family: 'Funnel Display';
 }

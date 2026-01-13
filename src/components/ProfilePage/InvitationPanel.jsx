@@ -44,19 +44,19 @@ export default function InvitationPanel() {
     );
   };
 
-  return !userInvitations ? (
+  return userInvitations.isPending ? (
     <Loading />
   ) : (
     <div
       className={`${
-        userInvitations.length != 0 &&
+        userInvitations.data.length != 0 &&
         'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
       } border-t border-b py-2 border-accent w-full gap-2`}
     >
-      {userInvitations.length === 0 && (
+      {userInvitations.data.length === 0 && (
         <FadedText text="No pending invites" styles="text-center" />
       )}
-      {userInvitations.map((invite) => (
+      {userInvitations.data.map((invite) => (
         <div
           key={invite.id}
           className="flex flex-col bg-primary border border-accent  rounded-md p-4"

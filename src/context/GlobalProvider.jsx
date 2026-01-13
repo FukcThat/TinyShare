@@ -9,6 +9,7 @@ import useCommunityItems from '../hooks/tanstack_queries/useCommunityItems';
 import useUserProfile from '../hooks/tanstack_queries/useUserProfile';
 import { useSession } from './session_context/useSession';
 import useCommunityInvitations from '../hooks/tanstack_queries/useCommunityInvitations';
+import ErrorModal from '../components/global/ErrorModal';
 
 export function GlobalProvider({ children }) {
   const [activeCommunity, setActiveCommunity] = useState(null);
@@ -20,7 +21,7 @@ export function GlobalProvider({ children }) {
   const communityMembers = useCommunityMembers(activeCommunity);
   const userItems = useUserItems();
   const userReservations = useUserReservations();
-  const { data: userInvitations } = useUserInvitations();
+  const userInvitations = useUserInvitations();
   const communityItems = useCommunityItems(activeCommunity, communityMembers);
 
   useEffect(() => {

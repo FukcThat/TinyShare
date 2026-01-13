@@ -7,7 +7,6 @@ import CommunityItemSearchPanel from '../components/DashboardPage/CommunityItemS
 
 export default function Dashboard() {
   useCommunityRouteGuard();
-
   const { activeCommunity } = useGlobal();
 
   if (!activeCommunity || activeCommunity.id === InvalidCommunityId)
