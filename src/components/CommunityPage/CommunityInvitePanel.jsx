@@ -9,6 +9,7 @@ import SubContentText from '../ui/Text/SubContentText';
 import ContentText from '../ui/Text/ContentText';
 import { CancelIcon, NewInviteIcon, SendInviteIcon } from '../ui/Icons/Icons';
 import { useGlobal } from '../../context/useGlobal';
+import ErrorText from '../ui/Text/ErrorText';
 
 export default function CommunityInvitePanel() {
   const DeclineInvitation = useDeclineInvitation();
@@ -26,7 +27,9 @@ export default function CommunityInvitePanel() {
             setIsEditing(!isEditing);
           }}
           styles={`${isEditing && 'bg-warning/60 hover:bg-warning/80'}`}
-          disabled={communityInvitations.isPending}
+          disabled={
+            communityInvitations.isPending || communityInvitations.isError
+          }
         />
       </div>
       <div className="flex w-full gap-2">
@@ -47,32 +50,41 @@ export default function CommunityInvitePanel() {
           text="Pending Invitations"
           styles="text-center py-2 border-b border-b-accent"
         />
-        {communityInvitations.isPending ? (
-          <Loading />
+        {communityInvitations.isError ? (
+          <ErrorText text="Error getting community invitations from server" />
         ) : (
-          communityInvitations.data.length === 0 && (
-            <SubContentText text="No Pending Invites" styles="text-center" />
-          )
-        )}
-        {!communityInvitations.isPending &&
-          communityInvitations.data.map((invite) => {
-            return (
-              <div
-                key={invite.id}
-                className="flex gap-4 justify-between items-center w-full border rounded-md border-accent/40 p-2"
-              >
-                <ContentText text={invite.profiles.email} />
-                <Button
-                  onClick={() =>
-                    DeclineInvitation.mutate({ inviteId: invite.id })
-                  }
-                  styles="bg-warning/60 hover:bg-warning/80"
-                  disabled={DeclineInvitation.isPending}
-                  text="🗑️"
+          <>
+            {communityInvitations.isPending ? (
+              <Loading />
+            ) : (
+              communityInvitations.data.length === 0 && (
+                <SubContentText
+                  text="No Pending Invites"
+                  styles="text-center"
                 />
-              </div>
-            );
-          })}
+              )
+            )}
+            {!communityInvitations.isPending &&
+              communityInvitations.data.map((invite) => {
+                return (
+                  <div
+                    key={invite.id}
+                    className="flex gap-4 justify-between items-center w-full border rounded-md border-accent/40 p-2"
+                  >
+                    <ContentText text={invite.profiles.email} />
+                    <Button
+                      onClick={() =>
+                        DeclineInvitation.mutate({ inviteId: invite.id })
+                      }
+                      styles="bg-warning/60 hover:bg-warning/80"
+                      disabled={DeclineInvitation.isPending}
+                      text="🗑️"
+                    />
+                  </div>
+                );
+              })}
+          </>
+        )}
       </div>
     </BgPanel>
   );

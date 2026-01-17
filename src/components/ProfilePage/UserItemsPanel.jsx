@@ -5,6 +5,7 @@ import BgPanel from '../global/BgPanel';
 import HeaderText from '../ui/Text/HeaderText';
 import NewItemForm from './NewItemForm';
 import Loading from '../global/Loading';
+import ErrorText from '../ui/Text/ErrorText';
 
 export default function UserItemsPanel({ items }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,12 +23,14 @@ export default function UserItemsPanel({ items }) {
             text="+ Add Item"
             styles="bg-primary"
             onClick={ToggleItemForm}
-            disabled={items.isPending}
+            disabled={items.isPending || items.isError}
           />
         </div>
         {isOpen && <NewItemForm setIsOpen={setIsOpen} />}
         {items.isPending ? (
           <Loading />
+        ) : items.isError ? (
+          <ErrorText text="Error getting items from server" />
         ) : (
           <div className="grid grid-flow-row lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
             {items.data.map((item) => (

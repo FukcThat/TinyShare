@@ -5,12 +5,14 @@ import HeaderText from '../ui/Text/HeaderText';
 import ReservationView from './ReservationView';
 import { ActiveBookingIcon, UpcomingBookingIcon } from '../ui/Icons/Icons';
 import Loading from '../global/Loading';
+import SubContentText from '../ui/Text/SubContentText';
+import ErrorText from '../ui/Text/ErrorText';
 
 export default function ActiveAndUpcomingReservationsPanel() {
   const { userReservations } = useGlobal();
 
   const activeReservations = useMemo(() => {
-    if (userReservations.isPending) return [];
+    if (userReservations.isPending || userReservations.isError) return [];
     return userReservations.data.filter(
       (res) =>
         new Date(res.start).getTime() < new Date().getTime() &&
@@ -19,7 +21,7 @@ export default function ActiveAndUpcomingReservationsPanel() {
   }, [userReservations]);
 
   const upcomingReservations = useMemo(() => {
-    if (userReservations.isPending) return [];
+    if (userReservations.isPending || userReservations.isError) return [];
     return userReservations.data
       .filter((res) => new Date(res.start).getTime() > new Date().getTime())
       .sort(
@@ -36,8 +38,14 @@ export default function ActiveAndUpcomingReservationsPanel() {
         </div>
         {userReservations.isPending ? (
           <Loading />
+        ) : userReservations.isError ? (
+          <ErrorText text="Error getting user reservations from server" />
         ) : (
           <div className="flex flex-col gap-2 w-full">
+            {activeReservations.length === 0 && (
+              <SubContentText text="No Active Bookings" />
+            )}
+
             {activeReservations.map((res) => (
               <ReservationView res={res} isActiveRes />
             ))}
@@ -51,8 +59,13 @@ export default function ActiveAndUpcomingReservationsPanel() {
         </div>
         {userReservations.isPending ? (
           <Loading />
+        ) : userReservations.isError ? (
+          <ErrorText text="Error getting user reservations from server" />
         ) : (
           <div className="flex flex-col gap-2 w-full">
+            {upcomingReservations.length === 0 && (
+              <SubContentText text="No Upcoming Reservations" />
+            )}
             {upcomingReservations.map((res) => (
               <ReservationView res={res} />
             ))}

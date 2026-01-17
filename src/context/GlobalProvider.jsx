@@ -9,7 +9,7 @@ import useCommunityItems from '../hooks/tanstack_queries/useCommunityItems';
 import useUserProfile from '../hooks/tanstack_queries/useUserProfile';
 import { useSession } from './session_context/useSession';
 import useCommunityInvitations from '../hooks/tanstack_queries/useCommunityInvitations';
-import ErrorModal from '../components/global/ErrorModal';
+import ErrorText from '../components/ui/Text/ErrorText';
 
 export function GlobalProvider({ children }) {
   const [activeCommunity, setActiveCommunity] = useState(null);
@@ -25,7 +25,12 @@ export function GlobalProvider({ children }) {
   const communityItems = useCommunityItems(activeCommunity, communityMembers);
 
   useEffect(() => {
-    if (userCommunities.isPending || userCommunities.data.length === 0) return;
+    if (
+      userCommunities.isPending ||
+      userCommunities.isError ||
+      userCommunities.data.length === 0
+    )
+      return;
 
     let lsCommunity = localStorage.getItem('tiny-share-active-community-id');
 
@@ -44,6 +49,9 @@ export function GlobalProvider({ children }) {
       );
     }
   }, [userCommunities]); // Fix how this works later -T
+
+  if (userCommunities.isError)
+    return <ErrorText text="Error connecting to server" />;
 
   return (
     <GlobalContext.Provider

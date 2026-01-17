@@ -6,6 +6,7 @@ import useCreateItem from '../../hooks/tanstack_mutations/useCreateItem';
 import { useSession } from '../../context/session_context/useSession';
 import TextArea from '../ui/TextArea';
 import { ImageBrowseIcon } from '../ui/Icons/Icons';
+import ErrorText from '../ui/Text/ErrorText';
 
 export default function NewItemForm({ setIsOpen }) {
   const { session } = useSession();
@@ -16,6 +17,7 @@ export default function NewItemForm({ setIsOpen }) {
     imgFile: null,
     imgPreview: null,
   });
+  const [err, setErr] = useState(null);
 
   const CreateItem = useCreateItem();
 
@@ -32,8 +34,8 @@ export default function NewItemForm({ setIsOpen }) {
         file: formData.imgFile,
       },
       {
-        onError: (err) => {
-          console.log(err);
+        onError: (error) => {
+          setErr(error.message);
         },
         onSuccess: () => {
           setFormData({
@@ -44,6 +46,7 @@ export default function NewItemForm({ setIsOpen }) {
             imgPreview: null,
           });
           setIsOpen(false);
+          setErr(null);
         },
       }
     );
@@ -103,6 +106,7 @@ export default function NewItemForm({ setIsOpen }) {
         id="name"
         outerStyles="w-full flex flex-col md:grid md:grid-cols-2"
         placeholder=""
+        required
         value={formData.name}
         withLabel
         labelText="Item Name"
@@ -149,6 +153,7 @@ export default function NewItemForm({ setIsOpen }) {
           onClick={() => setIsOpen(false)}
         />
       </div>
+      {err && <ErrorText text={err} styles="my-5" />}
     </form>
   );
 }

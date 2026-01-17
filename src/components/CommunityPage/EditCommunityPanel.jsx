@@ -14,12 +14,14 @@ import {
 } from '../ui/Icons/Icons';
 import { useGlobal } from '../../context/useGlobal';
 import Loading from '../global/Loading';
+import ErrorText from '../ui/Text/ErrorText';
 
 export default function EditCommunityPanel({ activeCommunity }) {
   const { userCommunities } = useGlobal();
   const [isEditing, setIsEditing] = useState(false);
   const [nameInput, setNameInput] = useState(activeCommunity.name);
   const [descInput, setDescInput] = useState(activeCommunity.description);
+  const [err, setErr] = useState(null);
 
   const UpdateCommunity = useUpdateCommunity();
 
@@ -37,6 +39,9 @@ export default function EditCommunityPanel({ activeCommunity }) {
           setNameInput(data.name);
           setDescInput(data.description);
           setIsEditing(false);
+        },
+        onError: (error) => {
+          setErr(error.message);
         },
       }
     );
@@ -65,9 +70,14 @@ export default function EditCommunityPanel({ activeCommunity }) {
           }
           onClick={() => {
             setIsEditing(!isEditing);
+            setErr(null);
           }}
           styles={`${isEditing && 'bg-warning/60 hover:bg-warning/80'}`}
-          disabled={UpdateCommunity.isPending || userCommunities.isPending}
+          disabled={
+            UpdateCommunity.isPending ||
+            userCommunities.isPending ||
+            userCommunities.isError
+          }
         />
       </div>
       <div className="flex gap-2 w-full items-center">
@@ -76,9 +86,10 @@ export default function EditCommunityPanel({ activeCommunity }) {
       </div>
       {userCommunities.isPending ? (
         <Loading />
+      ) : userCommunities.isError ? (
+        <ErrorText text="Server Error" />
       ) : (
         <>
-          {' '}
           <div className="flex flex-col w-full">
             <SubContentText text="Community Name:" />
             {isEditing ? (
@@ -106,6 +117,7 @@ export default function EditCommunityPanel({ activeCommunity }) {
               <SubContentText text={activeCommunity.description || '-'} />
             )}
           </div>
+          {err && <ErrorText text={err} />}
         </>
       )}
     </BgPanel>

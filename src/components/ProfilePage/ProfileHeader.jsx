@@ -16,6 +16,7 @@ import {
   LightModeIcon,
   LogoutIcon,
 } from '../ui/Icons/Icons';
+import ErrorText from '../ui/Text/ErrorText';
 
 const oneDay = 24 * 60 * 60 * 1000;
 
@@ -23,13 +24,13 @@ export default function ProfileHeader({ yourItems }) {
   const { userProfile } = useGlobal();
   const [showForm, setShowForm] = useState(false);
   const [nameInput, setNameInput] = useState('');
-
+  const [err, setErr] = useState(null);
   const [isDarkMode, setIsDarkMode] = useState(
     document.documentElement.classList.contains('dark')
   );
 
   useEffect(() => {
-    if (userProfile.isPending) return;
+    if (userProfile.isPending || userProfile.isError) return;
     setNameInput(userProfile.data.name);
   }, [userProfile]);
 
@@ -39,23 +40,23 @@ export default function ProfileHeader({ yourItems }) {
       if (error) throw new Error(error.message);
     } catch (error) {
       console.error(error);
+      setErr(error.message);
     }
   };
 
   const accountAge = useMemo(() => {
-    return userProfile.isPending
-      ? 0
-      : Math.floor(
-          (Date.now() - new Date(userProfile.data.created_at)) / oneDay
-        );
+    if (userProfile.isPending || userProfile.isError) return 0;
+    return Math.floor(
+      (Date.now() - new Date(userProfile.data.created_at)) / oneDay
+    );
   }, [userProfile]);
 
   const totalItems = useMemo(() => {
-    return yourItems.isPending ? 0 : yourItems.data.length;
+    return yourItems.isPending || yourItems.isError ? 0 : yourItems.data.length;
   }, [yourItems]);
 
   const availableItems = useMemo(() => {
-    return yourItems.isPending
+    return yourItems.isPending || yourItems.isError
       ? 0
       : yourItems.data.filter((item) => item.is_available).length;
   }, [yourItems]);
@@ -69,6 +70,8 @@ export default function ProfileHeader({ yourItems }) {
     <BgPanel>
       {userProfile.isPending ? (
         <Loading />
+      ) : userProfile.isError ? (
+        <ErrorText text="Error getting user profile from server" />
       ) : (
         <>
           <div className="flex flex-col sm:flex-row gap-2 items-center justify-between w-full border-b border-accent/50 ">
@@ -103,27 +106,30 @@ export default function ProfileHeader({ yourItems }) {
                 <FadedText text={userProfile.data.email} />
               </div>
             }
-            <div className="flex  gap-2">
-              <Button
-                styles="items-center h-fit"
-                onClick={ToggleTheme}
-                text=""
-                icon={
-                  !isDarkMode ? (
-                    <DarkModeIcon styles={'w-6'} />
-                  ) : (
-                    <LightModeIcon styles={'w-6'} />
-                  )
-                }
-                iconPos="center"
-              />
-              <Button
-                styles="bg-warning/60 hover:bg-warning/80 items-center h-fit"
-                onClick={HandleLogOut}
-                text="Logout"
-                icon={<LogoutIcon />}
-                iconPos="right"
-              />
+            <div className="flex flex-col gap-2">
+              {err && <ErrorText text="Issue Logging Out" />}
+              <div className="flex  gap-2">
+                <Button
+                  styles="items-center h-fit"
+                  onClick={ToggleTheme}
+                  text=""
+                  icon={
+                    !isDarkMode ? (
+                      <DarkModeIcon styles={'w-6'} />
+                    ) : (
+                      <LightModeIcon styles={'w-6'} />
+                    )
+                  }
+                  iconPos="center"
+                />
+                <Button
+                  styles="bg-warning/60 hover:bg-warning/80 items-center h-fit"
+                  onClick={HandleLogOut}
+                  text="Logout"
+                  icon={<LogoutIcon />}
+                  iconPos="right"
+                />
+              </div>
             </div>
           </div>
 

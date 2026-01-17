@@ -27,6 +27,7 @@ export default function BookingCalendar({
   setEnd,
 }) {
   const { session } = useSession();
+  const [err, setErr] = useState(null);
   const [reservation, setReservation] = useState(null);
   const SubmitItemReservation = useSubmitItemReservation();
   const resetTimeState = () => {
@@ -41,7 +42,6 @@ export default function BookingCalendar({
       return;
     }
     if (start === '' || end === '') return;
-
     SubmitItemReservation.mutate(
       {
         user_id: session.user.id,
@@ -53,6 +53,10 @@ export default function BookingCalendar({
       {
         onSuccess: () => {
           resetTimeState();
+          setErr(null);
+        },
+        onError: (error) => {
+          setErr(error.message);
         },
       }
     );
@@ -76,8 +80,6 @@ export default function BookingCalendar({
     if (!item) return [];
 
     return item.item_reservations.map((res) => {
-      console.log(res);
-
       return {
         title:
           (res.status === BookingStatus.request
@@ -123,6 +125,8 @@ export default function BookingCalendar({
         setEndTime={setEnd}
         editable={arg.event._def.extendedProps.status === BookingStatus.preview}
         item={item}
+        err={err}
+        setErr={setErr}
       />
     );
   };
@@ -176,7 +180,7 @@ export default function BookingCalendar({
 
       <div className="flex items-center justify-center flex-col sm:flex-row w-full gap-2 p-2">
         {LegendData.map(({ text, color }) => (
-          <div className="flex gap-1 items-center">
+          <div key={text} className="flex gap-1 items-center">
             <div className={`h-4 w-4 rounded-md ${color}`}></div>
             <SubContentText text={text} />
           </div>

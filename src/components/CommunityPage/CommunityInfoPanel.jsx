@@ -5,6 +5,7 @@ import Loading from '../global/Loading';
 import ContentText from '../ui/Text/ContentText';
 import HeaderText from '../ui/Text/HeaderText';
 import SubContentText from '../ui/Text/SubContentText';
+import ErrorText from '../ui/Text/ErrorText';
 
 export default function CommunityInfoPanel() {
   const { activeCommunity, communityMembers } = useGlobal();
@@ -30,10 +31,14 @@ export default function CommunityInfoPanel() {
             >
               {activeCommunity.role === 'admin' ? 'Admin' : 'Member'}
             </div>
-            <SubContentText
-              text={`${communityMembers.data.length} Members`}
-              styles="w-30 text-center"
-            />
+            {communityMembers.isError ? (
+              <ErrorText text="Server Error" />
+            ) : (
+              <SubContentText
+                text={`${communityMembers.data.length} Members`}
+                styles="w-30 text-center"
+              />
+            )}
             <SubContentText text={`Created ${createdAtDateString}`} styles="" />
           </div>
         </>

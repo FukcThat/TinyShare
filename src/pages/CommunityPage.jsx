@@ -1,6 +1,5 @@
 import CommunityInfoPanel from '../components/CommunityPage/CommunityInfoPanel';
 import { useGlobal } from '../context/useGlobal';
-import useKickMember from '../hooks/tanstack_mutations/useKickMember';
 import BgPanel from '../components/global/BgPanel';
 import CommunityAdminPanel from '../components/CommunityPage/CommunityAdminPanel';
 import Loading from '../components/global/Loading';
@@ -12,14 +11,6 @@ export default function CommunityPage() {
   useCommunityRouteGuard();
 
   const { activeCommunity } = useGlobal();
-  const kickMember = useKickMember();
-
-  const HandleKickMemberBtnClick = (memberId) => {
-    kickMember.mutate({
-      memberId,
-      activeCommunity,
-    });
-  };
 
   if (!activeCommunity) return <Loading />;
 
@@ -34,10 +25,7 @@ export default function CommunityPage() {
         <div className="lg:col-span-2">
           <BgPanel styles="w-full">
             <HeaderText text={'Community Members'} />
-            <MembershipPanel
-              HandleKickMemberBtnClick={HandleKickMemberBtnClick}
-              isKickLoading={kickMember.isPending}
-            />
+            <MembershipPanel />
           </BgPanel>
         </div>
         {activeCommunity.role === 'admin' && (

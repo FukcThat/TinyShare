@@ -17,6 +17,7 @@ import {
   DeleteIcon,
   EditIcon,
 } from '../ui/Icons/Icons';
+import ErrorText from '../ui/Text/ErrorText';
 
 export default function ItemInfoPanel({ item }) {
   const { isBooked } = useActiveBooking(item);
@@ -31,6 +32,8 @@ export default function ItemInfoPanel({ item }) {
     imgFile: null,
     imgPreview: item.image_url,
   });
+
+  const [err, setErr] = useState(null);
 
   const ResetFormState = (data) => {
     setFormData({
@@ -58,9 +61,12 @@ export default function ItemInfoPanel({ item }) {
         owner: item.owner.id,
       },
       {
-        onError: (msg) => console.log(msg),
+        onError: (err) => {
+          setErr(err.message);
+        },
         onSuccess: (data) => {
           ResetFormState(data);
+          setErr(null);
         },
       }
     );
@@ -75,6 +81,9 @@ export default function ItemInfoPanel({ item }) {
       {
         onSuccess: () => {
           nav('/');
+        },
+        onError: (err) => {
+          setErr(err.message);
         },
       }
     );
@@ -109,7 +118,7 @@ export default function ItemInfoPanel({ item }) {
                 src={formData.imgPreview}
                 className="h-full w-auto object-cover"
                 alt="item-img"
-              />{' '}
+              />
             </label>
             <Input
               disabled={UpdateItem.isPending || DeleteItem.isPending}
@@ -152,33 +161,43 @@ export default function ItemInfoPanel({ item }) {
             <Button
               text=""
               disabled={UpdateItem.isPending || DeleteItem.isPending}
-              onClick={() => setIsEditing(!isEditing)}
+              onClick={() => {
+                setIsEditing(!isEditing);
+                setErr(null);
+              }}
               icon={<EditIcon />}
               styles="h-10"
             />
           ) : (
-            <div className="flex gap-2">
-              <Button
-                disabled={UpdateItem.isPending || DeleteItem.isPending}
-                onClick={HandleDeleteItem}
-                text=""
-                icon={<DeleteIcon />}
-                styles="h-10 bg-warning/60 hover:bg-warning/80"
-              />
-              <Button
-                disabled={UpdateItem.isPending || DeleteItem.isPending}
-                onClick={HandleUpdateItem}
-                text=""
-                icon={<ConfirmIcon />}
-                styles="h-10"
-              />
-              <Button
-                disabled={UpdateItem.isPending || DeleteItem.isPending}
-                onClick={() => ResetFormState(item)}
-                text=""
-                icon={<CancelIcon />}
-                styles="h-10"
-              />
+            <div className="flex flex-col items-center">
+              <div className="flex gap-2 ">
+                <Button
+                  disabled={UpdateItem.isPending || DeleteItem.isPending}
+                  onClick={HandleDeleteItem}
+                  text=""
+                  icon={<DeleteIcon />}
+                  styles="h-10 bg-warning/60 hover:bg-warning/80"
+                />
+                <Button
+                  disabled={UpdateItem.isPending || DeleteItem.isPending}
+                  onClick={HandleUpdateItem}
+                  text=""
+                  icon={<ConfirmIcon />}
+                  styles="h-10"
+                />
+                <Button
+                  disabled={UpdateItem.isPending || DeleteItem.isPending}
+                  onClick={() => ResetFormState(item)}
+                  text=""
+                  icon={<CancelIcon />}
+                  styles="h-10"
+                />
+              </div>
+              {err && (
+                <div className="w-[200px]  overflow-clip text-center h-auto mt-2">
+                  <ErrorText text={err} />
+                </div>
+              )}
             </div>
           )}
 

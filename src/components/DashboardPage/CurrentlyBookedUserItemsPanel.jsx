@@ -8,12 +8,13 @@ import FadedText from '../ui/Text/FadedText';
 import SubContentText from '../ui/Text/SubContentText';
 import { CurrentlyBookedUserItemsIcon } from '../ui/Icons/Icons';
 import Loading from '../global/Loading';
+import ErrorText from '../ui/Text/ErrorText';
 
 export default function CurrentlyBookedUserItemsPanel() {
   const { userItems } = useGlobal();
 
   const currentlyBookedItems = useMemo(() => {
-    if (userItems.isPending) return [];
+    if (userItems.isPending || userItems.isError) return [];
 
     const now = Date.now();
 
@@ -41,6 +42,7 @@ export default function CurrentlyBookedUserItemsPanel() {
 
     return result;
   }, [userItems]);
+
   return (
     <BgPanel>
       <div className="flex items-center gap-2 justify-start w-full">
@@ -49,6 +51,8 @@ export default function CurrentlyBookedUserItemsPanel() {
       </div>
       {userItems.isPending ? (
         <Loading />
+      ) : userItems.isError ? (
+        <ErrorText text="Error getting user items from server" />
       ) : (
         <div className="w-full">
           {currentlyBookedItems.map((item) => (

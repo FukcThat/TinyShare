@@ -5,6 +5,7 @@ import useApproveItemReservation from '../../hooks/tanstack_mutations/useApprove
 import { useMemo } from 'react';
 import { BookingStatus } from '../../lib/BookingStatus';
 import SubContentText from '../ui/Text/SubContentText';
+import ErrorText from '../ui/Text/ErrorText';
 
 export default function EventContent({
   arg,
@@ -12,6 +13,8 @@ export default function EventContent({
   setStartTime,
   setEndTime,
   item,
+  err,
+  setErr,
 }) {
   const { session } = useSession();
   const CancelItemReservation = useCancelItemReservation(item.id);
@@ -25,9 +28,17 @@ export default function EventContent({
     if (arg.event._def.extendedProps.status == BookingStatus.preview) {
       OnSubmitReservation(e, session.user.id === item.owner.id);
     } else {
-      ApproveItemReservation.mutate({
-        reservationId: arg.event._def.extendedProps.resId,
-      });
+      ApproveItemReservation.mutate(
+        {
+          reservationId: arg.event._def.extendedProps.resId,
+        },
+        {
+          onError: (error) => {
+            setErr(error.message);
+          },
+          onSuccess: () =>{ setErr(null)},
+        }
+      );
     }
   };
 
@@ -39,15 +50,24 @@ export default function EventContent({
     if (arg.event._def.extendedProps.status == BookingStatus.preview) {
       setStartTime('');
       setEndTime('');
+      setErr(null);
     } else {
       HandleCancelBtnClick();
     }
   };
 
   const HandleCancelBtnClick = async () => {
-    CancelItemReservation.mutate({
-      reservationId: arg.event._def.extendedProps.resId,
-    });
+    CancelItemReservation.mutate(
+      {
+        reservationId: arg.event._def.extendedProps.resId,
+      },
+      {
+        onError: (error) => {
+          setErr(error.message);
+        },
+        onSuccess: () => setErr(null),
+      }
+    );
   };
 
   const bookingStatus = useMemo(
@@ -78,35 +98,41 @@ export default function EventContent({
       />
 
       {(bookingStatus === BookingStatus.preview || IsOwnerAndNotBooked()) && (
-        <div className="flex gap-4">
-          <Button
-            disabled={
-              ApproveItemReservation.isPending ||
-              CancelItemReservation.isPending
-            }
-            text="✔️"
-            onClick={HandleApproveBtnClick}
-          />
-          <Button
-            disabled={
-              ApproveItemReservation.isPending ||
-              CancelItemReservation.isPending
-            }
-            text="❌"
-            onClick={HandleDenyBtnClick}
-          />
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-4">
+            <Button
+              disabled={
+                ApproveItemReservation.isPending ||
+                CancelItemReservation.isPending
+              }
+              text="✔️"
+              onClick={HandleApproveBtnClick}
+            />
+            <Button
+              disabled={
+                ApproveItemReservation.isPending ||
+                CancelItemReservation.isPending
+              }
+              text="❌"
+              onClick={HandleDenyBtnClick}
+            />
+          </div>
+          {err && <ErrorText text={err} />}
         </div>
       )}
       {(IsOurBooking() || IsOwnerAndIsBooked()) && (
-        <div className="flex gap-4">
-          <Button
-            disabled={
-              ApproveItemReservation.isPending ||
-              CancelItemReservation.isPending
-            }
-            text="Cancel"
-            onClick={HandleCancelBtnClick}
-          />
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-4">
+            <Button
+              disabled={
+                ApproveItemReservation.isPending ||
+                CancelItemReservation.isPending
+              }
+              text="Cancel"
+              onClick={HandleCancelBtnClick}
+            />
+          </div>
+          {err && <ErrorText text={err} />}
         </div>
       )}
     </div>

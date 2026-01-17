@@ -7,6 +7,7 @@ import Input from '../ui/Input';
 import ItemListView from './ItemListView';
 import AvailabilityCheck from './AvailabilityCheck';
 import Loading from '../global/Loading';
+import ErrorText from '../ui/Text/ErrorText';
 
 export default function CommunityItemSearchPanel() {
   const [availabilityFilterDates, setAvailabilityFilterDates] = useState('');
@@ -14,7 +15,7 @@ export default function CommunityItemSearchPanel() {
   const { activeCommunity, communityItems } = useGlobal();
 
   const itemsToRender = useMemo(() => {
-    if (communityItems.isPending) return [];
+    if (communityItems.isPending || communityItems.isError) return [];
 
     const q = searchQuery.toLowerCase().trim();
     const hasDates =
@@ -59,6 +60,8 @@ export default function CommunityItemSearchPanel() {
       />
       {communityItems.isPending ? (
         <Loading />
+      ) : communityItems.isError ? (
+        <ErrorText text="Error getting items from server" />
       ) : (
         <ItemListView items={itemsToRender} />
       )}

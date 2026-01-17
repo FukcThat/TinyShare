@@ -25,7 +25,7 @@ export default function useUpdateCommunity() {
 
   return useMutation({
     mutationFn: updateCommunity,
-    onSuccess: (data, variables) => {
+    onSuccess: () => {
       queryClient.invalidateQueries(['UserCommunities', session.user.id]);
     },
   });

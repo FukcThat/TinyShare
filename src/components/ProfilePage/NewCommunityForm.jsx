@@ -4,12 +4,15 @@ import useCreateCommunity from '../../hooks/tanstack_mutations/useCreateCommunit
 import Input from '../ui/Input';
 import TextArea from '../ui/TextArea';
 import Button from '../ui/Button';
+import ErrorText from '../ui/Text/ErrorText';
 
 export default function NewCommunityForm({ setShowForm }) {
   const { session } = useSession();
 
   const [nameInput, setNameInput] = useState('');
   const [descriptionInput, setDescriptionInput] = useState('');
+
+  const [err, setErr] = useState(null);
   const CreateCommunity = useCreateCommunity();
 
   const createNewCommunity = (e) => {
@@ -32,6 +35,10 @@ export default function NewCommunityForm({ setShowForm }) {
           setNameInput('');
           setDescriptionInput('');
           setShowForm(false);
+          setErr(null);
+        },
+        onError: (error) => {
+          setErr(error.message);
         },
       }
     );
@@ -82,6 +89,7 @@ export default function NewCommunityForm({ setShowForm }) {
           onClick={() => setShowForm(false)}
         />
       </div>
+      {err && <ErrorText text={err} />}
     </form>
   );
 }

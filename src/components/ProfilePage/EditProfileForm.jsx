@@ -3,6 +3,8 @@ import { useSession } from '../../context/session_context/useSession';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import { ConfirmIcon } from '../ui/Icons/Icons';
+import { useState } from 'react';
+import ErrorText from '../ui/Text/ErrorText';
 
 export default function EditProfileForm({
   nameInput,
@@ -12,6 +14,7 @@ export default function EditProfileForm({
   const { session } = useSession();
   const userId = session?.user?.id;
   const updateProfile = useUpdateUserProfile();
+  const [err, setErr] = useState(null);
 
   const HandleSubmitUpdate = async (e) => {
     e.preventDefault();
@@ -21,7 +24,9 @@ export default function EditProfileForm({
       {
         onSuccess: () => {
           setShowForm(false);
+          setErr(null);
         },
+        onError: (error) => setErr(error.message),
       }
     );
   };
@@ -31,13 +36,18 @@ export default function EditProfileForm({
       onSubmit={HandleSubmitUpdate}
       className="flex flex-row items-center justify-center gap-2"
     >
-      <Input
-        id="nameInput"
-        value={nameInput}
-        outerStyles="flex"
-        inputStyles=" "
-        onChange={(e) => setNameInput(e.target.value)}
-      />
+      <div className="flex flex-col gap-2">
+        <Input
+          id="nameInput"
+          value={nameInput}
+          outerStyles="flex"
+          inputStyles="w-[250px]"
+          maxLength={50}
+          onChange={(e) => setNameInput(e.target.value)}
+        />
+        {err && <ErrorText text={err} />}
+      </div>
+
       <Button
         disabled={updateProfile.isPending}
         type="submit"

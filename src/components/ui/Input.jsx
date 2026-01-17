@@ -55,7 +55,7 @@ export default function Input({
             }`}
           />
         )}
-        {type != 'time' && type != 'date' && (
+        {type != 'time' && type != 'date' && maxLength != 1000 && (
           <div
             className={`absolute right-1 bottom-1 text-sm text-text-primary/80  ${
               value.length === maxLength && 'text-warning'
