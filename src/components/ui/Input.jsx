@@ -16,7 +16,7 @@ export default function Input({
   inputStyles = '',
   disabled = false,
   required = false,
-  maxLength = 25,
+  maxLength = 1000,
   isSearch = false,
 }) {
   const [isFocused, setIsFocused] = useState(false);
