@@ -12,7 +12,7 @@ export default function CommunityInfoPanel() {
 
   const createdAtDateString = useMemo(
     () => new Date(activeCommunity.created_at).toDateString() || '',
-    [activeCommunity]
+    [activeCommunity],
   );
 
   return (
@@ -23,7 +23,7 @@ export default function CommunityInfoPanel() {
         <>
           <HeaderText text={activeCommunity.name} />
           <ContentText text={activeCommunity.description || '-'} />
-          <div className="flex w-full justify-start gap-2 sm:gap-4 md:gap-6">
+          <div className="flex w-full justify-start items-start gap-4 flex-col-reverse sm:flex-row  ">
             <div
               className={`${
                 activeCommunity.role === 'admin' ? 'bg-accent' : 'bg-accent/20'
@@ -36,10 +36,13 @@ export default function CommunityInfoPanel() {
             ) : (
               <SubContentText
                 text={`${communityMembers.data.length} Members`}
-                styles="w-30 text-center"
+                styles="w-auto text-start"
               />
             )}
-            <SubContentText text={`Created ${createdAtDateString}`} styles="" />
+            <SubContentText
+              text={`Created ${createdAtDateString}`}
+              styles="w-fit"
+            />
           </div>
         </>
       )}

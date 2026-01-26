@@ -1,20 +1,21 @@
 # TinyShare Roadmap
 
+
 ### Todos:
-- when we enter the item page, we should query that specific item if it is not in our items nor in the active community items
+- when we enter the item page, we should query that specific item if it is not in our items nor in the active community items -[60min]
+- Toggle Item Availability on button not in edit form - [30min]
+- Make local update work on accepting a booking -[30min]
+- Check out realtime issues: -[90min]
+-- Booking Cal
+-- Dashboard item list view
+- Show pending item request as well as future bookings -[60min]
+- Notification Modal/Icon to replace actionable events:
+-- Invited to new community
+-- One of your items has a pending request
 
 ### Issues
-- Inconsistent/not working realtime behaviour in the booking calendar. Will be easier to debug once hosted
-- Inconsistent/not working realtime behaviour in the dashboard item list view
-- Non-active community item issue
-- Accepting a booking; local update doesn't work (real time technically does)
 
 ### Styling / UX Issues
-- Item Availability toggle through button instead edit form (Item Page)
-- Change Admin Toggle needs to be clearer (Community Page)
-- Bring back Active Community DropDown
-- Pending item requests (concering user) are visible
-- Notification Modal to replace actionable things
 
 ### Future Features
 --[] I18N

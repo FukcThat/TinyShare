@@ -28,7 +28,7 @@ export default function MemberInfoRow({ member }) {
       {
         onSuccess: () => setErr(null),
         onError: (error) => setErr(error.message),
-      }
+      },
     );
   };
 
@@ -45,7 +45,7 @@ export default function MemberInfoRow({ member }) {
           setErr(error.message);
         },
         onSuccess: () => setErr(null),
-      }
+      },
     );
   };
 
@@ -76,33 +76,37 @@ export default function MemberInfoRow({ member }) {
           />
           {err && <ErrorText text={err} />}
         </div>
-      ) : (
-        activeCommunity.role == 'admin' && (
-          <div className="flex flex-col">
-            <div className="flex gap-2">
-              <Button
-                disabled={ToggleMemberRole.isPending}
-                text={member.role == 'admin' ? 'Admin' : 'Member'}
-                styles={`${
-                  member.role == 'admin' && 'bg-accent/60 hover:bg-accent/80'
-                }`}
-                onClick={() => {
-                  HandleRoleToggleBtnClick(member.profiles.id, member.role);
-                }}
-              />
+      ) : activeCommunity.role == 'admin' ? (
+        <div className="flex flex-col">
+          <div className="flex gap-2">
+            <SubContentText
+              styles={`${member.role === 'admin' ? 'bg-accent' : 'bg-primary '} px-4 py-2 flex items-center justify-center rounded-md w-fit`}
+              text={member.role === 'admin' ? 'Admin' : 'Member'}
+            />
+            <Button
+              disabled={ToggleMemberRole.isPending}
+              text={'Toggle'}
+              onClick={() => {
+                HandleRoleToggleBtnClick(member.profiles.id, member.role);
+              }}
+            />
 
-              <Button
-                disabled={kickMember.isPending}
-                text="Remove"
-                styles="bg-warning/60 hover:bg-warning/80"
-                onClick={() => {
-                  HandleKickMemberBtnClick(member.profiles.id);
-                }}
-              />
-            </div>
-            {err && <ErrorText text={err} />}
+            <Button
+              disabled={kickMember.isPending}
+              text="Remove"
+              styles="bg-warning/60 hover:bg-warning/80"
+              onClick={() => {
+                HandleKickMemberBtnClick(member.profiles.id);
+              }}
+            />
           </div>
-        )
+          {err && <ErrorText text={err} />}
+        </div>
+      ) : (
+        <SubContentText
+          styles={`${member.role === 'admin' ? 'bg-accent' : 'bg-primary '} px-4 py-2 flex items-center justify-center rounded-md w-fit`}
+          text={member.role === 'admin' ? 'Admin' : 'Member'}
+        />
       )}
     </div>
   );

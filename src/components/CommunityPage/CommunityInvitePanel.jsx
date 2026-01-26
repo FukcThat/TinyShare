@@ -72,8 +72,7 @@ export default function CommunityInvitePanel() {
                     key={invite.id}
                     className="flex gap-4 justify-between items-center w-full border rounded-md border-accent/40 p-2"
                   >
-                    <div className="flex flex-col">
-                      {' '}
+                    <div className="flex flex-col truncate">
                       <ContentText text={invite.invitee.email} />
                       <SubFadedText
                         text={'Invited by: ' + invite.inviter.email}
