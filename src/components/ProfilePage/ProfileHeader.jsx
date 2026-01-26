@@ -17,17 +17,16 @@ import {
   LogoutIcon,
 } from '../ui/Icons/Icons';
 import ErrorText from '../ui/Text/ErrorText';
+import { useTheme } from '../../context/theme_context/useTheme';
 
 const oneDay = 24 * 60 * 60 * 1000;
 
 export default function ProfileHeader({ yourItems }) {
   const { userProfile } = useGlobal();
+  const { currentTheme, SelectTheme } = useTheme();
   const [showForm, setShowForm] = useState(false);
   const [nameInput, setNameInput] = useState('');
   const [err, setErr] = useState(null);
-  const [isDarkMode, setIsDarkMode] = useState(
-    document.documentElement.classList.contains('dark')
-  );
 
   useEffect(() => {
     if (userProfile.isPending || userProfile.isError) return;
@@ -47,7 +46,7 @@ export default function ProfileHeader({ yourItems }) {
   const accountAge = useMemo(() => {
     if (userProfile.isPending || userProfile.isError) return 0;
     return Math.floor(
-      (Date.now() - new Date(userProfile.data.created_at)) / oneDay
+      (Date.now() - new Date(userProfile.data.created_at)) / oneDay,
     );
   }, [userProfile]);
 
@@ -62,8 +61,7 @@ export default function ProfileHeader({ yourItems }) {
   }, [yourItems]);
 
   const ToggleTheme = () => {
-    document.documentElement.classList.toggle('dark');
-    setIsDarkMode(document.documentElement.classList.contains('dark'));
+    SelectTheme(currentTheme === 'dark' ? 'light' : 'dark');
   };
 
   return (
@@ -114,7 +112,7 @@ export default function ProfileHeader({ yourItems }) {
                   onClick={ToggleTheme}
                   text=""
                   icon={
-                    !isDarkMode ? (
+                    !currentTheme === 'dark' ? (
                       <DarkModeIcon styles={'w-6'} />
                     ) : (
                       <LightModeIcon styles={'w-6'} />

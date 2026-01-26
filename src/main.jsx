@@ -16,6 +16,7 @@ import Impressum from './components/legal/Impressum.jsx';
 import PrivacyPolicy from './components/legal/PrivacyPolicy.jsx';
 import TermsOfUse from './components/legal/TermsOfUse.jsx';
 import LegalLayout from './components/legal/LegalLayout.jsx';
+import { ThemeProvider } from './context/theme_context/ThemeProvider.jsx';
 
 const queryClient = new QueryClient();
 
@@ -23,31 +24,33 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools initialIsOpen={false} />
-        <Routes>
-          <Route path="/legal" element={<LegalLayout />}>
-            <Route path="/legal/imprint" element={<Impressum />} />
-            <Route path="/legal/privacy" element={<PrivacyPolicy />} />
-            <Route path="/legal/terms" element={<TermsOfUse />} />
-          </Route>
+        <ThemeProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
+          <Routes>
+            <Route path="/legal" element={<LegalLayout />}>
+              <Route path="/legal/imprint" element={<Impressum />} />
+              <Route path="/legal/privacy" element={<PrivacyPolicy />} />
+              <Route path="/legal/terms" element={<TermsOfUse />} />
+            </Route>
 
-          <Route
-            path="/"
-            element={
-              <SessionProvider>
-                <GlobalProvider>
-                  <Layout />
-                </GlobalProvider>
-              </SessionProvider>
-            }
-          >
-            <Route index element={<ProfilePage />}></Route>
-            <Route path="/community" element={<CommunityPage />}></Route>
-            <Route path="/dashboard" element={<Dashboard />}></Route>
-            <Route path="/items/:id" element={<ItemPage />}></Route>
-            <Route path="*" element={<ErrorPage />}></Route>
-          </Route>
-        </Routes>
+            <Route
+              path="/"
+              element={
+                <SessionProvider>
+                  <GlobalProvider>
+                    <Layout />
+                  </GlobalProvider>
+                </SessionProvider>
+              }
+            >
+              <Route index element={<ProfilePage />}></Route>
+              <Route path="/community" element={<CommunityPage />}></Route>
+              <Route path="/dashboard" element={<Dashboard />}></Route>
+              <Route path="/items/:id" element={<ItemPage />}></Route>
+              <Route path="*" element={<ErrorPage />}></Route>
+            </Route>
+          </Routes>
+        </ThemeProvider>
       </QueryClientProvider>
     </BrowserRouter>
   </StrictMode>,

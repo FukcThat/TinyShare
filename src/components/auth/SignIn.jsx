@@ -34,7 +34,7 @@ export default function SignIn({ setCurState }) {
       setPassInput('');
     } catch (error) {
       setErr('Issue Signing In');
-      console.log(error);
+      console.error(error);
     } finally {
       setIsLoading(false);
     }

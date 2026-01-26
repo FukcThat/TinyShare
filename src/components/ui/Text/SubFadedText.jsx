@@ -1,3 +1,4 @@
+
 import { twMerge } from 'tailwind-merge';
 
 export default function SubFadedText({ text = 'DEFAULT_TEXT', styles = '' }) {

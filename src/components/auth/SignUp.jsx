@@ -22,7 +22,6 @@ export default function SignUp({ setCurState }) {
 
     try {
       setIsLoading(true);
-      console.log(passInput);
       const { error } = await supabase.auth.signUp({
         email: emailInput,
         password: passInput,

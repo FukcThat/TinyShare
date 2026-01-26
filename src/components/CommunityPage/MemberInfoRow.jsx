@@ -11,7 +11,6 @@ import { LeaveIcon } from '../ui/Icons/Icons';
 import ErrorText from '../ui/Text/ErrorText';
 
 export default function MemberInfoRow({ member }) {
-  console.log(member);
   const { session } = useSession();
   const { activeCommunity } = useGlobal();
 

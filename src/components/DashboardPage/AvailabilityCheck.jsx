@@ -63,8 +63,6 @@ export default function AvailabilityCheck({ setAvailabilityFilterDates }) {
               value={startDate}
               outerStyles="flex-col sm:flex-row"
               onChange={(e) => {
-                console.log(startDate);
-                console.log(e.target.value);
                 setStartDate(e.target.value);
               }}
             />

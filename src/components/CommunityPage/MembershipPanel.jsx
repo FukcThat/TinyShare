@@ -8,7 +8,6 @@ export default function MembershipPanel() {
   const { communityMembers, userCommunities } = useGlobal();
   const { session } = useSession();
 
-  console.log(communityMembers.data);
 
   if (!session || userCommunities.isPending || communityMembers.isPending)
     return <Loading />;

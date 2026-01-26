@@ -53,7 +53,6 @@ export default function useCancelItemReservation(itemId) {
           }
           return item;
         });
-        console.log(newOld, variables);
 
         return newOld;
       });

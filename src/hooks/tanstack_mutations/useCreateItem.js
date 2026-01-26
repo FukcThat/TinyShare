@@ -15,7 +15,7 @@ const createItem = async ({ owner, name, is_available, description, file }) => {
       .upload(filePath, file);
 
     if (uploadError) {
-      console.log('issue with upload');
+      console.error('issue with upload');
       throw uploadError;
     }
 

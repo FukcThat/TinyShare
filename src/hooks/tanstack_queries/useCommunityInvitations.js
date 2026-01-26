@@ -8,8 +8,9 @@ const fetchCommunityInvitations = async (activeId) => {
     .from('invitations')
     .select(
       `*,
-      profiles!invitations_invitee_id_fkey(*)
-      `
+      invitee:profiles!invitations_invitee_id_fkey(*),
+      inviter:profiles!invitations_inviter_id_fkey1(*)
+      `,
     )
     .eq('community_id', activeId);
 
@@ -56,7 +57,7 @@ function listenForCommunityInvitationChanges(communityId, onChange) {
       (payload) => {
         console.log('🔄 Community Invitations change:', payload);
         onChange(payload);
-      }
+      },
     )
     .subscribe();
 

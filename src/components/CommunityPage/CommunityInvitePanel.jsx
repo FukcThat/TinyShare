@@ -10,6 +10,7 @@ import ContentText from '../ui/Text/ContentText';
 import { CancelIcon, NewInviteIcon, SendInviteIcon } from '../ui/Icons/Icons';
 import { useGlobal } from '../../context/useGlobal';
 import ErrorText from '../ui/Text/ErrorText';
+import SubFadedText from '../ui/Text/SubFadedText';
 
 export default function CommunityInvitePanel() {
   const DeclineInvitation = useDeclineInvitation();
@@ -71,7 +72,14 @@ export default function CommunityInvitePanel() {
                     key={invite.id}
                     className="flex gap-4 justify-between items-center w-full border rounded-md border-accent/40 p-2"
                   >
-                    <ContentText text={invite.profiles.email} />
+                    <div className="flex flex-col">
+                      {' '}
+                      <ContentText text={invite.invitee.email} />
+                      <SubFadedText
+                        text={'Invited by: ' + invite.inviter.email}
+                      />
+                    </div>
+
                     <Button
                       onClick={() =>
                         DeclineInvitation.mutate({ inviteId: invite.id })

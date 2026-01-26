@@ -16,7 +16,7 @@ export default function useCommunityMembers(activeCommunity) {
   const queryClient = useQueryClient();
   const activeCommunityId = useMemo(
     () => activeCommunity?.id,
-    [activeCommunity]
+    [activeCommunity],
   );
 
   const query = useQuery({
@@ -34,7 +34,7 @@ export default function useCommunityMembers(activeCommunity) {
       () => {
         queryClient.invalidateQueries(['CommunityMembers', activeCommunityId]);
         queryClient.invalidateQueries(['CommunityItems', activeCommunityId]);
-      }
+      },
     );
 
     return () => supabase.removeChannel(channel);
@@ -57,7 +57,7 @@ function listenForCommunityMembershipChanges(communityId, onChange) {
       (payload) => {
         console.log('🔄 Community Membership change:', payload);
         onChange(payload);
-      }
+      },
     )
     .subscribe((stat) => console.log(stat));
 
