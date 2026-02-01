@@ -15,7 +15,7 @@ export default function ItemListView({ items }) {
             <ItemView
               key={item.id}
               item={item}
-              isOwne={session.user.id === item.owner.id}
+              isOwner={session.user.id === item.owner.id}
             />
           );
         })

@@ -10,7 +10,7 @@ const fetchItem = async (itemId) => {
     )
     .eq('id', itemId);
 
-  if (error) throw new Error('Issue fetching community items.');
+  if (error) throw new Error('Issue fetching item.');
 
   return data;
 };
@@ -50,7 +50,20 @@ function listenForItemChanges(itemId, onChange) {
         filter: `id=eq.${itemId}`,
       },
       (payload) => {
-        console.log('🔄 Community Items change:', payload);
+        console.log('🔄Current Item change:', payload);
+        onChange(payload);
+      },
+    )
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'item_reservations',
+        filter: `item_id=eq.${itemId}`,
+      },
+      (payload) => {
+        console.log('🔄 Current Item Reservations change:', payload);
         onChange(payload);
       },
     )

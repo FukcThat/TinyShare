@@ -9,6 +9,7 @@ const fetchCommunityMembers = async (communityId) => {
     .select('id, role, profiles(id, email, created_at, name )')
     .eq('community_id', communityId);
   if (error) throw new Error('Issue fetching community members!');
+
   return data;
 };
 

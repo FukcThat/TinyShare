@@ -16,11 +16,11 @@ const fetchCommunityItems = async (communityId) => {
   const { data, error } = await supabase
     .from('items')
     .select(
-      'id, name, description, is_available, owner(*), item_reservations(*, user_id(*)), image_url'
+      'id, name, description, is_available, owner(*), item_reservations(*, user_id(*)), image_url',
     )
     .in(
       'owner',
-      members.map((m) => m.user_id)
+      members.map((m) => m.user_id),
     );
   if (error) throw new Error('Issue fetching community items.');
 
@@ -52,7 +52,7 @@ export default function useCommunityItems(activeCommunity, communityMembers) {
       communityMemberIds,
       () => {
         queryClient.invalidateQueries(['CommunityItems', activeId]);
-      }
+      },
     );
 
     return () => supabase.removeChannel(channel);
@@ -64,7 +64,7 @@ export default function useCommunityItems(activeCommunity, communityMembers) {
 function listenForCommunityItemChanges(
   communityId,
   communityMembers,
-  onChange
+  onChange,
 ) {
   const channel = supabase
     .channel(`items-${communityId}`)
@@ -74,12 +74,12 @@ function listenForCommunityItemChanges(
         event: '*',
         schema: 'public',
         table: 'items',
-        filter: inFilter('owner', communityMembers?.data || []),
+        filter: inFilter('owner', communityMembers ?? []),
       },
       (payload) => {
         console.log('🔄 Community Items change:', payload);
         onChange(payload);
-      }
+      },
     )
     .on(
       'postgres_changes',
@@ -87,12 +87,12 @@ function listenForCommunityItemChanges(
         event: '*',
         schema: 'public',
         table: 'item_reservations',
-        filter: inFilter('user_id', communityMembers?.data || []),
+        filter: inFilter('user_id', communityMembers ?? []),
       },
       (payload) => {
         console.log('🔄 Community Item Reservations change:', payload);
         onChange(payload);
-      }
+      },
     )
     .subscribe((stat) => console.log(stat));
 

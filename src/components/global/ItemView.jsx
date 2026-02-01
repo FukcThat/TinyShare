@@ -15,7 +15,7 @@ export default function ItemView({ item, isOwner = false }) {
       <div className="w-24 h-24">
         <img
           src={item.image_url}
-          className=" w-full h-full rounded-md"
+          className="h-full w-full object-cover rounded-md"
           alt="No Image Available"
         />
       </div>
@@ -26,12 +26,10 @@ export default function ItemView({ item, isOwner = false }) {
           styles="py-1 truncate w-[calc(100%-80px)]"
         />
         <SubContentText text={item.description} styles="truncate" />
-        {!isOwner && (
-          <SubContentText
-            text={`Owner: ${item.owner.name}`}
-            styles="truncate"
-          />
-        )}
+        <SubContentText
+          text={isOwner ? 'Your item' : `Owner: ${item.owner.name}`}
+          styles="truncate"
+        />
       </div>
 
       <div className="absolute right-1 top-1 p-2 h-fit">
@@ -43,8 +41,8 @@ export default function ItemView({ item, isOwner = false }) {
             !item.is_available
               ? 'Not Available'
               : isBooked
-              ? 'Booked'
-              : 'Available'
+                ? 'Booked'
+                : 'Available'
           }
         />
       </div>

@@ -1,3 +1,3 @@
 export default function inFilter(column, values) {
-  return `${column}=in.(${values.map((v) => `"${v}"`).join(",")})`;
+  return `${column}=in.(${values.map((v) => `"${v}"`).join(',')})`;
 }

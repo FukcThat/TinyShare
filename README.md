@@ -1,13 +1,8 @@
 # TinyShare Roadmap
 
--Current Commit
-FEAT: item page queries specific item now, item availability toggle moved to button out of form, 
+Current Commit:
 
 ### Todos:
-- Make local update work on accepting a booking -[1.Feb]
-- Check out realtime issues: -[1.Feb]
--- Booking Cal
--- Dashboard item list view
 - Show pending item request as well as future bookings -[2.Feb]
 - Notification Modal/Icon to replace actionable events:
 -- Invited to new community

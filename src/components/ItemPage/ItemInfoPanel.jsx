@@ -141,7 +141,7 @@ export default function ItemInfoPanel({ item }) {
             >
               <img
                 src={formData.imgPreview}
-                className="h-full w-auto object-cover"
+                className="w-full h-full object-cover"
                 alt="item-img"
               />
             </label>
@@ -159,7 +159,7 @@ export default function ItemInfoPanel({ item }) {
             <div className="h-24 w-24 rounded-md overflow-hidden ">
               <img
                 src={item.image_url}
-                className="h-full w-auto object-cover "
+                className="w-full h-full object-cover"
                 alt="item-img"
               />
             </div>

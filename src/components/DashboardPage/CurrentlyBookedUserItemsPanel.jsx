@@ -57,7 +57,7 @@ export default function CurrentlyBookedUserItemsPanel() {
         <div className="w-full">
           {currentlyBookedItems.map((item) => (
             <Link
-              to={`items/${item.id}`}
+              to={`/items/${item.id}`}
               key={item.id}
               className="border border-accent/40 hover:border-accent/60 p-2 rounded-md flex flex-col w-full"
             >

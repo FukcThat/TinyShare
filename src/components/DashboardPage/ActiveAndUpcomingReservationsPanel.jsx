@@ -16,7 +16,7 @@ export default function ActiveAndUpcomingReservationsPanel() {
     return userReservations.data.filter(
       (res) =>
         new Date(res.start).getTime() < new Date().getTime() &&
-        new Date(res.end).getTime() > new Date().getTime()
+        new Date(res.end).getTime() > new Date().getTime(),
     );
   }, [userReservations]);
 
@@ -25,7 +25,7 @@ export default function ActiveAndUpcomingReservationsPanel() {
     return userReservations.data
       .filter((res) => new Date(res.start).getTime() > new Date().getTime())
       .sort(
-        (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
+        (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
       );
   }, [userReservations]);
 
@@ -47,7 +47,7 @@ export default function ActiveAndUpcomingReservationsPanel() {
             )}
 
             {activeReservations.map((res) => (
-              <ReservationView res={res} isActiveRes />
+              <ReservationView key={res.id} res={res} isActiveRes />
             ))}
           </div>
         )}
@@ -67,7 +67,7 @@ export default function ActiveAndUpcomingReservationsPanel() {
               <SubContentText text="No Upcoming Reservations" />
             )}
             {upcomingReservations.map((res) => (
-              <ReservationView res={res} />
+              <ReservationView key={res.id} res={res} />
             ))}
           </div>
         )}
