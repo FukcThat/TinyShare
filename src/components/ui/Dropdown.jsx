@@ -11,7 +11,6 @@ export default function Dropdown({
   styles = '',
   optionStyles = '',
 }) {
-  console.log(options.length);
   return options.length === 1 ? (
     <h1 className="text-2xl mx-2 ">
       {optionsAreObjects ? options[0][optionLabel] : options[0]}

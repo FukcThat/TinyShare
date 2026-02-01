@@ -15,7 +15,6 @@ export default function Navbar() {
 
   const HandleSelectActiveCommunity = (id) => {
     if (id === activeCommunity.id || userCommunities.isPending) return;
-    console.log(id);
     setActiveCommunity(
       userCommunities.data.find((community) => {
         return community.id == id;

@@ -1,14 +1,14 @@
 # TinyShare Roadmap
 
+-Current Commit
+FEAT: item page queries specific item now, item availability toggle moved to button out of form, 
 
 ### Todos:
-- when we enter the item page, we should query that specific item if it is not in our items nor in the active community items -[60min]
-- Toggle Item Availability on button not in edit form - [30min]
-- Make local update work on accepting a booking -[30min]
-- Check out realtime issues: -[90min]
+- Make local update work on accepting a booking -[1.Feb]
+- Check out realtime issues: -[1.Feb]
 -- Booking Cal
 -- Dashboard item list view
-- Show pending item request as well as future bookings -[60min]
+- Show pending item request as well as future bookings -[2.Feb]
 - Notification Modal/Icon to replace actionable events:
 -- Invited to new community
 -- One of your items has a pending request

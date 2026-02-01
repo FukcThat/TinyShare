@@ -18,8 +18,10 @@ import {
   EditIcon,
 } from '../ui/Icons/Icons';
 import ErrorText from '../ui/Text/ErrorText';
+import { useSession } from '../../context/session_context/useSession';
 
 export default function ItemInfoPanel({ item }) {
+  const { session } = useSession();
   const { isBooked } = useActiveBooking(item);
   const nav = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
@@ -68,7 +70,30 @@ export default function ItemInfoPanel({ item }) {
           ResetFormState(data);
           setErr(null);
         },
-      }
+      },
+    );
+  };
+
+  const HandleToggleAvailability = () => {
+    UpdateItem.mutate(
+      {
+        item_id: item.id,
+        name: item.name,
+        is_available: !item.is_available,
+        description: item.description,
+        newFile: item.imgFile,
+        oldImageUrl: item.image_url,
+        owner: item.owner.id,
+      },
+      {
+        onError: (err) => {
+          setErr(err.message);
+        },
+        onSuccess: (data) => {
+          ResetFormState(data);
+          setErr(null);
+        },
+      },
     );
   };
 
@@ -85,7 +110,7 @@ export default function ItemInfoPanel({ item }) {
         onError: (err) => {
           setErr(err.message);
         },
-      }
+      },
     );
   };
 
@@ -128,18 +153,6 @@ export default function ItemInfoPanel({ item }) {
               inputStyles="border text-start text-2xl focus:border-accent"
               value={formData.name}
             />
-            <Checkbox
-              disabled={UpdateItem.isPending || DeleteItem.isPending}
-              id="is_available_item"
-              labelText="Available"
-              onChange={() =>
-                setFormData({
-                  ...formData,
-                  isAvailable: !formData.isAvailable,
-                })
-              }
-              value={formData.isAvailable}
-            />
           </div>
         ) : (
           <div className="flex gap-4 items-center w-full  ">
@@ -156,51 +169,69 @@ export default function ItemInfoPanel({ item }) {
             />
           </div>
         )}
-        <div className="flex gap-4 w-full justify-center md:justify-end">
-          {!isEditing ? (
-            <Button
-              text=""
-              disabled={UpdateItem.isPending || DeleteItem.isPending}
-              onClick={() => {
-                setIsEditing(!isEditing);
-                setErr(null);
-              }}
-              icon={<EditIcon />}
-              styles="h-10"
-            />
-          ) : (
-            <div className="flex flex-col items-center">
-              <div className="flex gap-2 ">
-                <Button
-                  disabled={UpdateItem.isPending || DeleteItem.isPending}
-                  onClick={HandleDeleteItem}
-                  text=""
-                  icon={<DeleteIcon />}
-                  styles="h-10 bg-warning/60 hover:bg-warning/80"
-                />
-                <Button
-                  disabled={UpdateItem.isPending || DeleteItem.isPending}
-                  onClick={HandleUpdateItem}
-                  text=""
-                  icon={<ConfirmIcon />}
-                  styles="h-10"
-                />
-                <Button
-                  disabled={UpdateItem.isPending || DeleteItem.isPending}
-                  onClick={() => ResetFormState(item)}
-                  text=""
-                  icon={<CancelIcon />}
-                  styles="h-10"
-                />
-              </div>
-              {err && (
-                <div className="w-[200px]  overflow-clip text-center h-auto mt-2">
-                  <ErrorText text={err} />
+        {item.owner.id === session.user.id ? (
+          <div className="flex gap-4 w-full justify-center md:justify-end">
+            {!isEditing ? (
+              <Button
+                text=""
+                disabled={UpdateItem.isPending || DeleteItem.isPending}
+                onClick={() => {
+                  setIsEditing(!isEditing);
+                  setErr(null);
+                }}
+                icon={<EditIcon />}
+                styles="h-10"
+              />
+            ) : (
+              <div className="flex flex-col items-center">
+                <div className="flex gap-2 ">
+                  <Button
+                    disabled={UpdateItem.isPending || DeleteItem.isPending}
+                    onClick={HandleDeleteItem}
+                    text=""
+                    icon={<DeleteIcon />}
+                    styles="h-10 bg-warning/60 hover:bg-warning/80"
+                  />
+                  <Button
+                    disabled={UpdateItem.isPending || DeleteItem.isPending}
+                    onClick={HandleUpdateItem}
+                    text=""
+                    icon={<ConfirmIcon />}
+                    styles="h-10"
+                  />
+                  <Button
+                    disabled={UpdateItem.isPending || DeleteItem.isPending}
+                    onClick={() => ResetFormState(item)}
+                    text=""
+                    icon={<CancelIcon />}
+                    styles="h-10"
+                  />
                 </div>
-              )}
-            </div>
-          )}
-
+                {err && (
+                  <div className="w-[200px]  overflow-clip text-center h-auto mt-2">
+                    <ErrorText text={err} />
+                  </div>
+                )}
+              </div>
+            )}
+            <Button
+              disabled={UpdateItem.isPending || DeleteItem.isPending}
+              onClick={HandleToggleAvailability}
+              text={
+                !item.is_available
+                  ? 'Not Available'
+                  : isBooked
+                    ? 'Currently Booked'
+                    : 'Available'
+              }
+              styles={`px-4 py-1 rounded-sm h-10 items-center flex ${
+                isBooked || !item.is_available
+                  ? 'bg-warning/50'
+                  : 'bg-emerald-700'
+              }`}
+            />
+          </div>
+        ) : (
           <div
             className={`px-4 py-1 rounded-sm h-10 items-center flex ${
               isBooked || !item.is_available
@@ -211,10 +242,10 @@ export default function ItemInfoPanel({ item }) {
             {!item.is_available
               ? 'Not Available'
               : isBooked
-              ? 'Currently Booked'
-              : 'Available'}
+                ? 'Currently Booked'
+                : 'Available'}
           </div>
-        </div>
+        )}
       </div>
       <ContentText text="Description" styles="font-bold" />
       <div className="w-full text-wrap border-b border-b-accent pb-4">
