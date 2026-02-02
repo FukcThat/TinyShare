@@ -20,6 +20,8 @@ import {
   BiHomeAlt2,
   BiMoon,
   BiSun,
+  BiCalendarCheck,
+  BiCalendarEdit,
 } from 'react-icons/bi';
 import { twMerge } from 'tailwind-merge';
 
@@ -104,8 +106,12 @@ export function ActiveBookingIcon({ styles }) {
   );
 }
 
+export function PendingRequestIcon({ styles }) {
+  return <BiCalendarEdit className={twMerge([defaultIconStyle, styles])} />;
+}
+
 export function UpcomingBookingIcon({ styles }) {
-  return <BiCalendarEvent className={twMerge([defaultIconStyle, styles])} />;
+  return <BiCalendarCheck className={twMerge([defaultIconStyle, styles])} />;
 }
 
 export function SearchIcon({ styles }) {
