@@ -10,6 +10,7 @@ import useUserProfile from '../hooks/tanstack_queries/useUserProfile';
 import { useSession } from './session_context/useSession';
 import useCommunityInvitations from '../hooks/tanstack_queries/useCommunityInvitations';
 import ErrorText from '../components/ui/Text/ErrorText';
+import useUserNotifications from '../hooks/tanstack_queries/useUserNotifications';
 
 export function GlobalProvider({ children }) {
   const [activeCommunity, setActiveCommunity] = useState(null);
@@ -23,6 +24,7 @@ export function GlobalProvider({ children }) {
   const userReservations = useUserReservations();
   const userInvitations = useUserInvitations();
   const communityItems = useCommunityItems(activeCommunity, communityMembers);
+  const userNotifications = useUserNotifications()
 
   useEffect(() => {
     if (
@@ -66,6 +68,7 @@ export function GlobalProvider({ children }) {
         userProfile,
         communityInvitations,
         userCommunities,
+        userNotifications
       }}
     >
       {children}

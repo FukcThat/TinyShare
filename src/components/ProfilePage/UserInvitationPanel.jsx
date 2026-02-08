@@ -16,7 +16,7 @@ export default function UserInvitationPanel({ invite }) {
   const HandleAcceptInviteBtnClick = (
     inviteId,
     inviteCommunityId,
-    inviteRole
+    inviteRole,
   ) => {
     acceptInvitation.mutate(
       {
@@ -30,7 +30,7 @@ export default function UserInvitationPanel({ invite }) {
           setErr(null);
         },
         onError: (error) => setErr(error.message),
-      }
+      },
     );
   };
 
@@ -42,12 +42,12 @@ export default function UserInvitationPanel({ invite }) {
           setErr(null);
         },
         onError: (error) => setErr(error.message),
-      }
+      },
     );
   };
   return (
-    <div className="flex flex-col bg-primary border border-accent  rounded-md p-4">
-      <ContentText text={`Invite to Community: ${invite.communities.name}`} />
+    <div className="flex flex-col bg-primary border border-accent  rounded-md p-4 w-full">
+      <ContentText text={`Community Invitation: ${invite.communities.name}`} />
       <SubContentText text={`From ${invite.inviter_id.name}`} />
       <div className="flex gap-4 my-2">
         <Button
@@ -58,7 +58,7 @@ export default function UserInvitationPanel({ invite }) {
             HandleAcceptInviteBtnClick(
               invite.id,
               invite.community_id,
-              invite.role
+              invite.role,
             )
           }
         />

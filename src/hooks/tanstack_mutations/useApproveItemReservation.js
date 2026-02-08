@@ -2,16 +2,28 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useGlobal } from '../../context/useGlobal';
 import { supabase } from '../../lib/supabaseClient';
 import { useSession } from '../../context/session_context/useSession';
+import { NotificationType } from '../../lib/NotificationType';
 
 const ApproveItemReservation = async ({ reservationId }) => {
   const { data, error } = await supabase
     .from('item_reservations')
     .update({ status: 'booking' })
     .eq('id', reservationId)
-    .select()
+    .select('*, user:user_id(*), item:item_id(*) ')
     .single();
 
   if (error) throw new Error('Issue with approving item reservation!');
+
+  const { error: notificationError } = await supabase
+    .from('notifications')
+    .insert({
+      recipient: data.user_id,
+      type: NotificationType.borrow_approved,
+      data: JSON.stringify(data),
+    });
+
+  if (notificationError)
+    throw new Error('Issue creating notification for booking approval');
 
   return data;
 };
@@ -35,12 +47,12 @@ export default function useApproveItemReservation({ itemId }) {
                 return {
                   ...item,
                   item_reservations: item.item_reservations.map((res) =>
-                    res.id === data.id ? data : res
+                    res.id === data.id ? data : res,
                   ),
                 };
               }
               return item;
-            })
+            }),
       );
       queryClient.setQueryData(['UserItems', userId], (old) => {
         if (!old) return old;
@@ -49,7 +61,7 @@ export default function useApproveItemReservation({ itemId }) {
             return {
               ...item,
               item_reservations: item.item_reservations.map((res) =>
-                res.id === data.id ? data : res
+                res.id === data.id ? data : res,
               ),
             };
           }
@@ -60,7 +72,7 @@ export default function useApproveItemReservation({ itemId }) {
       queryClient.setQueryData(['UserReservations', userId], (old) => {
         if (!old) return old;
         const newOld = old.map((res) => {
-          if (res.item.id === data.item_id) {
+          if (res.id === data.id) {
             return {
               ...res,
               status: 'booking',

@@ -15,7 +15,7 @@ export default function CommunityPage() {
   if (!activeCommunity) return <Loading />;
 
   return (
-    <div className="flex flex-col justify-center items-center gap-4 my-6">
+    <div className="flex flex-col justify-center items-center gap-4 ">
       <CommunityInfoPanel />
       <div
         className={`w-[90%] flex flex-col ${

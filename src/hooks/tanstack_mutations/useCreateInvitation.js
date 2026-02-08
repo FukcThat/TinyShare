@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
+import { NotificationType } from '../../lib/NotificationType';
 
 const createInvitation = async ({
   inviterId,
@@ -50,6 +51,17 @@ const createInvitation = async ({
     .single();
 
   if (inviteCreationError) throw new Error('Error creating invitation!');
+
+  const { error: notificationError } = await supabase
+    .from('notifications')
+    .insert({
+      recipient: inviteeId,
+      type: NotificationType.invite_created,
+      data: JSON.stringify(invitationData),
+    });
+
+  if (notificationError)
+    throw new Error('Issue creating notification for booking approval');
 
   return invitationData;
 };
