@@ -1,6 +1,6 @@
-import { Link, Outlet } from 'react-router';
-import Navbar from './Navbar';
-import Footer from './Footer';
+import { Outlet } from 'react-router';
+import Navbar from './components/global/Navbar';
+import Footer from './components/global/Footer';
 
 export default function Layout() {
   return (

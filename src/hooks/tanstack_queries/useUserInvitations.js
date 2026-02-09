@@ -30,7 +30,7 @@ export default function useUserInvitations() {
   useEffect(() => {
     if (!userId) return;
     const channel = listenForUserInviteChanges(userId, () =>
-      queryClient.invalidateQueries(['UserInvitations', userId])
+      queryClient.invalidateQueries(['UserInvitations', userId]),
     );
 
     return () => supabase.removeChannel(channel);
@@ -53,7 +53,7 @@ function listenForUserInviteChanges(userId, onChange) {
       (payload) => {
         console.log('🔄 User Invitations change:', payload);
         onChange(payload);
-      }
+      },
     )
     .subscribe();
 

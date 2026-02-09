@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import ContentText from '../ui/Text/ContentText';
 import SubContentText from '../ui/Text/SubContentText';
 import useAcceptInvitation from '../../hooks/tanstack_mutations/useAcceptInvitation';

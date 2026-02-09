@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import { GlobalProvider } from './context/GlobalProvider.jsx';
 import { BrowserRouter, Route, Routes } from 'react-router';
-import Layout from './components/global/Layout.jsx';
+import Layout from './Layout.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
 import ErrorPage from './pages/ErrorPage.jsx';
 import SessionProvider from './context/session_context/SessionContextProvider.jsx';

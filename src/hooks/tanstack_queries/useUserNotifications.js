@@ -7,7 +7,8 @@ const fetchUserNotifications = async (userId) => {
   const { data, error } = await supabase
     .from('notifications')
     .select('*')
-    .eq('recipient', userId);
+    .eq('recipient', userId)
+    .eq('dismissed', false);
 
   if (error) throw new Error('Issue fetching user notifications!');
 

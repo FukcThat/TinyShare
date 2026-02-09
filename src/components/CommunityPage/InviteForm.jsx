@@ -9,7 +9,7 @@ import ErrorText from '../ui/Text/ErrorText';
 
 export default function InviteForm() {
   const { session } = useSession();
-  const { activeCommunity, communityMembers } = useGlobal();
+  const { activeCommunity, communityMembers, userProfile } = useGlobal();
   const [inviteeEmail, setInviteeEmail] = useState('anton.harbers23@gmail.com');
   const CreateInvitation = useCreateInvitation();
 
@@ -25,7 +25,7 @@ export default function InviteForm() {
 
     if (
       communityMembers.data.find(
-        (member) => member.profiles.email === inviteeEmail
+        (member) => member.profiles.email === inviteeEmail,
       )
     ) {
       setErr('Member with this email already exists!');
@@ -37,11 +37,13 @@ export default function InviteForm() {
         inviterId: session.user.id,
         inviteeEmail,
         activeCommunityId: activeCommunity.id,
+        activeCommunityName: activeCommunity.name,
+        inviterName: userProfile.data.name,
       },
       {
         onSuccess: () => setInviteeEmail(''),
         onError: (error) => setErr(error.message),
-      }
+      },
     );
   };
 

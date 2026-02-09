@@ -1,29 +1,16 @@
 # TinyShare Roadmap
 
-Current Commit:
-FEAT: show pending requests, actionable events notification panel, navbar icons, notification crud
-
 ### Todos:
-Create/Display Notifications on:
-- Community Invite - link to profile where you can accept like before
-- Accept Request - Info with link to requested item
-- Deny Request - Info with link to requested item
-- Cancel Booking - Info with link to requested item
-- Request Booking - Info with link to requested item
+--[] Move business logic api calls to edge functions (check mutation hooks)
+--[] Cron worker to delete expired notifications
 
-Set Notifications to read - removes them from the notifications modal, complete list of users notifications can be accecced in profile?
+### Issues:
+--[] When a requested cancels a booking, the owner should get a notification (currently only when the owner cancels, the requester gets notified) - see useCancelRequest Hook for implementation
 
-Delete Notifications from profile
-
-Move business logic api calls to edge functions
-
-Refactor:
-- Navbar
-
-### Issues
-
-### Styling / UX Issues
+### Styling / UX Todos:
+--[] Style Overhaul 2 
+--[] I18N
+--[] Basic Animations
 
 ### Future Features
---[] I18N
---[] Style Update
+

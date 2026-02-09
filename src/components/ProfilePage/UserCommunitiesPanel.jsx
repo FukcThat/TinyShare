@@ -7,6 +7,8 @@ import SubContentText from '../ui/Text/SubContentText';
 import NewCommunityForm from './NewCommunityForm';
 import { ActiveCommunityIcon, InactiveCommunityIcon } from '../ui/Icons/Icons';
 import Loading from '../global/Loading';
+import UserInvitationPanel from './UserInvitationPanel';
+import InvitationPanel from './InvitationPanel';
 
 export default function UserCommunitiesPanel() {
   const { activeCommunity, setActiveCommunity, userCommunities } = useGlobal();
@@ -44,6 +46,7 @@ export default function UserCommunitiesPanel() {
         <Loading />
       ) : (
         <>
+          <InvitationPanel />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-2">
             {userCommunities.data.map((e) => {
               return (

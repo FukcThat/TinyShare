@@ -10,10 +10,7 @@ import {
 } from '../ui/Icons/Icons';
 import { useMemo, useState } from 'react';
 import SubContentText from '../ui/Text/SubContentText';
-import ContentText from '../ui/Text/ContentText';
-import SubFadedText from '../ui/Text/SubFadedText';
-import { NotificationType } from '../../lib/NotificationType';
-import UserInvitationPanel from '../ProfilePage/UserInvitationPanel';
+import NotificationModal from './NotificationModal';
 
 const NavElements = [
   { path: '/dashboard', name: DashboardNavIcon, needCommunity: true },
@@ -23,6 +20,8 @@ const NavElements = [
 
 export default function Navbar() {
   const location = useLocation();
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
+
   const {
     activeCommunity,
     setActiveCommunity,
@@ -30,15 +29,14 @@ export default function Navbar() {
     userNotifications,
   } = useGlobal();
 
-  const unreadNotifications = useMemo(() => {
+  const sortedNotifications = useMemo(() => {
     if (userNotifications.isPending || userNotifications.isError) return [];
 
-    return userNotifications.data.filter(
-      (notification) => !notification.dismissed,
+    return userNotifications.data.sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     );
   }, [userNotifications]);
-
-  const [showNotificationModal, setShowNotificationModal] = useState(false);
 
   const HandleSelectActiveCommunity = (id) => {
     if (id === activeCommunity.id || userCommunities.isPending) return;
@@ -52,6 +50,7 @@ export default function Navbar() {
 
   return (
     <div className="flex relative my-6 px-10 w-full justify-between items-center flex-col gap-4 md:flex-row">
+      {/* Nav Elements */}
       <div className="flex items-center">
         {NavElements.map((element) => {
           if (
@@ -75,13 +74,14 @@ export default function Navbar() {
         })}
       </div>
       <div className="flex items-center">
+        {/* Active Community Dropdow */}
         <Dropdown
           styles="mx-5 border border-white rounded-lg px-4 py-2"
           options={userCommunities.isPending ? [] : userCommunities.data}
           onChange={(e) => HandleSelectActiveCommunity(e.target.value)}
           value={activeCommunity?.id}
         />
-
+        {/* Notification Toggle and Badge */}
         <div
           className="relative"
           onClick={() => setShowNotificationModal(!showNotificationModal)}
@@ -89,58 +89,22 @@ export default function Navbar() {
           <NotificationNavIcon
             styles={`cursor-pointer ${showNotificationModal && 'text-accent'}`}
           />
-          {unreadNotifications.length != 0 && (
+          {sortedNotifications.length != 0 && (
             <div className="w-4 h-4 bg-warning rounded-full absolute -top-1.5 -right-1.5  flex items-center justify-center text-sm">
-              {unreadNotifications.length}
-              {/* // created at timestamp
-              // hook to dismiss
-              // if link then link to it
-              // type styling */}
+              <SubContentText
+                text={sortedNotifications.length}
+                styles="flex items-center justify-center"
+              />
             </div>
           )}
         </div>
       </div>
       {showNotificationModal && (
-        <div
-          className={`
-            absolute top-28 
-            right-auto md:right-10 
-            md:top-14 z-50 bg-secondary 
-            w-[400px] 
-            rounded-md border-white 
-            border flex flex-col p-4 
-            items-center gap-4
-            overflow-auto
-            ${showNotificationModal ? 'h-[300px]' : 'h-0'}
-          `}
-        >
-          <ContentText
-            text="Notifications"
-            styles="w-full text-center text-xl"
-          />
-          {unreadNotifications.length === 0 ? (
-            <SubContentText text="-" styles="w-full text-center" />
-          ) : (
-            <div className="flex flex-col w-full hover:border-accent border border-accent/40 rounded-md p-2">
-              {unreadNotifications.map((notification) => {
-                return <div key={notification.id}>{notification.body}</div>;
-
-                //
-              })}
-            </div>
-          )}
-        </div>
+        <NotificationModal
+          showNotificationModal={showNotificationModal}
+          sortedNotifications={sortedNotifications}
+        />
       )}
     </div>
   );
-}
-
-{
-  /* {element.badge &&
-                  userInvitations &&
-                  userInvitations.length > 0 && (
-                    <div className="absolute -right-3 -top-2 text-sm bg-red-500 rounded-full h-5 w-5 text-center">
-                      {userInvitations.length}
-                    </div>
-                  )} */
 }

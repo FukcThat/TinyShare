@@ -26,14 +26,19 @@ import {
   BiHomeAlt,
   BiBell,
   BiUserCircle,
-} from "react-icons/bi";
-import { twMerge } from "tailwind-merge";
+  BiLinkExternal,
+} from 'react-icons/bi';
+import { twMerge } from 'tailwind-merge';
 
 const defaultIconStyle =
-  "h-auto w-8 text-text-primary transition-all duration-75 hover:scale-105";
+  'h-auto w-8 text-text-primary transition-all duration-75 hover:scale-105';
 
 export function DashboardNavIcon({ styles }) {
   return <BiBarChartSquare className={twMerge([defaultIconStyle, styles])} />;
+}
+
+export function LinkIcon({ styles }) {
+  return <BiLinkExternal className={twMerge([defaultIconStyle, styles])} />;
 }
 
 export function CommunityNavIcon({ styles }) {

@@ -6,6 +6,8 @@ const createInvitation = async ({
   inviterId,
   inviteeEmail,
   activeCommunityId,
+  activeCommunityName,
+  inviterName,
 }) => {
   let { data: profilesData, error: profilesError } = await supabase
     .from('profiles')
@@ -56,8 +58,9 @@ const createInvitation = async ({
     .from('notifications')
     .insert({
       recipient: inviteeId,
-      type: NotificationType.invite_created,
-      data: JSON.stringify(invitationData),
+      type: NotificationType.default,
+      body: `You were invited to "${activeCommunityName}" by "${inviterName}"`,
+      link: '/',
     });
 
   if (notificationError)

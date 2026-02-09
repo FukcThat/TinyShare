@@ -9,21 +9,26 @@ const ApproveItemReservation = async ({ reservationId }) => {
     .from('item_reservations')
     .update({ status: 'booking' })
     .eq('id', reservationId)
-    .select('*, user:user_id(*), item:item_id(*) ')
+    .select('*, user:user_id(*), item:item_id(*,owner(*)) ')
     .single();
 
   if (error) throw new Error('Issue with approving item reservation!');
 
-  const { error: notificationError } = await supabase
-    .from('notifications')
-    .insert({
-      recipient: data.user_id,
-      type: NotificationType.borrow_approved,
-      data: JSON.stringify(data),
-    });
+  console.log(data);
 
-  if (notificationError)
-    throw new Error('Issue creating notification for booking approval');
+  if (data.user.id != data.item.id) {
+    const { error: notificationError } = await supabase
+      .from('notifications')
+      .insert({
+        recipient: data.user.id,
+        type: NotificationType.default,
+        body: `${data.item.owner.name} has approved your request to borrow their ${data.item.name}`,
+        link: `/items/${data.item.id}`,
+      });
+
+    if (notificationError)
+      throw new Error('Issue creating notification for booking approval');
+  }
 
   return data;
 };
